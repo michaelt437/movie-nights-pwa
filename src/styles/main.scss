@@ -1,16 +1,73 @@
+@use "sass:map";
+
 @import "tailwindcss/base";
 @import "tailwindcss/components";
-.btn {
-  @apply rounded-full bg-mn-green p-2 text-white;
-}
 @import "tailwindcss/utilities";
 @import url('https://fonts.googleapis.com/css?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap');
 
-* {
+/* Variables */
+@import "./variables/colors.scss";
+
+/* Component Partials */
+@import "./components/button.scss";
+@import "./components/input.scss";
+@import "./components/select.scss";
+@import "./components/tabs.scss";
+
+html {
   font-family: "Open Sans";
   font-size: 14px;
 }
 
+.title-styled {
+  font-family: "Permanent Marker";
+}
+
+input,
+textarea,
+button,
+select,
+a {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+
+$v1: map-get(map-get($themeMap, "indigo"), 800);
+$v2: map-get(map-get($themeMap, "indigo"), 900);
+
+.app-title {
+  color: theme("colors.gray.100");
+  // text-shadow: 1px 1px $black,-1px 1px $black,1px -1px $black,-1px -1px $black;
+}
+.header {
+  transition: background-color .1s ease-in-out;
+
+  .header-app-title {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all .1s ease-in-out;
+  }
+  
+  &.bg-solid {
+    background-color: theme("colors.gray.900");
+    
+    .header-app-title {
+      opacity: 1;
+      transform: translateY(0);
+      transition: all .4s ease-in-out;
+    }
+  }
+}
+.hero {
+  mask-image: linear-gradient(rgba(0, 0, 0, 1.0), transparent);
+}
+
 body {
-  @apply bg-mn-purple;
+  @apply bg-gray-900;
+    // background-image: radial-gradient(farthest-corner at 40px 40px, $v1 0%, $v2 100%);
+}
+
+.movie-card {
+  box-shadow: 0px 10px 15px -5px rgba(0,0,0, .5);
 }

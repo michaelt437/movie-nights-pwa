@@ -1,0 +1,66 @@
+@use "sass:color";
+@use "sass:map";
+
+.btn {
+  @apply rounded-full px-4 py-2;
+  
+  &.outline {
+    background-color: transparent;
+  }
+
+  &.disabled {
+    @apply cursor-not-allowed opacity-50;
+  }
+  
+  &:focus {
+    outline: none;
+  }
+}
+
+.btn-group {
+  .btn + .btn {
+    @apply ml-2;
+  }
+}
+
+
+.btn-white {
+  background-color: $white;
+  border: 1px solid #{$white};
+  transition: all .2s ease-in-out;
+
+  &:hover:not(.disabled) {
+    border-color: color.scale($white, $lightness: 30%);
+    background-color: color.scale($white, $lightness: 30%);
+    @apply text-gray-600;
+  }
+
+  &:active:not(.disabled) {
+    filter: brightness(85%);
+  }
+}
+
+@each $color, $colorMap in $themeMap {
+  @each $value, $hex in $colorMap {
+    .btn-#{$color}-#{$value} {
+      background-color: $hex;
+      border: 1px solid #{$hex};
+      transition: all .2s ease-in-out;
+
+      &:hover:not(.disabled) {
+        border-color: color.scale($hex, $lightness: 30%);
+        background-color: color.scale($hex, $lightness: 30%);
+      }
+
+      &:active:not(.disabled) {
+        filter: brightness(85%);
+      }
+    }
+  }
+}
+
+@media (max-width: 640px ) {
+  [class*="btn"] {
+    transition: none !important;
+  }
+}

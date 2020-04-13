@@ -1,0 +1,16 @@
+.tabs {
+  @apply flex;
+
+  .tab {
+    @apply px-4 py-2 text-center;
+    border-bottom-width: 2px;
+    border-bottom-style: solid;
+    border-bottom-color: transparent;
+    color: theme("colors.gray.600");
+
+    &.active {
+      border-bottom-color: theme("colors.teal.500");
+      color: theme("colors.teal.500");
+    }
+  }
+}
