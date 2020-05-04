@@ -1,7 +1,7 @@
 export default interface IUser {
   created: number,
   email: string,
-  hasRolled: boolean
+  hasRolled: boolean,
   hasPicked: boolean,
   name: string,
   pickedDateTime: number,

@@ -14,10 +14,12 @@
   
   &:focus {
     outline: none;
+    background-color: intial;
   }
 }
 
 .btn-group {
+  display: flex;
   .btn + .btn {
     @apply ml-2;
   }

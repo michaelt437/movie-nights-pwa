@@ -17,14 +17,11 @@
 
     <!-- Footer -->
     <div class="footer flex fixed bottom-0 left-0 w-full items-center py-4 bg-gray-900 z-10">
-      <span class="text-center text-gray-200 flex-grow">
-        <i class="fas fa-history text-xl"></i>
-      </span>
-      <span class="text-center text-gray-200 flex-grow">
-        <i class="fas fa-list text-xl"></i>
-      </span>
       <span class="text-center text-teal-500 flex-grow">
         <i class="fas fa-home text-xl"></i>
+      </span>
+      <span class="text-center text-gray-200 flex-grow relative">
+        <i class="picks-list fas fa-list text-xl" data-items="20"></i>
       </span>
       <span class="text-center text-gray-200 flex-grow">
         <i class="fas fa-user-friends text-xl"></i>
@@ -35,7 +32,7 @@
     </div>
     
     <!-- Title -->
-    <div class="h-64 flex items-center">
+    <div class="flex items-center" style="height: 24rem;">
       <h1 class="text-gray-800 uppercase app-title title-styled leading-tight">
         <span class="text-3xl">Nightly</span>
         <br>
@@ -44,15 +41,19 @@
     </div>
 
     <!-- Tabs -->
-    <div class="tabs mb-8 sticky" style="top: 55px;">
+    <!-- <div class="tabs mb-8 sticky" style="top: 55px;">
       <div class="tab active" style="flex-basis: 50%;">Movies</div>
       <div class="tab" style="flex-basis: 50%;">TV</div>
+    </div> -->
+    <div class="btn-group mb-16">
+      <button class="btn btn-orange-500 text-white">Movies List</button>
+      <button class="btn btn-gray-200 outline text-gray-200">TV List</button>
     </div>
 
     <!-- Filters -->
     <div class="btn-group mb-2">
-      <button class="btn btn-teal-500 outline text-white">Time</button>
-      <button class="btn btn-teal-500 outline text-white">Service</button>
+      <button class="btn btn-teal-500 outline text-white">Time <i class="fas fa-caret-down ml-1"></i></button>
+      <button class="btn btn-teal-500 outline text-white">Service <i class="fas fa-caret-down ml-1"></i></button>
     </div>
 
     <!-- Dice Card -->
@@ -70,10 +71,10 @@
     </div>
 
     <!-- Picked cards -->
-    <div v-for="n in 4" :key="n" class="movie-card rounded-lg bg-gray-800 text-gray-200 px-5 py-3 mb-4">
-      <div class="movie-card__title text-2xl">Annihilation</div>
-      <div class="movie-card__service text-red-700 text-xl my-2">Netflix</div>
-      <div class="movie-card__duration text-sm">119 minutes</div>
+    <div v-for="n in picks" :key="n" class="movie-card rounded-lg bg-gray-800 text-gray-200 px-5 py-3 mb-4">
+      <div class="movie-card__title text-2xl">{{ n.title }}</div>
+      <div class="movie-card__service text-red-700 text-md my-2" :class="n.platform.code">{{ n.platform.name }}</div>
+      <div class="movie-card__duration text-sm">{{ n.time }} minutes</div>
       <div class="movie-card__footer">
       </div>
     </div>
@@ -147,6 +148,40 @@ export default class App extends Vue {
   public users: User[] = [];
   private paralaxOffset: number = 0;
   public titleBgSolid: boolean = false;
+  public picks: Array<object> = [
+    {
+      title: "Annihilation",
+      platform: {
+        name:"Hulu",
+        code: "hulu"
+      },
+      time: 119
+    },
+    {
+      title: "Blade Runner 2049",
+      platform: {
+        name:"Netflix",
+        code: "netflix"
+      },
+      time: 145
+    },
+    {
+      title: "The Lighthouse",
+      platform: {
+        name:"Amazon Prime",
+        code: "amazon"
+      },
+      time: 92
+    },
+    {
+      title: "The Martian",
+      platform: {
+        name:"DVD/Bluray",
+        code: "disc"
+      },
+      time: 132 
+    },
+  ];
 
   //Properties
   get paralaxValue() {

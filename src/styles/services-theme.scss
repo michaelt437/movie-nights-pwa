@@ -1,2 +1,30 @@
 @use "sass:map";
 
+$stream-service: (
+  "netflix": "#ef1c29",
+  "hulu": "#59da80",
+  "amazon": theme("colors.blue.400"),
+  "vudu": "#307fc9",
+  "criterion": "#a1a1a1",
+  "disc": "#daca39",
+  "viki": "#bcdefa",
+  "tubi": "#e84f1e",
+  "vrv": "#ffed4a",
+  "hbo": "#000",
+  "imdb": "#f5c518",
+  "hoopla": "#2779bd",
+  "download": "#9561e2"
+  
+);
+
+.disney {
+  background: -webkit-linear-gradient(left, rgba(16,16,92,1) 0%, rgba(0,255,244,1) 30%);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@each $service, $color in $stream-service {
+  .#{$service} {
+    color: #{$color}
+  }
+}
