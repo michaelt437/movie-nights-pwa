@@ -10,8 +10,13 @@
     class="header flex justify-between fixed top-0 left-0 w-full items-center py-2 px-5 overflow-hidden"
     :class="{'bg-solid' : titleBgSolid}">
       <span class="text-gray-200 font-bold header-app-title title-styled">Nightly Roulette</span>
-      <span class="avatar w-8 rounded-full overflow-hidden">
-        <img :src="photo" alt="photo">
+      <span 
+      class="avatar rounded-full overflow-hidden bg-indigo-800"
+      :class="logInBtnStyles">
+        <!-- <img v-if="photo" :src="photo" alt="photo">
+        <i v-else class="fas fa-user text-indigo-400"></i> -->
+        <span class="text-sm">Log In</span>
+        <i class="fas fa-user text-indigo-400 ml-1"></i>
       </span>
     </div>
 
@@ -20,8 +25,8 @@
       <span class="text-center text-teal-500 flex-grow">
         <i class="fas fa-home text-xl"></i>
       </span>
-      <span class="text-center text-gray-200 flex-grow relative">
-        <i class="picks-list fas fa-list text-xl" data-items="20"></i>
+      <span class="text-center text-gray-200 flex-grow relative picks-list" data-items="20">
+        <i class="fas fa-list text-xl"></i>
       </span>
       <span class="text-center text-gray-200 flex-grow">
         <i class="fas fa-user-friends text-xl"></i>
@@ -45,10 +50,10 @@
       <div class="tab active" style="flex-basis: 50%;">Movies</div>
       <div class="tab" style="flex-basis: 50%;">TV</div>
     </div> -->
-    <div class="btn-group mb-16">
+    <!-- <div class="btn-group mb-16">
       <button class="btn btn-orange-500 text-white">Movies List</button>
       <button class="btn btn-gray-200 outline text-gray-200">TV List</button>
-    </div>
+    </div> -->
 
     <!-- Filters -->
     <div class="btn-group mb-2">
@@ -188,6 +193,14 @@ export default class App extends Vue {
     return {
       top: `-${this.paralaxOffset * .5}px`
     }
+  }
+
+  get hasAvatarStyles() {
+    return 'w-8'
+  }
+
+  get logInBtnStyles() {
+    return 'px-4 text-white'
   }
 
   // Methods

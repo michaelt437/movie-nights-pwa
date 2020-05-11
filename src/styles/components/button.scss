@@ -15,6 +15,7 @@
   &:focus {
     outline: none;
     background-color: intial;
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
@@ -39,6 +40,7 @@
 
   &:active:not(.disabled) {
     filter: brightness(85%);
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
@@ -56,13 +58,17 @@
 
       &:active:not(.disabled) {
         filter: brightness(85%);
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      @media (max-width: 640px ) {
+        transition: none !important;
+        
+        &:hover:not(.disabled) {
+          border-color: color.scale($hex, $lightness: 0%);
+          background-color: color.scale($hex, $lightness: 0%);;
+        }
       }
     }
-  }
-}
-
-@media (max-width: 640px ) {
-  [class*="btn"] {
-    transition: none !important;
   }
 }
