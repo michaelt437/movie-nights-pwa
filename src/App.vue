@@ -6,12 +6,12 @@
     </div>
 
     <!-- Header -->
-    <div 
+    <div
     class="header flex justify-between fixed top-0 left-0 w-full items-center py-2 px-5 overflow-hidden"
     :class="{'bg-solid' : titleBgSolid}">
       <span class="text-gray-200 font-bold header-app-title title-styled">Nightly Roulette</span>
-      <span 
-      v-if="signedIn" 
+      <span
+      v-if="signedIn"
       class="avatar rounded-full overflow-hidden bg-indigo-800 w-8" @click="logOut">
         <img :src="photo" alt="photo">
       </span>
@@ -33,7 +33,7 @@
         <i class="fas fa-plus-circle text-xl"></i>
       </span>
     </div>
-    
+
     <!-- Title -->
     <div class="flex items-center text-center justify-center" style="height: 24rem;">
       <h1 class="text-gray-800 uppercase app-title title-styled leading-tight">
@@ -133,32 +133,32 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import HelloWorld from './components/HelloWorld.vue';
+import { Component, Vue } from "vue-property-decorator";
+import HelloWorld from "./components/HelloWorld.vue";
 import { db, fb, auth } from "@/db";
-import IUser from "./interface/IUser"
-import User from "./class/User"
+import IUser from "./interface/IUser";
+import User from "./class/User";
 
 @Component({
   components: {
-    HelloWorld,
-  },
+    HelloWorld
+  }
 })
 export default class App extends Vue {
   // Fields
-  private name: string = "";
-  private email: string = "";
-  private photo: string = "";
-  public signedIn: boolean = false;
+  private name = "";
+  private email = "";
+  private photo = "";
+  public signedIn = false;
   public users: User[] = [];
-  private paralaxOffset: number = 0;
-  public titleBgSolid: boolean = false;
-  public isPicking: boolean = false;
+  private paralaxOffset = 0;
+  public titleBgSolid = false;
+  public isPicking = false;
   public picks: Array<object> = [
     {
       title: "Annihilation",
       platform: {
-        name:"Hulu",
+        name: "Hulu",
         code: "hulu"
       },
       time: 119
@@ -166,7 +166,7 @@ export default class App extends Vue {
     {
       title: "Blade Runner 2049",
       platform: {
-        name:"Netflix",
+        name: "Netflix",
         code: "netflix"
       },
       time: 145
@@ -174,7 +174,7 @@ export default class App extends Vue {
     {
       title: "The Lighthouse",
       platform: {
-        name:"Amazon Prime",
+        name: "Amazon Prime",
         code: "amazon"
       },
       time: 92
@@ -182,82 +182,81 @@ export default class App extends Vue {
     {
       title: "The Martian",
       platform: {
-        name:"DVD/Bluray",
+        name: "DVD/Bluray",
         code: "disc"
       },
-      time: 132 
-    },
+      time: 132
+    }
   ];
 
-  //Properties
-  get paralaxValue() {
+  // Properties
+  get paralaxValue () {
     return {
-      top: `-${this.paralaxOffset * .5}px`
-    }
+      top: `-${this.paralaxOffset * 0.5}px`
+    };
   }
 
-  get hasAvatarStyles() {
-    return 'w-8'
+  get hasAvatarStyles () {
+    return "w-8";
   }
 
-  get logInBtnStyles() {
-    return 'px-4 text-white'
+  get logInBtnStyles () {
+    return "px-4 text-white";
   }
 
   // Methods
-  init(): void {
+  init (): void {
     db.collection("users")
-    .onSnapshot((doc) => {
-      doc.docChanges().forEach(change => {
-        let doc = change.doc;
+      .onSnapshot((doc) => {
+        doc.docChanges().forEach(change => {
+          const doc = change.doc;
         // let _user: User = new User();
         // this.users.push(_user);
-      })
-    })    
+        });
+      });
   }
 
-  login(): void {
-    let provider = new auth.GoogleAuthProvider();
+  login (): void {
+    const provider = new auth.GoogleAuthProvider();
     // fb.auth().signInWithRedirect(provider)
     fb.auth().signInWithRedirect(provider)
-    .then(response => {
-      console.log(response);
-      this.signedIn = true;
-    })
-    .catch((error) => {
-      console.error("Authentication error: ", error);
-    })
+      .then(response => {
+        console.log(response);
+        this.signedIn = true;
+      })
+      .catch((error) => {
+        console.error("Authentication error: ", error);
+      });
   }
 
-  logOut(): void {
+  logOut (): void {
     fb.auth().signOut();
     this.signedIn = false;
     window.location.reload();
   }
 
   // Lifecycle Hooks
-  created() {
+  created () {
     window.addEventListener("scroll", (): void => {
-
       // paralax calc
-      let scrolled = window.pageYOffset;
+      const scrolled = window.pageYOffset;
       this.paralaxOffset = scrolled;
 
       // header bg
-      let titleRect = document.querySelector(".app-title")!.getBoundingClientRect();
-      this.titleBgSolid = titleRect.bottom < 0 ? true : false;
-      console.log(this.titleBgSolid)
+      const titleRect = document.querySelector(".app-title")?.getBoundingClientRect();
+      this.titleBgSolid = titleRect!.bottom < 0;
+      console.log(this.titleBgSolid);
     });
-    this.init();    
+    this.init();
     fb.auth().onAuthStateChanged((user: any | null) => {
-      if(user) {
+      if (user) {
         console.log("user: ", user.providerData);
         this.photo = user.providerData[0].photoURL;
         this.signedIn = true;
       } else {
         this.signedIn = false;
       }
-    })
+    });
   }
 }
 </script>
