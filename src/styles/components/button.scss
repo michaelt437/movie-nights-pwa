@@ -17,6 +17,10 @@
     background-color: intial;
     -webkit-tap-highlight-color: transparent;
   }
+
+  &.block {
+    width: 100%;
+  }
 }
 
 .btn-group {

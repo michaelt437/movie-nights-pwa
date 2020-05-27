@@ -11,13 +11,11 @@
     :class="{'bg-solid' : titleBgSolid}">
       <span class="text-gray-200 font-bold header-app-title title-styled">Nightly Roulette</span>
       <span 
-      class="avatar rounded-full overflow-hidden bg-indigo-800"
-      :class="logInBtnStyles">
-        <!-- <img v-if="photo" :src="photo" alt="photo">
-        <i v-else class="fas fa-user text-indigo-400"></i> -->
-        <span class="text-sm">Log In</span>
-        <i class="fas fa-user text-indigo-400 ml-1"></i>
+      v-if="signedIn" 
+      class="avatar rounded-full overflow-hidden bg-indigo-800 w-8" @click="logOut">
+        <img :src="photo" alt="photo">
       </span>
+      <button v-else class="btn btn-pink-600 text-sm text-white" @click="login">Log In</button>
     </div>
 
     <!-- Footer -->
@@ -25,7 +23,7 @@
       <span class="text-center text-teal-500 flex-grow">
         <i class="fas fa-home text-xl"></i>
       </span>
-      <span class="text-center text-gray-200 flex-grow relative picks-list" data-items="20">
+      <span class="text-center text-gray-200 flex-grow">
         <i class="fas fa-list text-xl"></i>
       </span>
       <span class="text-center text-gray-200 flex-grow">
@@ -37,13 +35,14 @@
     </div>
     
     <!-- Title -->
-    <div class="flex items-center" style="height: 24rem;">
+    <div class="flex items-center text-center justify-center" style="height: 24rem;">
       <h1 class="text-gray-800 uppercase app-title title-styled leading-tight">
         <span class="text-3xl">Nightly</span>
         <br>
-        <span class="text-6xl font-bold">Roulette</span>
+        <span class="text-5xl font-bold">Roulette</span>
       </h1>
     </div>
+    <p class="my-4 text-white">Signed in status: {{ signedIn }}</p>
 
     <!-- Tabs -->
     <!-- <div class="tabs mb-8 sticky" style="top: 55px;">
@@ -56,13 +55,33 @@
     </div> -->
 
     <!-- Filters -->
-    <div class="btn-group mb-2">
+    <!-- <div class="btn-group mb-2">
       <button class="btn btn-teal-500 outline text-white">Time <i class="fas fa-caret-down ml-1"></i></button>
       <button class="btn btn-teal-500 outline text-white">Service <i class="fas fa-caret-down ml-1"></i></button>
+    </div> -->
+
+    <!-- Rolling Card -->
+    <div v-if="isPicking" class="movie-card rounded-lg bg-indigo-600 text-gray-200 px-5 py-3 mb-4">
+      <div class="movie-card__title text-2xl">Annihilation</div>
+      <div class="movie-card__service text-green-300 text-lg my-2">Hulu</div>
+      <div class="movie-card__duration text-sm mb-5">119 minutes</div>
+      <div class="movie-card__footer">
+        <div class="btn-group flex">
+          <button class="btn btn-orange-600 flex-grow" @click="isPicking = false">
+            <i class="fas fa-times"></i>
+          </button>
+          <button class="btn btn-gray-500 flex-grow">
+            <i class="fas fa-dice"></i>
+          </button>
+          <button class="btn btn-teal-500 flex-grow" style="flex-basis: 35%">
+            <i class="fas fa-check"></i>
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- Dice Card -->
-    <div class="movie-card rounded-lg btn-indigo-600 text-center text-gray-200 py-8 mb-4">
+    <div v-else class="movie-card rounded-lg btn-indigo-600 text-center text-gray-200 py-8 mb-4 cursor-pointer" @click="isPicking = true">
       <div class="text-2xl">What's the pick?</div>
     </div>
 
@@ -84,28 +103,9 @@
       </div>
     </div>
 
-    <!-- Rolling Card -->
-    <div class="movie-card rounded-lg bg-indigo-600 text-gray-200 px-5 py-3 mb-4">
-      <div class="movie-card__title text-2xl">Annihilation</div>
-      <div class="movie-card__service text-green-300 text-lg my-2">Hulu</div>
-      <div class="movie-card__duration text-sm mb-5">119 minutes</div>
-      <div class="movie-card__footer">
-        <div class="btn-group flex">
-          <button class="btn btn-orange-600 flex-grow">
-            <i class="fas fa-times"></i>
-          </button>
-          <button class="btn btn-gray-500 flex-grow">
-            <i class="fas fa-dice"></i>
-          </button>
-          <button class="btn btn-teal-500 flex-grow" style="flex-basis: 35%">
-            <i class="fas fa-check"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
+    <div class="pt-4 py-16 text-gray-600 text-center">Your beginning...</div>
     <!-- Add a Movie Card -->
-    <div class="movie-card rounded-lg bg-indigo-500 text-gray-200 px-5 pb-3 mb-4">
+    <!-- <div class="movie-card rounded-lg bg-indigo-500 text-gray-200 px-5 pb-3 mb-4">
       <p class="text-2xl text-center py-5">Add a movie</p>
       <label for="movie-title" class="text-sm">Movie Title</label>
       <div class="input">
@@ -128,7 +128,7 @@
           <i class="fas fa-check"></i>
         </button>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -153,6 +153,7 @@ export default class App extends Vue {
   public users: User[] = [];
   private paralaxOffset: number = 0;
   public titleBgSolid: boolean = false;
+  public isPicking: boolean = false;
   public picks: Array<object> = [
     {
       title: "Annihilation",
@@ -217,7 +218,12 @@ export default class App extends Vue {
 
   login(): void {
     let provider = new auth.GoogleAuthProvider();
+    // fb.auth().signInWithRedirect(provider)
     fb.auth().signInWithRedirect(provider)
+    .then(response => {
+      console.log(response);
+      this.signedIn = true;
+    })
     .catch((error) => {
       console.error("Authentication error: ", error);
     })
@@ -225,6 +231,7 @@ export default class App extends Vue {
 
   logOut(): void {
     fb.auth().signOut();
+    this.signedIn = false;
     window.location.reload();
   }
 
