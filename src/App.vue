@@ -42,7 +42,6 @@
         <span class="text-5xl font-bold">Roulette</span>
       </h1>
     </div>
-    <p class="my-4 text-white">Signed in status: {{ signedIn }}</p>
 
     <!-- Tabs -->
     <!-- <div class="tabs mb-8 sticky" style="top: 55px;">
@@ -218,7 +217,6 @@ export default class App extends Vue {
 
   login (): void {
     const provider = new auth.GoogleAuthProvider();
-    // fb.auth().signInWithRedirect(provider)
     fb.auth().signInWithRedirect(provider)
       .then(response => {
         console.log(response);
