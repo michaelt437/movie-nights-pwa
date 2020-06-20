@@ -1,4 +1,4 @@
-export default interface IUser {
+interface IUser {
   created: number;
   email: string;
   hasRolled: boolean;
@@ -8,3 +8,5 @@ export default interface IUser {
   rolls: number;
   rollTime: number;
 }
+
+export default IUser;

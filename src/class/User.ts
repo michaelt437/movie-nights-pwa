@@ -1,4 +1,4 @@
-import IUser from '../interface/IUser'
+import IUser from "../interface/IUser";
 
 export default class User implements IUser {
   constructor (

@@ -9,7 +9,7 @@
     <div
     class="header flex justify-between fixed top-0 left-0 w-full items-center py-2 px-5 overflow-hidden"
     :class="{'bg-solid' : titleBgSolid}">
-      <span class="text-gray-200 font-bold header-app-title title-styled">Nightly Roulette</span>
+      <span class="text-gray-200 font-bold header-app-title title-styled">Movie Nights</span>
       <span
       v-if="signedIn"
       class="avatar rounded-full overflow-hidden bg-indigo-800 w-8" @click="logOut">
@@ -37,7 +37,7 @@
     <!-- Title -->
     <div class="flex items-center text-center justify-center" style="height: 24rem;">
       <h1 class="text-gray-800 uppercase app-title title-styled leading-tight">
-        <span class="text-3xl">Nightly</span>
+        <span class="text-3xl">Movie Nights</span>
         <br>
         <span class="text-5xl font-bold">Roulette</span>
       </h1>
@@ -58,6 +58,11 @@
       <button class="btn btn-teal-500 outline text-white">Time <i class="fas fa-caret-down ml-1"></i></button>
       <button class="btn btn-teal-500 outline text-white">Service <i class="fas fa-caret-down ml-1"></i></button>
     </div> -->
+    <div class="btn-group mb-2">
+      <button class="btn btn-transparent text-gray-500 text-md ml-auto">
+        <i class="fas fa-sliders-h"></i>
+      </button>
+    </div>
 
     <!-- Rolling Card -->
     <div v-if="isPicking" class="movie-card rounded-lg bg-indigo-600 text-gray-200 px-5 py-3 mb-4">
@@ -84,23 +89,12 @@
       <div class="text-2xl">What's the pick?</div>
     </div>
 
-    <!-- Picked Card -->
-    <div class="movie-card rounded-lg bg-gray-800 text-gray-200 px-5 py-3 mb-4">
-      <div class="movie-card__title text-2xl">The Neon Demon</div>
-      <div class="movie-card__service text-blue-400 text-md my-2">Amazon Prime</div>
-      <div class="movie-card__duration text-sm">117 minutes</div>
-      <div class="movie-card__footer">
-      </div>
-    </div>
-
     <!-- Picked cards -->
-    <div v-for="n in picks" :key="n" class="movie-card rounded-lg bg-gray-800 text-gray-200 px-5 py-3 mb-4">
-      <div class="movie-card__title text-2xl">{{ n.title }}</div>
-      <div class="movie-card__service text-red-700 text-md my-2" :class="n.platform.code">{{ n.platform.name }}</div>
-      <div class="movie-card__duration text-sm">{{ n.time }} minutes</div>
-      <div class="movie-card__footer">
-      </div>
-    </div>
+    <template v-for="movie in picks">
+      <card-movie-editable
+      :key="movie.title"
+      :movie="movie"></card-movie-editable>
+    </template>
 
     <div class="pt-4 py-16 text-gray-600 text-center">Your beginning...</div>
     <!-- Add a Movie Card -->
@@ -136,8 +130,13 @@ import { Component, Vue } from "vue-property-decorator";
 import { db, fb, auth } from "@/db";
 import IUser from "../interface/IUser";
 import User from "../class/User";
+import CardMovieEditable from "@/components/CardMovieEditable.vue";
 
-@Component({})
+@Component({
+  components: {
+    CardMovieEditable
+  }
+})
 export default class App extends Vue {
   // Fields
   private name = "";
@@ -151,35 +150,35 @@ export default class App extends Vue {
   public picks: Array<object> = [
     {
       title: "Annihilation",
-      platform: {
-        name: "Hulu",
-        code: "hulu"
+      service: {
+        title: "Hulu",
+        value: "hulu"
       },
-      time: 119
+      duration: 119
     },
     {
       title: "Blade Runner 2049",
-      platform: {
-        name: "Netflix",
-        code: "netflix"
+      service: {
+        title: "Netflix",
+        value: "netflix"
       },
-      time: 145
+      duration: 145
     },
     {
       title: "The Lighthouse",
-      platform: {
-        name: "Amazon Prime",
-        code: "amazon"
+      service: {
+        title: "Amazon Prime",
+        value: "amazon"
       },
-      time: 92
+      duration: 92
     },
     {
       title: "The Martian",
-      platform: {
-        name: "DVD/Bluray",
-        code: "disc"
+      service: {
+        title: "DVD/Bluray",
+        value: "disc"
       },
-      time: 132
+      duration: 132
     }
   ];
 

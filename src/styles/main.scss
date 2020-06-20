@@ -72,6 +72,16 @@ body {
     // background-image: radial-gradient(farthest-corner at 40px 40px, $v1 0%, $v2 100%);
 }
 
+.movie-card, .movie-card > * {
+  transition: all .2s ease-out;
+}
+
+.movie-card--exclude {
+  .movie-card__title, .movie-card__service, .movie-card__duration {
+    @apply opacity-50;
+  }
+}
+
 .movie-card {
   box-shadow: 0px 10px 15px -5px rgba(0,0,0, .5);
 }

@@ -15,6 +15,12 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'quotes': ["error", "double"],
-    'semi': ["error", "always"]
+    'semi': ["error", "always"],
+    "@typescript-eslint/interface-name-prefix": [
+      "error",
+      {
+          "prefixWithI": "always"
+      }
+    ] 
   }
 }
