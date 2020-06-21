@@ -35,7 +35,7 @@
     </div>
 
     <!-- Title -->
-    <div class="flex items-center text-center justify-center" style="height: 24rem;">
+    <div class="flex items-center text-center justify-center" style="height: 16rem;">
       <h1 class="text-gray-800 uppercase app-title title-styled leading-tight">
         <span class="text-3xl">Movie Nights</span>
         <br>
