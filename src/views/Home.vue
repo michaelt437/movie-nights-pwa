@@ -5,35 +5,6 @@
       <img class="hero inline" src="../assets/hero.jpg" alt="">
     </div>
 
-    <!-- Header -->
-    <div
-    class="header flex justify-between fixed top-0 left-0 w-full items-center py-2 px-5 overflow-hidden"
-    :class="{'bg-solid' : titleBgSolid}">
-      <span class="text-gray-200 font-bold header-app-title title-styled">Movie Nights</span>
-      <span
-      v-if="signedIn"
-      class="avatar rounded-full overflow-hidden bg-indigo-800 w-8" @click="logOut">
-        <img :src="photo" alt="photo">
-      </span>
-      <button v-else class="btn btn-pink-600 text-sm text-white" @click="login">Log In</button>
-    </div>
-
-    <!-- Footer -->
-    <div class="footer flex fixed bottom-0 left-0 w-full items-center py-4 bg-gray-900 z-10">
-      <span class="text-center text-teal-500 flex-grow">
-        <i class="fas fa-home text-xl"></i>
-      </span>
-      <span class="text-center text-gray-200 flex-grow">
-        <i class="fas fa-list text-xl"></i>
-      </span>
-      <span class="text-center text-gray-200 flex-grow">
-        <i class="fas fa-user-friends text-xl"></i>
-      </span>
-      <span class="text-center text-green-500 flex-grow">
-        <i class="fas fa-plus-circle text-xl"></i>
-      </span>
-    </div>
-
     <!-- Title -->
     <div class="flex items-center text-center justify-center" style="height: 16rem;">
       <h1 class="text-gray-800 uppercase app-title title-styled leading-tight">
@@ -91,9 +62,9 @@
 
     <!-- Picked cards -->
     <template v-for="movie in picks">
-      <card-movie-editable
+      <card-movie
       :key="movie.title"
-      :movie="movie"></card-movie-editable>
+      :movie="movie"></card-movie>
     </template>
 
     <div class="pt-4 py-16 text-gray-600 text-center">Your beginning...</div>
@@ -130,14 +101,14 @@ import { Component, Vue } from "vue-property-decorator";
 import { db, fb, auth } from "@/db";
 import IUser from "../interface/IUser";
 import User from "../class/User";
-import CardMovieEditable from "@/components/CardMovieEditable.vue";
+import CardMovie from "@/components/CardMovie.vue";
 
 @Component({
   components: {
-    CardMovieEditable
+    CardMovie
   }
 })
-export default class App extends Vue {
+export default class Home extends Vue {
   // Fields
   private name = "";
   private email = "";
@@ -198,34 +169,6 @@ export default class App extends Vue {
   }
 
   // Methods
-  init (): void {
-    db.collection("users")
-      .onSnapshot((doc) => {
-        doc.docChanges().forEach(change => {
-          const doc = change.doc;
-        // let _user: User = new User();
-        // this.users.push(_user);
-        });
-      });
-  }
-
-  login (): void {
-    const provider = new auth.GoogleAuthProvider();
-    fb.auth().signInWithRedirect(provider)
-      .then(response => {
-        console.log(response);
-        this.signedIn = true;
-      })
-      .catch((error) => {
-        console.error("Authentication error: ", error);
-      });
-  }
-
-  logOut (): void {
-    fb.auth().signOut();
-    this.signedIn = false;
-    window.location.reload();
-  }
 
   // Lifecycle Hooks
   created () {
@@ -237,17 +180,7 @@ export default class App extends Vue {
       // header bg
       const titleRect = document.querySelector(".app-title")?.getBoundingClientRect();
       this.titleBgSolid = titleRect!.bottom < 0;
-      console.log(this.titleBgSolid);
-    });
-    this.init();
-    fb.auth().onAuthStateChanged((user: any | null) => {
-      if (user) {
-        console.log("user: ", user.providerData);
-        this.photo = user.providerData[0].photoURL;
-        this.signedIn = true;
-      } else {
-        this.signedIn = false;
-      }
+      this.$emit("scrolling", this.titleBgSolid);
     });
   }
 }
