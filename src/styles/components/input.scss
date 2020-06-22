@@ -5,7 +5,7 @@
     @apply w-full rounded-lg p-3 bg-indigo-300 text-white border border-solid border-transparent;
 
     &::placeholder {
-      @apply text-white;
+      @apply text-white opacity-50;
     }
 
     &:focus {

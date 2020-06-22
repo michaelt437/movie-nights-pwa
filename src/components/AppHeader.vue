@@ -1,15 +1,15 @@
 <template>
   <div
-    class="header flex justify-between fixed top-0 left-0 w-full items-center py-2 px-5 overflow-hidden"
-    :class="{'bg-solid' : titleBgSolid}">
-      <span class="text-gray-200 font-bold header-app-title title-styled">Movie Nights</span>
-      <span
-      v-if="isSignedIn"
-      class="avatar rounded-full overflow-hidden bg-indigo-800 w-8" @click="logout">
-        <img :src="photoUrl" alt="photo">
-      </span>
-      <button v-else class="btn btn-pink-600 text-sm text-white" @click="login">Log In</button>
-    </div>
+  class="header flex justify-between fixed top-0 left-0 w-full items-center py-2 px-5 overflow-hidden z-10"
+  :class="{'bg-solid' : titleBgSolid}">
+    <span class="text-gray-200 font-bold header-app-title title-styled">Movie Nights</span>
+    <span
+    v-if="isSignedIn"
+    class="avatar rounded-full overflow-hidden bg-indigo-800 w-8" @click="logout">
+      <img :src="photoUrl" alt="photo">
+    </span>
+    <button v-else class="btn btn-pink-600 text-sm text-white" @click="login">Log In</button>
+  </div>
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";

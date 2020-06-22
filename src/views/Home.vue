@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="pb-5 px-5" style="margin-top: 56px;">
+  <div class="pb-5 px-5" style="margin-top: 56px;">
 
     <div class="fixed left-0 h-64" style="z-index: -1;" :style="paralaxValue">
       <img class="hero inline" src="../assets/hero.jpg" alt="">
@@ -42,13 +42,13 @@
       <div class="movie-card__duration text-sm mb-5">119 minutes</div>
       <div class="movie-card__footer">
         <div class="btn-group flex">
-          <button class="btn btn-orange-600 flex-grow" @click="isPicking = false">
+          <button class="btn btn-white outline flex-grow" @click="isPicking = false">
             <i class="fas fa-times"></i>
           </button>
-          <button class="btn btn-gray-500 flex-grow">
-            <i class="fas fa-dice"></i>
+          <button class="btn btn-pink-600 flex-grow">
+            <i class="fas fa-dice"></i> (4)
           </button>
-          <button class="btn btn-teal-500 flex-grow" style="flex-basis: 35%">
+          <button class="btn btn-teal-400 flex-grow" style="flex-basis: 35%">
             <i class="fas fa-check"></i>
           </button>
         </div>
@@ -68,31 +68,6 @@
     </template>
 
     <div class="pt-4 py-16 text-gray-600 text-center">Your beginning...</div>
-    <!-- Add a Movie Card -->
-    <!-- <div class="movie-card rounded-lg bg-indigo-500 text-gray-200 px-5 pb-3 mb-4">
-      <p class="text-2xl text-center py-5">Add a movie</p>
-      <label for="movie-title" class="text-sm">Movie Title</label>
-      <div class="input">
-        <input type="text" name="movie-title" id="" placeholder="Rambo: Last Blood">
-      </div>
-      <label for="movie-title" class="text-sm">Duration</label>
-      <div class="input">
-        <input type="text" name="movie-title" id="" placeholder="90">
-      </div>
-      <label for="movie-title" class="text-sm">Streaming Service</label>
-      <select name="" id="">
-        <option value="1channel">1channel.rus</option>
-      </select>
-      <div class="btn-group flex">
-        <span class="ml-auto"></span>
-        <button class="btn btn-white outline" style="flex-basis: 30%;">
-          <i class="fas fa-times"></i>
-        </button>
-        <button class="btn btn-teal-400 disabled" style="flex-basis: 30%;">
-          <i class="fas fa-check"></i>
-        </button>
-      </div>
-    </div> -->
   </div>
 </template>
 
