@@ -1,20 +1,27 @@
 <template>
-  <div id="app">
+  <div id="app" class="pb-5 px-5" style="margin-top: 56px;">
     <app-header
-    :isSignedIn.sync="isSignedIn"
-    :photoUrl="loggedInUser.photoURL"
-    :titleBgSolid="titleBgSolid"
-    ></app-header>
+      :isSignedIn.sync="isSignedIn"
+      :photoUrl="loggedInUser.photoURL"
+      :titleBgSolid="titleBgSolid"
+    />
+    <app-paralax-background />
+    <app-title />
     <router-view @scrolling="handleScroll" />
-    <app-footer @addMovie="invokePopup"></app-footer>
+    <app-footer @addMovie="invokePopup" />
     <popup-base v-if="popUpComponent != null">
-      <component :is="popUpComponent" @closePopup="closePopup" ></component>
+      <component 
+        :is="popUpComponent"
+        @closePopup="closePopup"
+      />
     </popup-base>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import AppHeader from "@/components/AppHeader.vue";
+import AppParalaxBackground from "@/components/AppParalaxBackground.vue";
+import AppTitle from "@/components/AppTitle.vue";
 import AppFooter from "@/components/AppFooter.vue";
 import PopupBase from "@/components/PopupBase.vue";
 import PopupAddMovie from "@/components/PopupAddMovie.vue";
@@ -25,6 +32,8 @@ import { db, fb } from "@/db";
 @Component({
   components: {
     AppHeader,
+    AppParalaxBackground,
+    AppTitle,
     AppFooter,
     PopupBase,
     PopupAddMovie,
@@ -74,6 +83,11 @@ export default class App extends Vue {
       } else {
         this.isSignedIn = false;
       }
+    });
+    window.addEventListener("scroll", (): void => {
+      // header bg
+      const titleRect = document.querySelector(".app-title")?.getBoundingClientRect();
+      this.titleBgSolid = titleRect!.bottom < 0;
     });
   }
 }

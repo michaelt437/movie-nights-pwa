@@ -1,13 +1,12 @@
 import IMovie from "@/interface/IMovie";
 import IService from "@/interface/IService";
-import moment from "moment";
 
 class Movie implements IMovie {
   constructor (
     public title: string,
     public service: IService,
     public duration: number,
-    public watchDate: moment.Moment
+    public watchDate: number
   ) {}
 
   get getTitle () {

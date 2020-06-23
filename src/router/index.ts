@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
+import ListPage from "../views/ListPage.vue";
 
 Vue.use(VueRouter);
 
@@ -13,7 +14,7 @@ const routes = [
   {
     path: "/movie-pool",
     name: "Movie Pool",
-    component: Home
+    component: ListPage
   }
 ];
 
