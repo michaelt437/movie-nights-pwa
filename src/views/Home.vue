@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="home-page">
     <!-- Tabs -->
     <!-- <div class="tabs mb-8 sticky" style="top: 55px;">
       <div class="tab active" style="flex-basis: 50%;">Movies</div>
@@ -42,7 +42,10 @@
     </div>
 
     <!-- Picked cards -->
-
+    <card-movie
+      v-for="movie in movieList"
+      :key="movie.title"
+      :movie="movie" />
     <div class="pt-4 py-16 text-gray-600 text-center">Your beginning...</div>
   </div>
 </template>
@@ -51,6 +54,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import { db, fb, auth } from "@/db";
 import IUser from "../interface/IUser";
+import IMovie from "../interface/IMovie";
 import User from "../class/User";
 import CardMovie from "@/components/CardMovie.vue";
 
@@ -69,5 +73,47 @@ export default class Home extends Vue {
   private paralaxOffset = 0;
   public titleBgSolid = false;
   public isPicking = false;
+  public movieList: Array<IMovie> = [
+    {
+      title: "Annihilation",
+      service: {
+        title: "Hulu",
+        value: "hulu"
+      },
+      duration: 119,
+      watchDate: 123134,
+      exclude: false
+    },
+    {
+      title: "Blade Runner 2049",
+      service: {
+        title: "Netflix",
+        value: "netflix"
+      },
+      duration: 145,
+      watchDate: 123134,
+      exclude: false
+    },
+    {
+      title: "The Lighthouse",
+      service: {
+        title: "Amazon Prime",
+        value: "amazon"
+      },
+      duration: 92,
+      watchDate: 123134,
+      exclude: false
+    },
+    {
+      title: "The Martian",
+      service: {
+        title: "DVD/Bluray",
+        value: "disc"
+      },
+      duration: 132,
+      watchDate: 123134,
+      exclude: false
+    }
+  ];
 }
 </script>

@@ -19,10 +19,10 @@
     </div>
     <div v-show="showActions" class="movie-card__actions px-5 py-3">
       <div class="btn-group">
-        <button class="btn btn-teal-600 flex-grow">
+        <button class="btn btn-teal-600 flex-grow" @click.stop="editMovie">
           Edit
         </button>
-        <button class="btn btn-red-600 flex-grow">
+        <button class="btn btn-red-600 flex-grow" @click.stop="">
           Delete
         </button>
       </div>
@@ -43,6 +43,14 @@ export default class CardMovie extends Vue {
 
   get titleCamelCase () {
     return this.movie.title.split(" ").join("");
+  }
+
+  editMovie (): void {
+    this.$emit("popup", "PopupEditMovie", this.movie);
+  }
+
+  mounted () {
+    this.excludeMovie = this.movie.exclude;
   }
 }
 </script>

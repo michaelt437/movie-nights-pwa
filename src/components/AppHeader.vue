@@ -1,8 +1,14 @@
 <template>
   <div
-  class="header flex justify-between fixed top-0 left-0 w-full items-center py-2 px-5 overflow-hidden z-10"
+  class="header flex fixed top-0 left-0 w-full justify-between items-center py-2 px-5 overflow-hidden z-10"
   :class="{'bg-solid' : titleBgSolid}">
-    <span class="text-gray-200 font-bold header-app-title title-styled">Movie Nights</span>
+    <router-link :to="{ name: 'Home' }">
+      <i
+        class="fas fa-chevron-left mr-2"
+        :class="$route.name === 'Home' ? 'text-transparent pointer-events-none' : 'text-white'"
+      ></i>
+    </router-link>
+    <span class="text-gray-200 font-bold header-app-title title-styled mb-1">Movie Nights</span>
     <span
     v-if="isSignedIn"
     class="avatar rounded-full overflow-hidden bg-indigo-800 w-8" @click="logout">

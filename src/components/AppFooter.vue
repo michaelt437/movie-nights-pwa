@@ -1,11 +1,11 @@
 <template>
   <div class="footer flex fixed bottom-0 left-0 w-full items-center bg-gray-900 z-10">
     <router-link
-    v-for="link in links"
-    :key="link.name"
-    :to="{ name: link.name }"
-    :class="{ 'text-teal-500' : $route.name === link.name }"
-    class="text-center text-gray-200 py-4 flex-grow">
+      v-for="link in links"
+      :key="link.name"
+      :to="{ name: link.name }"
+      :class="{ 'text-teal-500' : $route.name === link.name }"
+      class="text-center text-gray-200 py-4 flex-grow">
       <i :class="`fas fa-${link.icon} text-xl`"></i>
     </router-link>
     <span class="text-center text-gray-200 py-4 flex-grow">
@@ -33,7 +33,7 @@ export default class AppFooter extends Vue {
   ]
 
   addMovie (): void {
-    this.$emit("addMovie", "PopupAddMovie");
+    this.$emit("popup", "PopupAddMovie");
   }
 }
 </script>

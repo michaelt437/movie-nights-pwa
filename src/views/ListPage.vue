@@ -1,12 +1,13 @@
 <template>
-  <div>
-     <div class="btn-group mb-2">
+  <div id="list-page">
+    <div class="btn-group mb-2">
       <button class="btn btn-transparent text-gray-400 text-md ml-auto">
         Filters <i class="fas fa-sliders-h ml-2"></i>
       </button>
     </div>
     <template v-for="movie in movieList">
       <card-movie-editable
+      v-on="$listeners"
       :key="movie.title"
       :movie="movie" />
     </template>
@@ -32,7 +33,8 @@ export default class ListPage extends Vue {
         value: "hulu"
       },
       duration: 119,
-      watchDate: 123134
+      watchDate: 123134,
+      exclude: false
     },
     {
       title: "Blade Runner 2049",
@@ -41,7 +43,8 @@ export default class ListPage extends Vue {
         value: "netflix"
       },
       duration: 145,
-      watchDate: 123134
+      watchDate: 123134,
+      exclude: true
     },
     {
       title: "The Lighthouse",
@@ -50,7 +53,8 @@ export default class ListPage extends Vue {
         value: "amazon"
       },
       duration: 92,
-      watchDate: 123134
+      watchDate: 123134,
+      exclude: false
     },
     {
       title: "The Martian",
@@ -59,7 +63,8 @@ export default class ListPage extends Vue {
         value: "disc"
       },
       duration: 132,
-      watchDate: 123134
+      watchDate: 123134,
+      exclude: false
     }
   ];
 }

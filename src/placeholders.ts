@@ -114,7 +114,8 @@ const placeholders = {
     "Rage",
     "Bangkok Dangerous",
     "Drive Angry",
-    "Sun Choke"
+    "Sun Choke",
+    "Taipei Story"
   ],
   quotes: [
     "Ya like dags?",
@@ -134,7 +135,7 @@ const placeholders = {
     "I can do this all day",
     "Kaneda, what do you see?!",
     "Is it safe?",
-    "I can't explain it",
+    "I can't explain it...",
     "You wanna go home? Find Jason Bourne.",
     "What say you?!"
   ],
