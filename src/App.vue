@@ -10,9 +10,13 @@
     <router-view @scrolling="handleScroll" @popup="invokePopup" />
     <app-footer @popup="invokePopup" />
     <popup-base v-if="popUpComponent != null">
-      <component 
+      <component
         :is="popUpComponent"
-        v-bind="{ movie: propMovie }"
+        v-bind="{
+          movie: propMovie,
+          message: propMessage,
+          action: propAction
+         }"
         @closePopup="closePopup"
       />
     </popup-base>
@@ -50,6 +54,8 @@ export default class App extends Vue {
   users: Array<IUser> = [];
   popUpComponent = null;
   propMovie = {};
+  propMessage = "";
+  propAction = "";
 
   handleScroll (bool): void {
     this.titleBgSolid = bool;
@@ -67,11 +73,18 @@ export default class App extends Vue {
       });
   }
 
-  invokePopup (name, props?): void {
+  invokePopup (name, props?, message?, action?): void {
+    console.log("props", props, message);
     this.popUpComponent = name;
     document.querySelector("body")!.classList.add("noscroll");
     if (props) {
       this.propMovie = props;
+    }
+    if (message) {
+      this.propMessage = message;
+    }
+    if (action) {
+      this.propAction = action;
     }
   }
 
