@@ -1,0 +1,7 @@
+.scale-enter-active, .scale-leave-active {
+  transition: transform .2s ease-out;
+}
+
+.scale-enter, .scale-leave-to {
+  transform: scale(0);
+}

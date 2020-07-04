@@ -1,7 +1,7 @@
 .input {
   @apply mb-4;
 
-  & > input {
+  &:not(.search) > input {
     @apply w-full rounded-lg p-3 bg-indigo-300 text-white border border-solid border-transparent;
 
     &::placeholder {
@@ -10,6 +10,17 @@
 
     &:focus {
       @apply border-indigo-100;
+    }
+  }
+
+  &.search {
+    @apply mb-0;
+    input {
+      @apply py-1 pr-1 text-white bg-transparent #{!important};
+
+      &::placeholder {
+        @apply text-white opacity-50;
+      }
     }
   }
 }

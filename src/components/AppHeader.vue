@@ -1,6 +1,6 @@
 <template>
   <div
-  class="header flex fixed top-0 left-0 w-full justify-between items-center py-2 px-5 overflow-hidden z-10"
+  class="header flex fixed top-0 left-0 w-full justify-between items-center py-2 px-5 z-10"
   :class="{'bg-solid' : titleBgSolid}">
     <router-link :to="{ name: 'Home' }">
       <i
@@ -9,11 +9,20 @@
       ></i>
     </router-link>
     <span class="text-gray-200 font-bold header-app-title title-styled mb-1">Movie Nights</span>
-    <span
+    <div
     v-if="isSignedIn"
-    class="avatar rounded-full overflow-hidden bg-indigo-800 w-8" @click="logout">
-      <img :src="photoUrl" alt="photo">
-    </span>
+    class="avatar w-8 relative">
+      <div class="rounded-full overflow-hidden mb-2">
+        <img :src="photoUrl" alt="photo" @click.stop="showMenu = !showMenu">
+      </div>
+      <transition name="scale">
+        <div
+          v-show="showMenu"
+         class="avatar__menu rounded-sm py-1 absolute right-0 w-32 z-20 bg-white origin-top-right">
+          <div class="py-1 px-4 hover:bg-gray-200" @click.stop="logout">Log Out</div>
+        </div>
+      </transition>
+    </div>
     <button v-else class="btn btn-pink-600 text-sm text-white" @click="login">Log In</button>
   </div>
 </template>
@@ -26,6 +35,8 @@ export default class AppHeader extends Vue {
   @Prop(Boolean) readonly titleBgSolid!: boolean;
   @Prop(Boolean) readonly isSignedIn!: boolean;
   @Prop(String) readonly photoUrl!: string;
+
+  public showMenu = false;
 
   login (): void {
     const provider = new auth.GoogleAuthProvider();
@@ -43,6 +54,12 @@ export default class AppHeader extends Vue {
     fb.auth().signOut();
     this.$emit("update:isSignedIn", false);
     window.location.reload();
+  }
+
+  mounted () {
+    document.querySelector("body")!.addEventListener("click", () => {
+      this.showMenu = false;
+    });
   }
 }
 </script>

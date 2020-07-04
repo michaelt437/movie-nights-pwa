@@ -1,7 +1,17 @@
 <template>
   <div id="list-page">
-    <div class="btn-group mb-2">
-      <button class="btn btn-transparent text-gray-400 text-md ml-auto">
+    <div class="btn-group items-center mb-2 relative">
+      <i class="fas fa-search text-gray-500 absolute"></i>
+      <div class="input search flex-grow mb-0">
+        <input
+          type="text"
+          id="search-input"
+          v-model="searchInput"
+          placeholder="Search..."
+          class="pl-6 w-full"
+        >
+      </div>
+      <button class="btn btn-transparent text-gray-400 text-md">
         Filters <i class="fas fa-sliders-h ml-2"></i>
       </button>
     </div>
@@ -25,6 +35,7 @@ import IMovie from "@/interface/IMovie";
   }
 })
 export default class ListPage extends Vue {
+  public searchInput = "";
   public movieList: Array<IMovie> = [
     {
       title: "Annihilation",
