@@ -4,7 +4,8 @@ interface IMovie {
   title: string;
   service: IService | string;
   duration: number | string;
-  watchDate: number;
+  hasWatched: boolean;
+  watchDate?: number;
   addedDate?: number;
   exclude?: boolean;
 }

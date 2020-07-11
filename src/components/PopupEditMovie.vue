@@ -61,7 +61,8 @@ export default class PopupEditMovie extends Vue {
       value: ""
     },
     duration: 0,
-    watchDate: 0
+    watchDate: 0,
+    hasWatched: false
   }
 
   get randomMovieTitle (): string {

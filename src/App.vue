@@ -7,7 +7,7 @@
     />
     <app-paralax-background />
     <app-title />
-    <router-view @scrolling="handleScroll" @popup="invokePopup" />
+    <router-view :user="loggedInUser" :moviesList="moviesList" @scrolling="handleScroll" @popup="invokePopup" />
     <app-footer @popup="invokePopup" />
     <popup-base v-if="popUpComponent != null">
       <component
@@ -33,6 +33,7 @@ import PopupAddMovie from "@/components/PopupAddMovie.vue";
 import PopupEditMovie from "@/components/PopupEditMovie.vue";
 import PopupConfirm from "@/components/PopupConfirm.vue";
 import IUser from "@/interface/IUser";
+import IMovie from "./interface/IMovie";
 import { db, fb } from "@/db";
 
 @Component({
@@ -52,6 +53,7 @@ export default class App extends Vue {
   loggedInUser = {};
   isSignedIn = false;
   users: Array<IUser> = [];
+  moviesList: Array<IMovie> = [];
   popUpComponent = null;
   propMovie = {};
   propMessage = "";
@@ -61,20 +63,32 @@ export default class App extends Vue {
     this.titleBgSolid = bool;
   }
 
-  init (): void {
-    db.collection("users")
-      .onSnapshot((doc) => {
-        doc.docChanges().forEach(change => {
-          const doc = change.doc;
-          console.log("printing doc", doc.data());
-        // let _user: User = new User();
-        // this.users.push(_user);
+  setCurrentUser (): void {
+    console.log("trying to set current user");
+  }
+
+  async init (): Promise<void> {
+    await db.collection("users").where("email", "==", this.loggedInUser.email)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach(item => {
+          this.loggedInUser.documentId = item.id;
+        });
+      });
+  }
+
+  fetchMoviesList (): void {
+    const docuId = this.loggedInUser.documentId;
+    db.collection(docuId)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          this.moviesList.push(<IMovie>doc.data());
         });
       });
   }
 
   invokePopup (name, props?, message?, action?): void {
-    console.log("props", props, message);
     this.popUpComponent = name;
     document.querySelector("body")!.classList.add("noscroll");
     if (props) {
@@ -93,17 +107,27 @@ export default class App extends Vue {
     document.querySelector("body")!.classList.remove("noscroll");
   }
 
-  // Lifecycle Hooks
-  mounted () {
-    this.init();
-    fb.auth().onAuthStateChanged((user: any | null) => {
-      if (user) {
-        this.loggedInUser = user.providerData[0];
-        this.isSignedIn = true;
-      } else {
-        this.isSignedIn = false;
-      }
+  checkFirebaseAuthState (): Promise<boolean> {
+    return new Promise(resolve => {
+      fb.auth().onAuthStateChanged((user: any | null) => {
+        if (user) {
+          this.loggedInUser = Object.assign({}, this.loggedInUser, user.providerData[0]);
+          this.isSignedIn = true;
+          resolve(true);
+        } else {
+          this.isSignedIn = false;
+          resolve(false);
+        }
+      });
     });
+  }
+
+  // Lifecycle Hooks
+  async created () {
+    await this.checkFirebaseAuthState();
+    await this.init();
+    this.fetchMoviesList();
+
     window.addEventListener("scroll", (): void => {
       // header bg
       const titleRect = document.querySelector(".app-title")!.getBoundingClientRect();

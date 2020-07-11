@@ -56,7 +56,8 @@ export default class PopupAddMovie extends Vue {
     title: "",
     service: "",
     duration: "",
-    watchDate: 0
+    watchDate: 0,
+    hasWatched: false
   }
 
   get randomMovieTitle (): string {
@@ -78,7 +79,8 @@ export default class PopupAddMovie extends Vue {
       title: "",
       service: "",
       duration: 90,
-      watchDate: 0
+      watchDate: 0,
+      hasWatched: false
     };
   }
 

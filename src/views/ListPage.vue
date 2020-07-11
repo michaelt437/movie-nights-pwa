@@ -15,7 +15,7 @@
         Filters <i class="fas fa-sliders-h ml-2"></i>
       </button>
     </div>
-    <template v-for="movie in movieList">
+    <template v-for="movie in moviesToWatchList">
       <card-movie-editable
       v-on="$listeners"
       :key="movie.title"
@@ -25,7 +25,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 import CardMovieEditable from "@/components/CardMovieEditable.vue";
 import IMovie from "@/interface/IMovie";
 
@@ -35,48 +35,11 @@ import IMovie from "@/interface/IMovie";
   }
 })
 export default class ListPage extends Vue {
+  @Prop() readonly moviesList!: Array<IMovie>
   public searchInput = "";
-  public movieList: Array<IMovie> = [
-    {
-      title: "Annihilation",
-      service: {
-        title: "Hulu",
-        value: "hulu"
-      },
-      duration: 119,
-      watchDate: 123134,
-      exclude: false
-    },
-    {
-      title: "Blade Runner 2049",
-      service: {
-        title: "Netflix",
-        value: "netflix"
-      },
-      duration: 145,
-      watchDate: 123134,
-      exclude: true
-    },
-    {
-      title: "The Lighthouse",
-      service: {
-        title: "Amazon Prime",
-        value: "amazon"
-      },
-      duration: 92,
-      watchDate: 123134,
-      exclude: false
-    },
-    {
-      title: "The Martian",
-      service: {
-        title: "DVD/Bluray",
-        value: "disc"
-      },
-      duration: 132,
-      watchDate: 123134,
-      exclude: false
-    }
-  ];
+
+  get moviesToWatchList (): Array<IMovie> {
+    return this.moviesList.filter(movie => !movie.hasWatched);
+  }
 }
 </script>

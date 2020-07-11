@@ -43,7 +43,7 @@
 
     <!-- Picked cards -->
     <card-movie
-      v-for="movie in movieList"
+      v-for="movie in watchedMoviesList"
       :key="movie.title"
       :movie="movie" />
     <div class="pt-4 py-16 text-gray-600 text-center">Your beginning...</div>
@@ -51,11 +51,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 import { db, fb, auth } from "@/db";
 import IUser from "../interface/IUser";
 import IMovie from "../interface/IMovie";
-import User from "../class/User";
 import CardMovie from "@/components/CardMovie.vue";
 
 @Component({
@@ -64,56 +63,21 @@ import CardMovie from "@/components/CardMovie.vue";
   }
 })
 export default class Home extends Vue {
+  @Prop() readonly user!: object;
+  @Prop() readonly moviesList!: Array<IMovie>;
+
   // Fields
   private name = "";
   private email = "";
   private photo = "";
   public signedIn = false;
-  public users: User[] = [];
+  public users: IUser[] = [];
   private paralaxOffset = 0;
   public titleBgSolid = false;
   public isPicking = false;
-  public movieList: Array<IMovie> = [
-    {
-      title: "Annihilation",
-      service: {
-        title: "Hulu",
-        value: "hulu"
-      },
-      duration: 119,
-      watchDate: 123134,
-      exclude: false
-    },
-    {
-      title: "Blade Runner 2049",
-      service: {
-        title: "Netflix",
-        value: "netflix"
-      },
-      duration: 145,
-      watchDate: 123134,
-      exclude: false
-    },
-    {
-      title: "The Lighthouse",
-      service: {
-        title: "Amazon Prime",
-        value: "amazon"
-      },
-      duration: 92,
-      watchDate: 123134,
-      exclude: false
-    },
-    {
-      title: "The Martian",
-      service: {
-        title: "DVD/Bluray",
-        value: "disc"
-      },
-      duration: 132,
-      watchDate: 123134,
-      exclude: false
-    }
-  ];
+
+  get watchedMoviesList (): Array<IMovie> {
+    return this.moviesList.filter(movie => movie.hasWatched);
+  }
 }
 </script>

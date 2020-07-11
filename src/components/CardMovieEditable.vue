@@ -1,7 +1,7 @@
 <template>
   <div class="movie-card rounded-lg text-gray-200 mb-4 flex flex-col overflow-hidden" :class="excludeMovie ? 'bg-gray-900 movie-card--exclude' : 'bg-gray-800'" @click="showActions = !showActions">
     <div class="movie-card__content py-3 px-5">
-      <div class="movie-card__title text-2xl flex justify-between items-center">
+      <div class="movie-card__title text-2xl flex justify-between items-center capitalize">
         {{ movie.title }}
         <label :for="`exclude-${titleCamelCase}`">
           <input type="checkbox" name="excludeMovie" :id="`exclude-${titleCamelCase}`" v-model="excludeMovie" hidden>
@@ -53,6 +53,7 @@ export default class CardMovie extends Vue {
     this.$emit("popup", "PopupConfirm", this.movie, "Are you sure you want to delete this movie?", this.printFromCard);
   }
 
+  // TODO: turn into a real delete method
   printFromCard (): void {
     console.log("calling the card method");
   }
