@@ -31,15 +31,25 @@
 </template>
 
 <script lang='ts'>
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import IMovie from "@/interface/IMovie";
+import { db } from "@/db.ts";
 
 @Component
-export default class CardMovie extends Vue {
+export default class CardMovieEditable extends Vue {
   @Prop(Object) readonly movie!: IMovie;
 
   private excludeMovie = false;
   private showActions = false;
+
+  @Watch("excludeMovie", { immediate: true, deep: true })
+  onExcludeToggle (value: boolean) {
+    db.collection(this.$store.getters.getCurrentUserDocumentId)
+      .doc(this.movie.documentId)
+      .update({
+        exclude: value
+      });
+  }
 
   get titleCamelCase () {
     return this.movie.title.split(" ").join("");
@@ -59,7 +69,7 @@ export default class CardMovie extends Vue {
   }
 
   mounted () {
-    this.excludeMovie = this.movie.exclude;
+    this.excludeMovie = this.movie.exclude!;
   }
 }
 </script>

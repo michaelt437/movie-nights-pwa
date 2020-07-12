@@ -38,7 +38,8 @@
       <button
         :class="{ 'disabled' : disableButton }"
         class="btn btn-teal-400"
-        style="flex-basis: 30%;">
+        style="flex-basis: 30%;"
+        @click="submitEdits">
         <i class="fas fa-check mr-1"></i> Save
       </button>
     </div>
@@ -49,6 +50,7 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import placeholders from "@/placeholders";
 import IMovie from "@/interface/IMovie";
 import IService from "@/interface/IService";
+import { db } from "@/db.ts";
 
 @Component
 export default class PopupEditMovie extends Vue {
@@ -60,9 +62,7 @@ export default class PopupEditMovie extends Vue {
       title: "",
       value: ""
     },
-    duration: 0,
-    watchDate: 0,
-    hasWatched: false
+    duration: 0
   }
 
   get randomMovieTitle (): string {
@@ -83,8 +83,18 @@ export default class PopupEditMovie extends Vue {
     this.$emit("closePopup");
   }
 
+  submitEdits (): void {
+    db.collection("DlOjS40rwuqIn9o9bNRO")
+      .doc(this.movie.documentId)
+      .update(this.movieToEdit);
+    this.closePopup();
+  }
+
   mounted () {
-    this.movieToEdit = this.movie;
+    const keysArray = Object.keys(this.movieToEdit);
+    for (let i = 0; i < keysArray.length; i++) {
+      this.movieToEdit[keysArray[i]] = this.movie[keysArray[i]];
+    }
   }
 }
 </script>

@@ -15,7 +15,7 @@
         Filters <i class="fas fa-sliders-h ml-2"></i>
       </button>
     </div>
-    <template v-for="movie in moviesToWatchList">
+    <template v-for="movie in moviesToWatch">
       <card-movie-editable
       v-on="$listeners"
       :key="movie.title"
@@ -35,11 +35,10 @@ import IMovie from "@/interface/IMovie";
   }
 })
 export default class ListPage extends Vue {
-  @Prop() readonly moviesList!: Array<IMovie>
   public searchInput = "";
 
-  get moviesToWatchList (): Array<IMovie> {
-    return this.moviesList.filter(movie => !movie.hasWatched);
+  get moviesToWatch (): Array<IMovie> {
+    return this.$store.getters.getMoviesToWatch;
   }
 }
 </script>

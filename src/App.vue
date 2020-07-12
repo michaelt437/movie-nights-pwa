@@ -7,7 +7,7 @@
     />
     <app-paralax-background />
     <app-title />
-    <router-view :user="loggedInUser" :moviesList="moviesList" @scrolling="handleScroll" @popup="invokePopup" />
+    <router-view @scrolling="handleScroll" @popup="invokePopup" />
     <app-footer @popup="invokePopup" />
     <popup-base v-if="popUpComponent != null">
       <component
@@ -50,21 +50,17 @@ import { db, fb } from "@/db";
 })
 export default class App extends Vue {
   titleBgSolid = false;
-  loggedInUser = {};
+  loggedInUser = { email: "" };
   isSignedIn = false;
   users: Array<IUser> = [];
-  moviesList: Array<IMovie> = [];
   popUpComponent = null;
   propMovie = {};
   propMessage = "";
+  moviesList: Array<IMovie> = [];
   propAction = "";
 
   handleScroll (bool): void {
     this.titleBgSolid = bool;
-  }
-
-  setCurrentUser (): void {
-    console.log("trying to set current user");
   }
 
   async init (): Promise<void> {
@@ -72,18 +68,7 @@ export default class App extends Vue {
       .get()
       .then((querySnapshot) => {
         querySnapshot.forEach(item => {
-          this.loggedInUser.documentId = item.id;
-        });
-      });
-  }
-
-  fetchMoviesList (): void {
-    const docuId = this.loggedInUser.documentId;
-    db.collection(docuId)
-      .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(doc => {
-          this.moviesList.push(<IMovie>doc.data());
+          this.$store.commit("setCurrentUserDocumentId", item.id);
         });
       });
   }
@@ -100,6 +85,18 @@ export default class App extends Vue {
     if (action) {
       this.propAction = action;
     }
+  }
+
+  async fetchMoviesList (): Promise<any> {
+    await db.collection(this.$store.getters.getCurrentUserDocumentId)
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.forEach((doc) => {
+          let movieObj = doc.data();
+          movieObj.documentId = doc.id;
+          this.moviesList.push(<IMovie>movieObj);
+        });
+      });
   }
 
   closePopup (): void {
@@ -126,7 +123,8 @@ export default class App extends Vue {
   async created () {
     await this.checkFirebaseAuthState();
     await this.init();
-    this.fetchMoviesList();
+    await this.fetchMoviesList();
+    this.$store.commit("setMoviesList", this.moviesList);
 
     window.addEventListener("scroll", (): void => {
       // header bg

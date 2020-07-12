@@ -21,6 +21,7 @@ module.exports = {
       {
           "prefixWithI": "always"
       }
-    ] 
+    ],
+    "@typescript-eslint/no-non-null-assertion": "off" 
   }
 }

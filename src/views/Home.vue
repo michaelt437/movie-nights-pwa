@@ -43,7 +43,7 @@
 
     <!-- Picked cards -->
     <card-movie
-      v-for="movie in watchedMoviesList"
+      v-for="movie in moviesWatched"
       :key="movie.title"
       :movie="movie" />
     <div class="pt-4 py-16 text-gray-600 text-center">Your beginning...</div>
@@ -51,10 +51,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
-import { db, fb, auth } from "@/db";
-import IUser from "../interface/IUser";
-import IMovie from "../interface/IMovie";
+import { Component, Vue } from "vue-property-decorator";
+import IMovie from "@/interface/IMovie";
 import CardMovie from "@/components/CardMovie.vue";
 
 @Component({
@@ -63,21 +61,17 @@ import CardMovie from "@/components/CardMovie.vue";
   }
 })
 export default class Home extends Vue {
-  @Prop() readonly user!: object;
-  @Prop() readonly moviesList!: Array<IMovie>;
-
   // Fields
   private name = "";
   private email = "";
   private photo = "";
   public signedIn = false;
-  public users: IUser[] = [];
   private paralaxOffset = 0;
   public titleBgSolid = false;
   public isPicking = false;
 
-  get watchedMoviesList (): Array<IMovie> {
-    return this.moviesList.filter(movie => movie.hasWatched);
+  get moviesWatched (): Array<IMovie> {
+    return this.$store.getters.getMoviesWatched;
   }
 }
 </script>

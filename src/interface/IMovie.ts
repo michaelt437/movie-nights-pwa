@@ -4,10 +4,11 @@ interface IMovie {
   title: string;
   service: IService | string;
   duration: number | string;
-  hasWatched: boolean;
+  hasWatched?: boolean;
   watchDate?: number;
   addedDate?: number;
   exclude?: boolean;
+  documentId?: string;
 }
 
 export default IMovie;
