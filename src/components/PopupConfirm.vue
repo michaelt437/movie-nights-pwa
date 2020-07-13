@@ -19,10 +19,10 @@ import IMovie from "@/interface/IMovie";
 export default class PopupConfirm extends Vue {
   @Prop() readonly movie?: IMovie;
   @Prop(String) readonly message?: string;
-  @Prop() readonly action?: Function | any;
+  @Prop() readonly action?: Function;
 
   handleAction (): void {
-    this.action();
+    this.action!();
     this.closePopup();
   }
 

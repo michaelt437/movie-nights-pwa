@@ -1,7 +1,10 @@
 <template>
   <div class="rounded-lg bg-indigo-600 text-gray-200 px-5 pb-3 mb-4">
     <p class="text-2xl text-center py-5">Edit Details</p>
-    <label for="movie-title" class="text-sm">Movie Title</label>
+    <label for="movie-title" class="text-sm">
+      Movie Title
+      <span v-show="checkForPendingDuplicate" class="text-red-500 italic"> - Duplicate title not yet picked</span>
+    </label>
     <div class="input">
       <input
         type="text"
@@ -57,6 +60,7 @@ export default class PopupEditMovie extends Vue {
   @Prop(Object) readonly movie!: IMovie;
 
   movieToEdit: IMovie = {
+    documentId: "",
     title: "",
     service: {
       title: "",
@@ -76,7 +80,16 @@ export default class PopupEditMovie extends Vue {
   }
 
   get disableButton (): boolean {
-    return this.movieToEdit.title === "" || this.movieToEdit.service === "";
+    return (this.movieToEdit.title === this.movie.title && this.movieToEdit.duration === this.movie.duration && this.movieToEdit.service.title === this.movie.service.title) ||
+    this.movieToEdit.title === "" ||
+    this.movieToEdit.duration === "" || this.movieToEdit.duration === "0" ||
+    this.checkForPendingDuplicate;
+  }
+
+  get checkForPendingDuplicate (): boolean {
+    return this.$store.getters.getMoviesToWatch.find(movie => {
+      return movie.title.toLowerCase() === this.movieToEdit.title.toLowerCase();
+    }) && this.movieToEdit.title !== this.movie.title;
   }
 
   closePopup (): void {
@@ -87,14 +100,12 @@ export default class PopupEditMovie extends Vue {
     db.collection("DlOjS40rwuqIn9o9bNRO")
       .doc(this.movie.documentId)
       .update(this.movieToEdit);
+    this.$store.commit("submitEditsToMovie", this.movieToEdit);
     this.closePopup();
   }
 
   mounted () {
-    const keysArray = Object.keys(this.movieToEdit);
-    for (let i = 0; i < keysArray.length; i++) {
-      this.movieToEdit[keysArray[i]] = this.movie[keysArray[i]];
-    }
+    this.movieToEdit = JSON.parse(JSON.stringify(this.movie));
   }
 }
 </script>

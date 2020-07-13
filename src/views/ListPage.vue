@@ -25,7 +25,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import CardMovieEditable from "@/components/CardMovieEditable.vue";
 import IMovie from "@/interface/IMovie";
 

@@ -25,6 +25,11 @@ const store = new Vuex.Store({
     },
     setMoviesList (state, moviesArray): void {
       state.moviesList = moviesArray;
+    },
+    submitEditsToMovie (state, movieEdits): void {
+      const moviesList: Array<IMovie> = state.moviesList;
+      const movieToEditIndex = moviesList.indexOf(moviesList.find(movie => movie.documentId === movieEdits.documentId) as IMovie);
+      Vue.set(state.moviesList, movieToEditIndex, movieEdits);
     }
   },
   actions: {}
