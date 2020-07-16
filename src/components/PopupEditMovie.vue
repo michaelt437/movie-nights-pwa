@@ -54,6 +54,7 @@ import placeholders from "@/placeholders";
 import IMovie from "@/interface/IMovie";
 import IService from "@/interface/IService";
 import { db } from "@/db.ts";
+import { omit } from "lodash";
 
 @Component
 export default class PopupEditMovie extends Vue {
@@ -92,14 +93,18 @@ export default class PopupEditMovie extends Vue {
     }) && this.movieToEdit.title !== this.movie.title;
   }
 
+  get movieToEditOmitId (): IMovie {
+    return omit(this.movieToEdit, "documentId");
+  }
+
   closePopup (): void {
     this.$emit("closePopup");
   }
 
   submitEdits (): void {
-    db.collection("DlOjS40rwuqIn9o9bNRO")
+    db.collection(this.$store.getters.getCurrentUserDocumentId)
       .doc(this.movie.documentId)
-      .update(this.movieToEdit);
+      .update(this.movieToEditOmitId);
     this.$store.commit("submitEditsToMovie", this.movieToEdit);
     this.closePopup();
   }

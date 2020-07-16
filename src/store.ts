@@ -7,7 +7,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     currentUserDocumentId: "",
-    moviesList: []
+    moviesList: [] as IMovie[]
   },
   getters: {
     getCurrentUserDocumentId: (state): string => state.currentUserDocumentId,
@@ -30,6 +30,14 @@ const store = new Vuex.Store({
       const moviesList: Array<IMovie> = state.moviesList;
       const movieToEditIndex = moviesList.indexOf(moviesList.find(movie => movie.documentId === movieEdits.documentId) as IMovie);
       Vue.set(state.moviesList, movieToEditIndex, movieEdits);
+    },
+    addMovieToList (state, movie: IMovie): void {
+      state.moviesList.push(movie);
+    },
+    deleteMovieFromList (state, movieToDelete: IMovie): void {
+      const moviesList: Array<IMovie> = state.moviesList;
+      const movieToDeleteIndex = moviesList.indexOf(moviesList.find(movie => movie.documentId === movieToDelete.documentId) as IMovie);
+      moviesList.splice(movieToDeleteIndex, 1);
     }
   },
   actions: {}

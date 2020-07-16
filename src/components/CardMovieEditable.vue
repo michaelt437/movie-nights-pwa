@@ -22,7 +22,7 @@
         <button class="btn btn-teal-600 flex-grow" @click.stop="editMovie">
           Edit
         </button>
-        <button class="btn btn-red-600 flex-grow" @click.stop="deleteMovie">
+        <button class="btn btn-red-600 flex-grow" @click.stop="deletePrompt">
           Delete
         </button>
       </div>
@@ -59,13 +59,15 @@ export default class CardMovieEditable extends Vue {
     this.$emit("popup", "PopupEditMovie", this.movie);
   }
 
-  deleteMovie (): void {
-    this.$emit("popup", "PopupConfirm", this.movie, "Are you sure you want to delete this movie?", this.printFromCard);
+  deletePrompt (): void {
+    this.$emit("popup", "PopupConfirm", this.movie, "Are you sure you want to delete this movie?", this.deleteMovie);
   }
 
-  // TODO: turn into a real delete method
-  printFromCard (): void {
-    console.log("calling the card method");
+  deleteMovie (): void {
+    db.collection(this.$store.getters.getCurrentUserDocumentId)
+      .doc(this.movie.documentId)
+      .delete();
+    this.$store.commit("deleteMovieFromList", this.movie);
   }
 
   mounted () {

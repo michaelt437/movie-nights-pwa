@@ -1,7 +1,10 @@
 <template>
   <div class="rounded-lg bg-indigo-600 text-gray-200 px-5 pb-3 mb-4">
     <p class="text-2xl text-center py-5">Add a movie</p>
-    <label for="movie-title" class="text-sm">Movie Title</label>
+    <label for="movie-title" class="text-sm">
+      Movie Title
+      <span v-show="checkForPendingDuplicate" class="text-red-500 italic"> - Duplicate title not yet picked</span>
+    </label>
     <div class="input">
       <input
         type="text"
@@ -38,7 +41,8 @@
       <button
         :class="{ 'disabled' : disableButton }"
         class="btn btn-teal-400"
-        style="flex-basis: 30%;">
+        style="flex-basis: 30%;"
+        @click="addMovie">
         <i class="fas fa-plus mr-1"></i> Add
       </button>
     </div>
@@ -46,18 +50,20 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { db } from "@/db.ts";
 import placeholders from "@/placeholders";
 import IMovie from "@/interface/IMovie";
 import IService from "@/interface/IService";
 
 @Component
 export default class PopupAddMovie extends Vue {
-  movieToAdd: IMovie = {
+  movieToAdd = {
     title: "",
     service: "",
     duration: "",
     watchDate: 0,
-    hasWatched: false
+    hasWatched: false,
+    exclude: false
   }
 
   get randomMovieTitle (): string {
@@ -71,17 +77,35 @@ export default class PopupAddMovie extends Vue {
   }
 
   get disableButton (): boolean {
-    return this.movieToAdd.title === "" || this.movieToAdd.service === "";
+    return this.movieToAdd.title === "" ||
+      this.movieToAdd.duration === "" || this.movieToAdd.duration === "0" ||
+      this.checkForPendingDuplicate;
+  }
+
+  get checkForPendingDuplicate (): boolean {
+    return this.$store.getters.getMoviesToWatch.find(movie => {
+      return movie.title.toLowerCase() === this.movieToAdd.title.toLowerCase();
+    });
   }
 
   resetMovieModel (): void {
     this.movieToAdd = {
       title: "",
       service: "",
-      duration: 90,
+      duration: "",
       watchDate: 0,
-      hasWatched: false
+      hasWatched: false,
+      exclude: false
     };
+  }
+
+  addMovie (): void {
+    db.collection(this.$store.getters.getCurrentUserDocumentId)
+      .add(this.movieToAdd)
+      .then(reg => {
+        console.log("document written with id: ", reg.id);
+      });
+    this.closePopup();
   }
 
   closePopup (): void {
