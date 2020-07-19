@@ -7,7 +7,6 @@ interface IUser {
   pickedDateTime: number;
   rolls: number;
   rollTime: number;
-  documentId: string;
 }
 
 export default IUser;

@@ -15,31 +15,7 @@
       <button class="btn btn-teal-500 outline text-white">Time <i class="fas fa-caret-down ml-1"></i></button>
       <button class="btn btn-teal-500 outline text-white">Service <i class="fas fa-caret-down ml-1"></i></button>
     </div> -->
-
-    <!-- Rolling Card -->
-    <div v-if="isPicking" class="movie-card rounded-lg bg-indigo-600 text-gray-200 px-5 py-3 mb-4">
-      <div class="movie-card__title text-2xl">Annihilation</div>
-      <div class="movie-card__service text-green-300 text-lg my-2">Hulu</div>
-      <div class="movie-card__duration text-sm mb-5">119 minutes</div>
-      <div class="movie-card__footer">
-        <div class="btn-group flex">
-          <button class="btn btn-white outline flex-grow" @click="isPicking = false">
-            <i class="fas fa-times"></i>
-          </button>
-          <button class="btn btn-pink-600 flex-grow">
-            <i class="fas fa-dice"></i> (4)
-          </button>
-          <button class="btn btn-teal-400 flex-grow" style="flex-basis: 35%">
-            <i class="fas fa-check"></i>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Dice Card -->
-    <div v-else class="movie-card rounded-lg btn-indigo-600 text-center text-gray-200 py-8 mb-4 cursor-pointer" @click="isPicking = true">
-      <div class="text-2xl">What's the pick?</div>
-    </div>
+    <card-movie-roll />
 
     <!-- Picked cards -->
     <card-movie
@@ -54,10 +30,12 @@
 import { Component, Vue } from "vue-property-decorator";
 import IMovie from "@/interface/IMovie";
 import CardMovie from "@/components/CardMovie.vue";
+import CardMovieRoll from "@/components/CardMovieRoll.vue";
 
 @Component({
   components: {
-    CardMovie
+    CardMovie,
+    CardMovieRoll
   }
 })
 export default class Home extends Vue {

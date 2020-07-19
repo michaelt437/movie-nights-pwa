@@ -79,13 +79,14 @@ export default class PopupAddMovie extends Vue {
   get disableButton (): boolean {
     return this.movieToAdd.title === "" ||
       this.movieToAdd.duration === "" || this.movieToAdd.duration === "0" ||
+      this.movieToAdd.service === "" ||
       this.checkForPendingDuplicate;
   }
 
   get checkForPendingDuplicate (): boolean {
-    return this.$store.getters.getMoviesToWatch.find(movie => {
+    return Boolean(this.$store.getters.getMoviesToWatch.find(movie => {
       return movie.title.toLowerCase() === this.movieToAdd.title.toLowerCase();
-    });
+    }));
   }
 
   resetMovieModel (): void {

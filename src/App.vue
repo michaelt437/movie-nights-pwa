@@ -67,8 +67,9 @@ export default class App extends Vue {
     await db.collection("users").where("email", "==", this.loggedInUser.email)
       .get()
       .then((querySnapshot) => {
-        querySnapshot.forEach(item => {
-          this.$store.commit("setCurrentUserDocumentId", item.id);
+        querySnapshot.forEach(user => {
+          this.$store.commit("setCurrentUser", user.data());
+          this.$store.commit("setCurrentUserDocumentId", user.id);
         });
       });
   }
@@ -88,15 +89,6 @@ export default class App extends Vue {
   }
 
   async fetchMoviesList (): Promise<any> {
-    // await db.collection(this.$store.getters.getCurrentUserDocumentId)
-    //   .get()
-    //   .then(querySnapshot => {
-    //     querySnapshot.forEach((doc) => {
-    //       let movieObj = doc.data();
-    //       movieObj.documentId = doc.id;
-    //       this.moviesList.push(<IMovie>movieObj);
-    //     });
-    //   });
     await db.collection(this.$store.getters.getCurrentUserDocumentId)
       .onSnapshot({ includeMetadataChanges: true }, (querySnapshot) => {
         querySnapshot.docChanges().forEach((change) => {
@@ -105,10 +97,6 @@ export default class App extends Vue {
             movieObj.documentId = change.doc.id;
             this.moviesList.push(<IMovie>movieObj);
           }
-          // if (change.type === "removed") {
-          // // console.log('something was deleted!', change.doc.data())
-          //   this.allUserMovies = this.allUserMovies.filter(movie => movie.title !== change.doc.data().title);
-          // }
         });
       });
   }
