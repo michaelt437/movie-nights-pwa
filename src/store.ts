@@ -9,7 +9,9 @@ const store = new Vuex.Store({
   state: {
     currentUser: {} as IUser,
     currentUserDocumentId: "",
-    moviesList: [] as IMovie[]
+    moviesList: [] as IMovie[],
+    canRoll: true,
+    tonightsPick: {} as IMovie | null
   },
   getters: {
     getCurrentUser: (state): IUser => state.currentUser,
@@ -19,8 +21,17 @@ const store = new Vuex.Store({
       return state.moviesList.filter((movie: IMovie) => !movie.hasWatched);
     },
     getMoviesWatched: (state): Array<IMovie> => {
-      return state.moviesList.filter((movie: IMovie) => movie.hasWatched);
-    }
+      return state.moviesList.filter((movie: IMovie) => movie.hasWatched && (movie.documentId !== state.tonightsPick?.documentId)).sort((movie1, movie2) => {
+        if (movie1.watchDate! > movie2.watchDate!) {
+          return -1;
+        } else if (movie1.watchDate! < movie2.watchDate!) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+    },
+    getTonightsPick: (state): IMovie | null => state.tonightsPick
   },
   mutations: {
     setCurrentUser (state, user): void {
@@ -47,6 +58,18 @@ const store = new Vuex.Store({
     },
     decrementRolls (state): void {
       state.currentUser.rolls = state.currentUser.rolls - 1;
+    },
+    updateRollPermission (state, value): void {
+      state.canRoll = value;
+    },
+    setTonightsPick (state, movie): void {
+      state.tonightsPick = movie;
+    },
+    resetRolls (state): void {
+      state.currentUser.rolls = 4000;
+    },
+    updateUserHasRolled (state, value): void {
+      state.currentUser.hasRolled = value;
     }
   },
   actions: {}

@@ -1,21 +1,10 @@
 <template>
   <div id="home-page">
-    <!-- Tabs -->
-    <!-- <div class="tabs mb-8 sticky" style="top: 55px;">
-      <div class="tab active" style="flex-basis: 50%;">Movies</div>
-      <div class="tab" style="flex-basis: 50%;">TV</div>
-    </div> -->
-    <!-- <div class="btn-group mb-16">
-      <button class="btn btn-orange-500 text-white">Movies List</button>
-      <button class="btn btn-gray-200 outline text-gray-200">TV List</button>
-    </div> -->
+    <!-- tonight's pick -->
+    <card-tonights-pick v-if="$store.getters.getTonightsPick !== null"/>
 
-    <!-- Filters -->
-    <!-- <div class="btn-group mb-2">
-      <button class="btn btn-teal-500 outline text-white">Time <i class="fas fa-caret-down ml-1"></i></button>
-      <button class="btn btn-teal-500 outline text-white">Service <i class="fas fa-caret-down ml-1"></i></button>
-    </div> -->
-    <card-movie-roll />
+    <!-- Rolling card -->
+    <card-movie-roll v-else />
 
     <!-- Picked cards -->
     <card-movie
@@ -31,11 +20,13 @@ import { Component, Vue } from "vue-property-decorator";
 import IMovie from "@/interface/IMovie";
 import CardMovie from "@/components/CardMovie.vue";
 import CardMovieRoll from "@/components/CardMovieRoll.vue";
+import CardTonightsPick from "@/components/CardTonightsPick.vue";
 
 @Component({
   components: {
     CardMovie,
-    CardMovieRoll
+    CardMovieRoll,
+    CardTonightsPick
   }
 })
 export default class Home extends Vue {

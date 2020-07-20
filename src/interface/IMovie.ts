@@ -6,9 +6,10 @@ interface IMovie {
   duration: number | string;
   hasWatched?: boolean;
   watchDate?: number;
-  addedDate?: number;
+  addedDate?: string;
   exclude?: boolean;
   documentId?: string;
+  user?: string;
 }
 
 export default IMovie;

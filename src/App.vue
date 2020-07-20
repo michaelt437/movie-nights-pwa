@@ -7,7 +7,10 @@
     />
     <app-paralax-background />
     <app-title />
-    <router-view @scrolling="handleScroll" @popup="invokePopup" />
+    <div v-if="loading" class="loading flex justify-center">
+      <i class="fas fa-circle-notch fa-spin text-teal-400 text-5xl"></i>
+    </div>
+    <router-view v-else @scrolling="handleScroll" @popup="invokePopup" />
     <app-footer @popup="invokePopup" />
     <popup-base v-if="popUpComponent != null">
       <component
@@ -58,6 +61,7 @@ export default class App extends Vue {
   propMessage = "";
   moviesList: Array<IMovie> = [];
   propAction = "";
+  loading = true;
 
   handleScroll (bool): void {
     this.titleBgSolid = bool;
@@ -101,6 +105,21 @@ export default class App extends Vue {
       });
   }
 
+  async checkForTonightsPick (): Promise<any> {
+    return Boolean(await db.collection("tonightsPick")
+      .doc("movie")
+      .get()
+      .then(doc => {
+        if (doc.data() !== undefined) {
+          this.$store.commit("updateRollPermission", false);
+          this.$store.commit("setTonightsPick", doc.data());
+        } else {
+          this.$store.commit("updateRollPermission", true);
+          this.$store.commit("setTonightsPick", null);
+        }
+      }));
+  }
+  
   closePopup (): void {
     this.popUpComponent = null;
     document.querySelector("body")!.classList.remove("noscroll");
@@ -121,11 +140,39 @@ export default class App extends Vue {
     });
   }
 
+  resetRollCheck (): void {
+    if (this.$store.getters.getTonightsPick) {
+      const lastPickTime = this.$store.getters.getTonightsPick.watchDate;
+  
+      if (this.$moment().valueOf() > this.$moment(lastPickTime).add(2, "minutes").valueOf()) {
+        this.$store.commit("resetRolls");
+        this.$store.commit("updateUserHasRolled", false);
+        this.$store.commit("setTonightsPick", null);
+        this.$store.commit("updateRollPermission", true);
+  
+        db.collection("tonightsPick")
+          .doc("movie")
+          .delete();
+
+        db.collection("users")
+          .doc(this.$store.getters.getCurrentUserDocumentId)
+          .update({
+            hasPicked: false,
+            hasRolled: false,
+            rolls: 4000
+          })
+      }
+    }
+  }
+
   // Lifecycle Hooks
   async created () {
     await this.checkFirebaseAuthState();
     await this.init();
     await this.fetchMoviesList();
+    await this.checkForTonightsPick();
+    this.resetRollCheck();
+    this.loading = false;
     this.$store.commit("setMoviesList", this.moviesList);
 
     window.addEventListener("scroll", (): void => {

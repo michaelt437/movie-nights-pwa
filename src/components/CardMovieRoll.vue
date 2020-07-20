@@ -12,7 +12,7 @@
           <button class="btn flex-grow" :class="reRollColor" @click="reRoll">
             <i class="fas fa-dice"></i> ({{ this.$store.getters.getCurrentUser.rolls }})
           </button>
-          <button class="btn btn-teal-400 flex-grow" style="flex-basis: 35%">
+          <button class="btn btn-teal-400 flex-grow" style="flex-basis: 35%" @click="confirmSelection">
             <i class="fas fa-check"></i>
           </button>
         </div>
@@ -46,7 +46,8 @@ export default class CardMovieRoll extends Vue {
   }
 
   get randomMovie (): IMovie {
-    return this.moviesToPickList[this.currIndex!];
+    const movie = this.moviesToPickList[this.currIndex!];
+    return movie;
   }
 
   get reRollColor () {
@@ -87,6 +88,35 @@ export default class CardMovieRoll extends Vue {
     this.rollPending = true;
     this.randomMovieIndex();
     this.decrementRolls();
+
+    if (!this.$store.getters.getCurrentUser.hasRolled) {
+      this.$store.commit("updateUserHasRolled", true);
+    }
+  }
+
+  confirmSelection (): void {
+    const _watchDate = Date.parse(new Date());
+    this.randomMovie.watchDate = _watchDate;
+    this.randomMovie.user = this.$store.getters.getCurrentUser.name;
+    this.$store.commit("updateRollPermission", false);
+    this.$store.commit("setTonightsPick", this.randomMovie);
+    db.collection("tonightsPick")
+      .doc("movie")
+      .set(this.randomMovie);
+
+    db.collection(this.$store.getters.getCurrentUserDocumentId)
+      .doc(this.randomMovie.documentId)
+      .update({
+        hasWatched: true,
+        watchDate: _watchDate
+      });
+
+    db.collection("users")
+      .doc(this.$store.getters.getCurrentUserDocumentId)
+      .update({
+        hasPicked: true,
+        pickedDateTime: _watchDate
+      });
   }
 
   create () {
