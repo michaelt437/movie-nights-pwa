@@ -1,5 +1,5 @@
 <template>
-  <div id="list-page">
+  <div id="list-page" class="relative">
     <div class="btn-group items-center mb-2 relative">
       <i class="fas fa-search text-gray-500 absolute"></i>
       <div class="input search flex-grow mb-0">
@@ -11,11 +11,11 @@
           class="pl-6 w-full"
         >
       </div>
-      <button class="btn btn-transparent text-gray-400 text-md">
+      <button class="btn btn-transparent text-gray-400 text-md" @click="invokeDrawer">
         Filters <i class="fas fa-sliders-h ml-2"></i>
       </button>
     </div>
-    <template v-for="movie in moviesToWatch">
+    <template v-for="movie in filteredMovies">
       <card-movie-editable
       v-on="$listeners"
       :key="movie.title"
@@ -39,6 +39,17 @@ export default class ListPage extends Vue {
 
   get moviesToWatch (): Array<IMovie> {
     return this.$store.getters.getMoviesToWatch;
+  }
+
+  get filteredMovies (): Array<IMovie> {
+    return this.$store.getters.getMoviesToWatch.filter(movie => {
+      return movie.title.toLowerCase().includes(this.searchInput) ||
+        movie.service.title.toLowerCase().includes(this.searchInput);
+    });
+  }
+
+  invokeDrawer (): void {
+    this.$emit("drawer", "DrawerFilter");
   }
 }
 </script>

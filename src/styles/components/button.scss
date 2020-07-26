@@ -6,6 +6,10 @@
   
   &.outline {
     background-color: transparent;
+
+    &:hover {
+      color: $white;
+    }
   }
 
   &.disabled {
@@ -27,6 +31,13 @@
   display: flex;
   .btn + .btn {
     @apply ml-2;
+  }
+
+  &.flex-wrap {
+    .btn{
+      @apply ml-0 #{!important};
+      @apply mr-2;
+    }
   }
 }
 

@@ -35,7 +35,7 @@
     </select>
     <div class="btn-group flex">
       <span class="ml-auto"></span>
-      <button class="btn btn-gray-400 outline" style="flex-basis: 30%;" @click="closePopup">
+      <button class="btn btn-white outline" style="flex-basis: 30%;" @click="closePopup">
         <i class="fas fa-times mr-1"></i> Cancel
       </button>
       <button

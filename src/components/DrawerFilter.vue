@@ -1,0 +1,91 @@
+<template>
+  <div class="px-5 py-3">
+    <div class="flex text-gray-500 justify-between items-center mb-6">
+      <h2 class="text-4xl">Filter Movies</h2>
+      <i class="fas fa-times" @click="closeDrawer"></i>
+    </div>
+    <p class="text-xl text-gray-800 mb-2"><strong>Order</strong></p>
+    <div class="chip-group flex-wrap mb-5">
+      <template v-for="option in sortOrder">
+        <label
+          :key="option.value"
+          :for="option.value"
+          :class="{ 'active' : orderModel.includes(option.value)}"
+          class="chip rounded-full"
+          @click.stop="uncheckRadio"
+          >
+            <input type="radio" :name="option.value" :id="option.value" :value="option.value" v-model="orderModel" hidden>
+            {{ option.label }}
+        </label>
+      </template>
+    </div>
+    <p class="text-xl text-gray-800 mb-2"><strong>Duration</strong></p>
+    <div class="chip-group flex-wrap mb-5">
+      <template v-for="option in durationOptions">
+        <label
+          :key="option.value"
+          :for="option.value"
+          :class="{ 'active' : durationModel.includes(option.value)}"
+          class="chip"
+          >
+            <input type="checkbox" :name="option.value" :id="option.value" :value="option.value" v-model="durationModel" hidden>
+            {{ option.label }}
+        </label>
+      </template>
+    </div>
+    <p class="text-xl text-gray-800 mb-2"><strong>Service</strong></p>
+    <div class="chip-group flex-wrap mb-5">
+      <template v-for="service in streamingService">
+        <label
+          :key="service.value"
+          :for="service.value"
+          :class="{ 'active' : serviceModel.includes(service.value)}"
+          class="chip"
+          >
+            <input type="checkbox" :name="service.value" :id="service.value" :value="service.value" v-model="serviceModel" hidden>
+            {{ service.title }}
+        </label>
+      </template>
+    </div>
+  </div>
+</template>
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import placeholders from "@/placeholders";
+
+@Component
+export default class DrawerFilter extends Vue {
+  sortOrder = [
+    { label: "ABC", value: "alpha" },
+    { label: "By Shortest", value: "duration_asc" },
+    { label: "By Longest", value: "duration_desc" },
+    { label: "By Service", value: "service_abc" }
+  ]
+
+  durationOptions = [
+    { label: "Short", value: "short" },
+    { label: "Long", value: "long" },
+    { label: "Real Long", value: "realLong" }
+  ]
+
+  orderModel = ""
+  durationModel = []
+  serviceModel = []
+
+  get streamingService (): Array<object> {
+    return placeholders.streamingService;
+  }
+
+  uncheckRadio (e): void {
+    if (e.currentTarget.classList.contains("active")) {
+      e.currentTarget.lastElementChild.checked = false;
+      this.orderModel = "";
+      e.preventDefault();
+    }
+  }
+
+  closeDrawer (): void {
+    this.$emit("closeDrawer");
+  }
+}
+</script>

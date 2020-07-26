@@ -3,7 +3,7 @@
     <p class="text-lg"><strong>Delete <span class="italic capitalize">{{ movie.title }}</span></strong></p>
     <p class="mt-3 mb-10">Are you sure you want to continue?</p>
     <div class="btn-group justify-end">
-      <button class="btn btn-gray-300 outline" @click="closePopup">
+      <button class="btn btn-white outline" @click="closePopup">
         <i class="fas fa-times mr-1"></i> Cancel
       </button>
       <button class="btn btn-teal-400" @click="handleAction">

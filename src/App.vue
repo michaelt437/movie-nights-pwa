@@ -10,7 +10,7 @@
     <div v-if="loading" class="loading flex justify-center">
       <i class="fas fa-circle-notch fa-spin text-teal-400 text-5xl"></i>
     </div>
-    <router-view v-else @scrolling="handleScroll" @popup="invokePopup" />
+    <router-view v-else @scrolling="handleScroll" @popup="invokePopup" @drawer="invokeDrawer" />
     <app-footer @popup="invokePopup" />
     <popup-base v-if="popUpComponent != null">
       <component
@@ -23,6 +23,13 @@
         @closePopup="closePopup"
       />
     </popup-base>
+    <drawer-base>
+      <keep-alive>
+        <component 
+          :is="drawerComponent"
+          @closeDrawer="closeDrawer" />
+      </keep-alive>
+    </drawer-base>
   </div>
 </template>
 <script lang="ts">
@@ -35,6 +42,8 @@ import PopupBase from "@/components/PopupBase.vue";
 import PopupAddMovie from "@/components/PopupAddMovie.vue";
 import PopupEditMovie from "@/components/PopupEditMovie.vue";
 import PopupConfirm from "@/components/PopupConfirm.vue";
+import DrawerBase from "@/components/DrawerBase.vue";
+import DrawerFilter from "@/components/DrawerFilter.vue";
 import IUser from "@/interface/IUser";
 import IMovie from "./interface/IMovie";
 import { db, fb } from "@/db";
@@ -48,7 +57,9 @@ import { db, fb } from "@/db";
     PopupBase,
     PopupAddMovie,
     PopupEditMovie,
-    PopupConfirm
+    PopupConfirm,
+    DrawerBase,
+    DrawerFilter
   }
 })
 export default class App extends Vue {
@@ -57,6 +68,7 @@ export default class App extends Vue {
   isSignedIn = false;
   users: Array<IUser> = [];
   popUpComponent = null;
+  drawerComponent = null;
   propMovie = {};
   propMessage = "";
   moviesList: Array<IMovie> = [];
@@ -92,6 +104,11 @@ export default class App extends Vue {
     }
   }
 
+  closePopup (): void {
+    this.popUpComponent = null;
+    document.querySelector("body")!.classList.remove("noscroll");
+  }
+
   async fetchMoviesList (): Promise<any> {
     await db.collection(this.$store.getters.getCurrentUserDocumentId)
       .onSnapshot({ includeMetadataChanges: true }, (querySnapshot) => {
@@ -120,9 +137,14 @@ export default class App extends Vue {
       }));
   }
   
-  closePopup (): void {
-    this.popUpComponent = null;
+  invokeDrawer (name): void {
+    document.querySelector("body")!.classList.add("noscroll");
+    this.drawerComponent = name;
+  }
+
+  closeDrawer (): void {
     document.querySelector("body")!.classList.remove("noscroll");
+    this.drawerComponent = null;
   }
 
   checkFirebaseAuthState (): Promise<boolean> {
