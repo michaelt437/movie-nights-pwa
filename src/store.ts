@@ -35,15 +35,19 @@ const store = new Vuex.Store({
         .filter(movie => {
           if (state.durationFilters.length) {
             if (state.durationFilters.includes("short")) {
-              return movie.duration < 107;
+              if (Number(movie.duration) < 107) {
+                return movie;
+              }
             }
-
             if (state.durationFilters.includes("long")) {
-              return movie.duration > 107 && movie.duration < 135;
+              if (Number(movie.duration) >= 107 && Number(movie.duration) <= 134) {
+                return movie;
+              }
             }
-
             if (state.durationFilters.includes("realLong")) {
-              return movie.duration >= 135;
+              if (Number(movie.duration) > 134) {
+                return movie;
+              }
             }
           } else {
             return true;

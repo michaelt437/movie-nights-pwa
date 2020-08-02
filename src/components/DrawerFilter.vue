@@ -1,7 +1,7 @@
 <template>
   <div class="px-5 py-3">
     <div class="flex text-gray-500 justify-between items-center mb-6">
-      <h2 class="text-4xl">Filter Movies</h2>
+      <h2 class="text-4xl"><span v-show="activeFilters">{{ activeFilters }}</span> Filter<span v-show="activeFilters > 1">s</span></h2>
       <i class="fas fa-times" @click="closeDrawer"></i>
     </div>
     <p class="text-xl text-gray-800 mb-2"><strong>Order</strong></p>
@@ -120,6 +120,15 @@ export default class DrawerFilter extends Vue {
 
   set serviceFilters (value: Array<string>) {
     this.$store.commit("setServiceFilters", value);
+  }
+
+  get activeFilters (): number {
+    let count = 0;
+    if (this.$store.state.orderFilter !== "") count++;
+    if (this.$store.state.excludeFilter !== "") count++;
+    if (this.$store.state.durationFilters.length) count++;
+    if (this.$store.state.serviceFilters.length) count++;
+    return count;
   }
 
   uncheckRadio (e, type): void {
