@@ -12,7 +12,7 @@
     </div>
     <router-view v-else @scrolling="handleScroll" @popup="invokePopup" @drawer="invokeDrawer" />
     <app-footer @popup="invokePopup" />
-    <popup-base v-if="popUpComponent != null">
+    <popup-base v-if="popUpComponent !== null">
       <component
         :is="popUpComponent"
         v-bind="{
@@ -23,7 +23,7 @@
         @closePopup="closePopup"
       />
     </popup-base>
-    <drawer-base>
+    <drawer-base v-if="drawerComponent !== null">
       <keep-alive>
         <component 
           :is="drawerComponent"

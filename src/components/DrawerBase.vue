@@ -1,5 +1,5 @@
 <template>
-  <div class="sheet absolute rounded-t-md bg-white z-20">
+  <div class="sheet fixed rounded-t-md bg-white z-20">
     <slot />
   </div>
 </template>

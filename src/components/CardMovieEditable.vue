@@ -42,13 +42,15 @@ export default class CardMovieEditable extends Vue {
   private excludeMovie = false;
   private showActions = false;
 
-  @Watch("excludeMovie", { immediate: true, deep: true })
+  @Watch("excludeMovie", { deep: true })
   onExcludeToggle (value: boolean) {
     db.collection(this.$store.getters.getCurrentUserDocumentId)
       .doc(this.movie.documentId)
       .update({
         exclude: value
       });
+
+    this.$store.commit("updateMovieExclude", { value: this.excludeMovie, targetTitle: this.movie.title });
   }
 
   get titleCamelCase () {

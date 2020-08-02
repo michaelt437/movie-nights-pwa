@@ -42,7 +42,7 @@ export default class CardMovieRoll extends Vue {
   private rollsLeft = 3;
 
   get moviesToPickList (): Array<IMovie> {
-    return this.$store.getters.getMoviesToWatch;
+    return this.$store.getters.getMoviesToWatch.filter(movie => !movie.exclude);
   }
 
   get randomMovie (): IMovie {

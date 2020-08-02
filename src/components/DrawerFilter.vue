@@ -10,14 +10,32 @@
         <label
           :key="option.value"
           :for="option.value"
-          :class="{ 'active' : orderModel.includes(option.value)}"
+          :class="{ 'active' : orderFilter.includes(option.value)}"
           class="chip rounded-full"
-          @click.stop="uncheckRadio"
+          @click.stop="uncheckRadio($event, 'order')"
           >
-            <input type="radio" :name="option.value" :id="option.value" :value="option.value" v-model="orderModel" hidden>
+            <input type="radio" :name="option.value" :id="option.value" :value="option.value" v-model="orderFilter" hidden>
             {{ option.label }}
         </label>
       </template>
+    </div>
+    <div class="chip-group flex-wrap mb-5">
+      <label
+        for="availFirst"
+        :class="{ 'active' : excludeFilter === 'available'}"
+        class="chip rounded-full"
+        @click.stop="uncheckRadio($event, 'exclude')">
+        <input type="radio" name="availFirst" id="availFirst" value="available" v-model="excludeFilter" hidden>
+        Available First
+      </label>
+      <label
+        for="excludeFirst"
+        :class="{ 'active' : excludeFilter === 'exclude'}"
+        class="chip rounded-full"
+        @click.stop="uncheckRadio($event, 'exclude')">
+        <input type="radio" name="excludeFirst" id="excludeFirst" value="exclude" v-model="excludeFilter" hidden>
+        Excluded First
+      </label>
     </div>
     <p class="text-xl text-gray-800 mb-2"><strong>Duration</strong></p>
     <div class="chip-group flex-wrap mb-5">
@@ -25,10 +43,10 @@
         <label
           :key="option.value"
           :for="option.value"
-          :class="{ 'active' : durationModel.includes(option.value)}"
+          :class="{ 'active' : durationFilters.includes(option.value)}"
           class="chip"
           >
-            <input type="checkbox" :name="option.value" :id="option.value" :value="option.value" v-model="durationModel" hidden>
+            <input type="checkbox" :name="option.value" :id="option.value" :value="option.value" v-model="durationFilters" hidden>
             {{ option.label }}
         </label>
       </template>
@@ -39,10 +57,10 @@
         <label
           :key="service.value"
           :for="service.value"
-          :class="{ 'active' : serviceModel.includes(service.value)}"
+          :class="{ 'active' : serviceFilters.includes(service.value)}"
           class="chip"
           >
-            <input type="checkbox" :name="service.value" :id="service.value" :value="service.value" v-model="serviceModel" hidden>
+            <input type="checkbox" :name="service.value" :id="service.value" :value="service.value" v-model="serviceFilters" hidden>
             {{ service.title }}
         </label>
       </template>
@@ -60,26 +78,54 @@ export default class DrawerFilter extends Vue {
     { label: "By Shortest", value: "duration_asc" },
     { label: "By Longest", value: "duration_desc" },
     { label: "By Service", value: "service_abc" }
-  ]
+  ];
 
   durationOptions = [
     { label: "Short", value: "short" },
     { label: "Long", value: "long" },
     { label: "Real Long", value: "realLong" }
-  ]
-
-  orderModel = ""
-  durationModel = []
-  serviceModel = []
+  ];
 
   get streamingService (): Array<object> {
     return placeholders.streamingService;
   }
 
-  uncheckRadio (e): void {
+  get orderFilter (): string {
+    return this.$store.getters.getOrderFilter;
+  }
+
+  set orderFilter (value: string) {
+    this.$store.commit("setOrderFilter", value);
+  }
+
+  get excludeFilter (): string {
+    return this.$store.getters.getExcludeFilter;
+  }
+
+  set excludeFilter (value: string) {
+    this.$store.commit("setExcludeFilter", value);
+  }
+
+  get durationFilters (): Array<string> {
+    return this.$store.getters.getDurationFilters;
+  }
+
+  set durationFilters (value: Array<string>) {
+    this.$store.commit("setDurationFilters", value);
+  }
+
+  get serviceFilters (): Array<string> {
+    return this.$store.getters.getServiceFilters;
+  }
+
+  set serviceFilters (value: Array<string>) {
+    this.$store.commit("setServiceFilters", value);
+  }
+
+  uncheckRadio (e, type): void {
     if (e.currentTarget.classList.contains("active")) {
       e.currentTarget.lastElementChild.checked = false;
-      this.orderModel = "";
+      this[`${type}Filter`] = "";
       e.preventDefault();
     }
   }
