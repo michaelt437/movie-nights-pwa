@@ -44,6 +44,7 @@ import PopupEditMovie from "@/components/PopupEditMovie.vue";
 import PopupConfirm from "@/components/PopupConfirm.vue";
 import DrawerBase from "@/components/DrawerBase.vue";
 import DrawerFilter from "@/components/DrawerFilter.vue";
+import DrawerPickFilter from "@/components/DrawerPickFilter.vue";
 import IUser from "@/interface/IUser";
 import IMovie from "./interface/IMovie";
 import { db, fb } from "@/db";
@@ -59,7 +60,8 @@ import { db, fb } from "@/db";
     PopupEditMovie,
     PopupConfirm,
     DrawerBase,
-    DrawerFilter
+    DrawerFilter,
+    DrawerPickFilter
   }
 })
 export default class App extends Vue {

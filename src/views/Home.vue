@@ -4,7 +4,7 @@
     <card-tonights-pick v-if="$store.getters.getTonightsPick !== null"/>
 
     <!-- Rolling card -->
-    <card-movie-roll v-else />
+    <card-movie-roll v-on="$listeners" v-else />
 
     <!-- Picked cards -->
     <card-movie
@@ -41,6 +41,10 @@ export default class Home extends Vue {
 
   get moviesWatched (): Array<IMovie> {
     return this.$store.getters.getMoviesWatched;
+  }
+
+  beforeDestroy (): void {
+    this.$store.commit("resetPickFilters");
   }
 }
 </script>

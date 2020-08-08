@@ -1,6 +1,8 @@
 <template>
-  <div class="sheet fixed rounded-t-md bg-white z-20">
-    <slot />
+  <div class="overlay z-20">
+    <div class="sheet fixed rounded-t-md bg-white z-30">
+      <slot />
+    </div>
   </div>
 </template>
 <script lang="ts">

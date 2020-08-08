@@ -124,10 +124,10 @@ export default class DrawerFilter extends Vue {
 
   get activeFilters (): number {
     let count = 0;
-    if (this.$store.state.orderFilter !== "") count++;
-    if (this.$store.state.excludeFilter !== "") count++;
-    if (this.$store.state.durationFilters.length) count++;
-    if (this.$store.state.serviceFilters.length) count++;
+    if (this.$store.getters.getOrderFilter !== "") count++;
+    if (this.$store.getters.getExcludeFilter !== "") count++;
+    if (this.$store.getters.getDurationFilters.length) count++;
+    if (this.$store.getters.getServiceFilters.length) count++;
     return count;
   }
 

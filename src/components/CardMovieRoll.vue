@@ -1,5 +1,5 @@
 <template>
-  <div id="rolling-card">
+  <div id="rolling-card" class="relative">
     <div v-if="rollPending" class="movie-card rounded-lg bg-indigo-600 text-gray-200 px-5 py-3 mb-4">
       <div class="movie-card__title text-2xl capitalize">{{ randomMovie.title }}</div>
       <div class="movie-card__service text-lg my-2" :class="randomMovie.service.value">{{ randomMovie.service.title }}</div>
@@ -19,9 +19,11 @@
       </div>
     </div>
 
-    <div v-else class="movie-card rounded-lg btn-indigo-600 text-center text-gray-200 py-8 mb-4 cursor-pointer" @click="makeRoll">
+    <div v-else class="movie-card rounded-lg btn-indigo-600 text-center text-gray-200 py-8 mb-4 cursor-pointer relative" @click="makeRoll">
       <div class="text-2xl">What's the pick?</div>
     </div>
+
+    <button v-show="!rollPending" id="pick-filter" class="btn btn-teal-500 text-gray-200 absolute" @click.stop="invokeDrawer">Categories: {{ pickCategories }}</button>
   </div>
 </template>
 <script lang="ts">
@@ -42,7 +44,35 @@ export default class CardMovieRoll extends Vue {
   private rollsLeft = 3;
 
   get moviesToPickList (): Array<IMovie> {
-    return this.$store.getters.getMoviesToWatch.filter(movie => !movie.exclude);
+    return this.$store.getters.getMoviesToWatch.filter(movie => !movie.exclude)
+      .filter(movie => {
+        if (this.$store.getters.getServiceCategories.length) {
+          return this.$store.getters.getServiceCategories.includes(movie.service.value);
+        } else {
+          return true;
+        }
+      })
+      .filter(movie => {
+        if (this.$store.getters.getDurationCategories.length) {
+          if (this.$store.getters.getDurationCategories.includes("short")) {
+            if (Number(movie.duration) < 107) {
+              return movie;
+            }
+          }
+          if (this.$store.getters.getDurationCategories.includes("long")) {
+            if (Number(movie.duration) >= 107 && Number(movie.duration) <= 134) {
+              return movie;
+            }
+          }
+          if (this.$store.getters.getDurationCategories.includes("realLong")) {
+            if (Number(movie.duration) > 134) {
+              return movie;
+            }
+          }
+        } else {
+          return true;
+        }
+      });
   }
 
   get randomMovie (): IMovie {
@@ -60,6 +90,21 @@ export default class CardMovieRoll extends Vue {
       case 1:
         return "btn-red-600";
     }
+  }
+
+  get pickCategories (): number | string {
+    let pickingFrom: number | string = 0;
+    if (this.$store.getters.getDurationCategories.length) {
+      pickingFrom += this.$store.getters.getDurationCategories.length;
+    }
+    if (this.$store.getters.getServiceCategories.length) {
+      pickingFrom += this.$store.getters.getServiceCategories.length;
+    }
+    return !pickingFrom ? "All" : pickingFrom;
+  }
+
+  invokeDrawer (): void {
+    this.$emit("drawer", "DrawerPickFilter");
   }
 
   randomMovieIndex (): void {
@@ -95,7 +140,7 @@ export default class CardMovieRoll extends Vue {
   }
 
   confirmSelection (): void {
-    const _watchDate = Date.parse(new Date());
+    const _watchDate = Number(Date.parse(Date()));
     this.randomMovie.watchDate = _watchDate;
     this.randomMovie.user = this.$store.getters.getCurrentUser.name;
     this.$store.commit("updateRollPermission", false);
@@ -125,3 +170,10 @@ export default class CardMovieRoll extends Vue {
 }
 
 </script>
+<style lang="scss" scoped>
+#pick-filter {
+  top: -50%;
+  transform: translateY(70%);
+  left: 20px;
+}
+</style>

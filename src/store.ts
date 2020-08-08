@@ -15,7 +15,9 @@ const store = new Vuex.Store({
     orderFilter: "",
     excludeFilter: "",
     durationFilters: [] as Array<string>,
-    serviceFilters: [] as Array<string>
+    serviceFilters: [] as Array<string>,
+    durationCategories: [] as Array<string>,
+    serviceCategories: [] as Array<string>
   },
   getters: {
     getCurrentUser: (state): IUser => state.currentUser,
@@ -24,95 +26,7 @@ const store = new Vuex.Store({
     getMoviesToWatch: (state): Array<IMovie> => {
       return state.moviesList.filter((movie: IMovie) => {
         return !movie.hasWatched;
-      })
-        .filter(movie => {
-          if (state.serviceFilters.length) {
-            return state.serviceFilters.includes(movie.service.value);
-          } else {
-            return true;
-          }
-        })
-        .filter(movie => {
-          if (state.durationFilters.length) {
-            if (state.durationFilters.includes("short")) {
-              if (Number(movie.duration) < 107) {
-                return movie;
-              }
-            }
-            if (state.durationFilters.includes("long")) {
-              if (Number(movie.duration) >= 107 && Number(movie.duration) <= 134) {
-                return movie;
-              }
-            }
-            if (state.durationFilters.includes("realLong")) {
-              if (Number(movie.duration) > 134) {
-                return movie;
-              }
-            }
-          } else {
-            return true;
-          }
-        })
-        .sort((movie1, movie2): number => {
-          switch (state.orderFilter) {
-            case "alpha":
-              if (movie1.title > movie2.title) {
-                return 1;
-              } else if (movie1.title < movie2.title) {
-                return -1;
-              } else {
-                return 0;
-              }
-            case "duration_asc":
-              if (Number(movie1.duration) > Number(movie2.duration)) {
-                return 1;
-              } else if (Number(movie1.duration) < Number(movie2.duration)) {
-                return -1;
-              } else {
-                return 0;
-              }
-            case "duration_desc":
-              if (Number(movie2.duration) > Number(movie1.duration)) {
-                return 1;
-              } else if (Number(movie2.duration) < Number(movie1.duration)) {
-                return -1;
-              } else {
-                return 0;
-              }
-            case "service_abc":
-              if (movie1.service.value > movie2.service.value) {
-                return 1;
-              } else if (movie1.service.value < movie2.service.value) {
-                return -1;
-              } else {
-                return 0;
-              }
-            default:
-              return 0;
-          }
-        })
-        .sort((movie1, movie2): number => {
-          switch (state.excludeFilter) {
-            case "exclude":
-              if (!movie1.exclude && movie2.exclude) {
-                return 1;
-              } else if (movie1.exclude && !movie2.exclude) {
-                return -1;
-              } else {
-                return 0;
-              }
-            case "available":
-              if (movie1.exclude && !movie2.exclude) {
-                return 1;
-              } else if (!movie1.exclude && movie2.exclude) {
-                return -1;
-              } else {
-                return 0;
-              }
-            default:
-              return 0;
-          }
-        });
+      });
     },
     getMoviesWatched: (state): Array<IMovie> => {
       return state.moviesList.filter((movie: IMovie) => movie.hasWatched && (movie.documentId !== state.tonightsPick?.documentId)).sort((movie1, movie2) => {
@@ -129,7 +43,9 @@ const store = new Vuex.Store({
     getOrderFilter: (state): string => state.orderFilter,
     getExcludeFilter: (state): string => state.excludeFilter,
     getDurationFilters: (state): Array<string> => state.durationFilters,
-    getServiceFilters: (state): Array<string> => state.serviceFilters
+    getServiceFilters: (state): Array<string> => state.serviceFilters,
+    getDurationCategories: (state): Array<string> => state.durationCategories,
+    getServiceCategories: (state): Array<string> => state.serviceCategories
   },
   mutations: {
     setCurrentUser (state, user: IUser): void {
@@ -185,6 +101,22 @@ const store = new Vuex.Store({
     },
     setServiceFilters (state, arrayOfServices: Array<string>): void {
       state.serviceFilters = arrayOfServices;
+    },
+    setDurationCategories (state, arrayOfDurations: Array<string>): void {
+      state.durationCategories = arrayOfDurations;
+    },
+    setServiceCategories (state, arrayOfServices: Array<string>): void {
+      state.serviceCategories = arrayOfServices;
+    },
+    resetListPageFilters (state): void {
+      state.orderFilter = "";
+      state.excludeFilter = "";
+      state.durationFilters = [];
+      state.serviceFilters = [];
+    },
+    resetPickFilters (state): void {
+      state.durationCategories = [];
+      state.serviceCategories = [];
     }
   },
   actions: {}

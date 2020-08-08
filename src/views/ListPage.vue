@@ -12,8 +12,8 @@
         >
       </div>
       <button
-        class="btn btn-transparent text-md"
-        :class="activeFilters ? 'text-teal-400' : 'text-gray-400'"
+        class="btn border text-md text-gray-200"
+        :class="activeFilters ? 'btn-teal-400' : 'btn-transparent border-transparent'"
         @click="invokeDrawer">
         <span v-show="activeFilters">{{ activeFilters }}</span> Filter<span v-show="activeFilters > 1">s</span> <i class="fas fa-sliders-h ml-2"></i>
       </button>
@@ -48,7 +48,95 @@ export default class ListPage extends Vue {
     return this.$store.getters.getMoviesToWatch.filter(movie => {
       return movie.title.toLowerCase().includes(this.searchInput) ||
         movie.service.title.toLowerCase().includes(this.searchInput);
-    });
+    })
+      .filter(movie => {
+        if (this.$store.getters.getServiceFilters.length) {
+          return this.$store.getters.getServiceFilters.includes(movie.service.value);
+        } else {
+          return true;
+        }
+      })
+      .filter(movie => {
+        if (this.$store.getters.getDurationFilters.length) {
+          if (this.$store.getters.getDurationFilters.includes("short")) {
+            if (Number(movie.duration) < 107) {
+              return movie;
+            }
+          }
+          if (this.$store.getters.getDurationFilters.includes("long")) {
+            if (Number(movie.duration) >= 107 && Number(movie.duration) <= 134) {
+              return movie;
+            }
+          }
+          if (this.$store.getters.getDurationFilters.includes("realLong")) {
+            if (Number(movie.duration) > 134) {
+              return movie;
+            }
+          }
+        } else {
+          return true;
+        }
+      })
+      .sort((movie1, movie2): number => {
+        switch (this.$store.getters.getOrderFilter) {
+          case "alpha":
+            if (movie1.title > movie2.title) {
+              return 1;
+            } else if (movie1.title < movie2.title) {
+              return -1;
+            } else {
+              return 0;
+            }
+          case "duration_asc":
+            if (Number(movie1.duration) > Number(movie2.duration)) {
+              return 1;
+            } else if (Number(movie1.duration) < Number(movie2.duration)) {
+              return -1;
+            } else {
+              return 0;
+            }
+          case "duration_desc":
+            if (Number(movie2.duration) > Number(movie1.duration)) {
+              return 1;
+            } else if (Number(movie2.duration) < Number(movie1.duration)) {
+              return -1;
+            } else {
+              return 0;
+            }
+          case "service_abc":
+            if (movie1.service.value > movie2.service.value) {
+              return 1;
+            } else if (movie1.service.value < movie2.service.value) {
+              return -1;
+            } else {
+              return 0;
+            }
+          default:
+            return 0;
+        }
+      })
+      .sort((movie1, movie2): number => {
+        switch (this.$store.getters.getExcludeFilter) {
+          case "exclude":
+            if (!movie1.exclude && movie2.exclude) {
+              return 1;
+            } else if (movie1.exclude && !movie2.exclude) {
+              return -1;
+            } else {
+              return 0;
+            }
+          case "available":
+            if (movie1.exclude && !movie2.exclude) {
+              return 1;
+            } else if (!movie1.exclude && movie2.exclude) {
+              return -1;
+            } else {
+              return 0;
+            }
+          default:
+            return 0;
+        }
+      }); ;
   }
 
   get activeFilters (): number {
@@ -62,6 +150,10 @@ export default class ListPage extends Vue {
 
   invokeDrawer (): void {
     this.$emit("drawer", "DrawerFilter");
+  }
+
+  beforeDestroy (): void {
+    this.$store.commit("resetListPageFilters");
   }
 }
 </script>
