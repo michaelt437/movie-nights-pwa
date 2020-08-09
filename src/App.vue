@@ -7,7 +7,7 @@
     />
     <app-paralax-background />
     <app-title />
-    <div v-if="loading" class="loading flex justify-center">
+    <div v-if="loading" class="loading flex justify-center mt-24">
       <i class="fas fa-circle-notch fa-spin text-teal-400 text-5xl"></i>
     </div>
     <router-view v-else @scrolling="handleScroll" @popup="invokePopup" @drawer="invokeDrawer" />
@@ -25,7 +25,7 @@
     </popup-base>
     <drawer-base v-if="drawerComponent !== null">
       <keep-alive>
-        <component 
+        <component
           :is="drawerComponent"
           @closeDrawer="closeDrawer" />
       </keep-alive>
@@ -116,16 +116,16 @@ export default class App extends Vue {
       .onSnapshot({ includeMetadataChanges: true }, (querySnapshot) => {
         querySnapshot.docChanges().forEach((change) => {
           if (change.type === "added") {
-            let movieObj = change.doc.data();
+            const movieObj = change.doc.data();
             movieObj.documentId = change.doc.id;
-            this.moviesList.push(<IMovie>movieObj);
+            this.moviesList.push(movieObj as IMovie);
           }
         });
       });
   }
 
   async checkForTonightsPick (): Promise<any> {
-    return Boolean(await db.collection("tonightsPick")
+    await db.collection("tonightsPick")
       .doc("movie")
       .get()
       .then(doc => {
@@ -136,9 +136,9 @@ export default class App extends Vue {
           this.$store.commit("updateRollPermission", true);
           this.$store.commit("setTonightsPick", null);
         }
-      }));
+      });
   }
-  
+
   invokeDrawer (name): void {
     document.querySelector("body")!.classList.add("noscroll");
     this.drawerComponent = name;
@@ -167,13 +167,13 @@ export default class App extends Vue {
   resetRollCheck (): void {
     if (this.$store.getters.getTonightsPick) {
       const lastPickTime = this.$store.getters.getTonightsPick.watchDate;
-  
+
       if (this.$moment().valueOf() > this.$moment(lastPickTime).add(2, "minutes").valueOf()) {
         this.$store.commit("resetRolls");
         this.$store.commit("updateUserHasRolled", false);
         this.$store.commit("setTonightsPick", null);
         this.$store.commit("updateRollPermission", true);
-  
+
         db.collection("tonightsPick")
           .doc("movie")
           .delete();
@@ -184,7 +184,7 @@ export default class App extends Vue {
             hasPicked: false,
             hasRolled: false,
             rolls: 4000
-          })
+          });
       }
     }
   }
