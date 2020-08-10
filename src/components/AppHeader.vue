@@ -12,13 +12,13 @@
     <div
     v-if="isSignedIn"
     class="avatar w-8 relative">
-      <div class="rounded-full overflow-hidden mb-2">
+      <div class="rounded-full overflow-hidden">
         <img :src="photoUrl" alt="photo" @click.stop="showMenu = !showMenu">
       </div>
       <transition name="scale">
         <div
           v-show="showMenu"
-         class="avatar__menu rounded-sm py-1 absolute right-0 w-32 z-20 bg-white origin-top-right">
+         class="avatar__menu rounded-sm py-1 absolute right-0 w-32 z-20 bg-white mt-2 origin-top-right">
           <div class="py-1 px-4 hover:bg-gray-200" @click.stop="logout">Log Out</div>
         </div>
       </transition>
