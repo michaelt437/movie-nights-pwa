@@ -97,3 +97,27 @@ input[type="checkbox"], input[type="checkbox"]:focus, label, label:focus {
   bottom: 0;
   background-color: rgba(0,0,0,.7);
 }
+
+.addSuccess {
+  &:before {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    content: "\f058";
+    color: #4fd1c5;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation-name: showSuccess;
+    animation-duration: .5s;
+    animation-iteration-count: 2;
+    animation-direction: alternate;
+  }
+}
+
+@keyframes showSuccess {
+  0% { transform: scale(0); }
+  50% { transform: scale(6); }
+  100% { transform: scale(6); }
+
+}

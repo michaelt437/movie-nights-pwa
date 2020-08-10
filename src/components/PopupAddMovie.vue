@@ -1,5 +1,7 @@
 <template>
-  <div class="rounded-lg bg-indigo-600 text-gray-200 px-5 pb-3 mb-4">
+  <div
+    class="rounded-lg bg-indigo-600 text-gray-200 px-5 pb-3 mb-4 relative"
+    :class="{ 'addSuccess' : success}">
     <p class="text-2xl text-center py-5">Add a movie</p>
     <label for="movie-title" class="text-sm">
       Movie Title
@@ -66,6 +68,8 @@ export default class PopupAddMovie extends Vue {
     exclude: false
   }
 
+  success = false;
+
   get randomMovieTitle (): string {
     const placeholderMoviesArrayLength = placeholders.movies.length;
     const randomPlaceholderIndex = Math.floor(Math.random() * placeholderMoviesArrayLength);
@@ -103,10 +107,14 @@ export default class PopupAddMovie extends Vue {
   addMovie (): void {
     db.collection(this.$store.getters.getCurrentUserDocumentId)
       .add(this.movieToAdd)
-      .then(reg => {
-        console.log("document written with id: ", reg.id);
+      .then(() => {
+        this.resetMovieModel();
+        this.success = true;
+        setTimeout(() => {
+          this.success = false;
+          this.$emit("closePopup");
+        }, 1000);
       });
-    this.closePopup();
   }
 
   closePopup (): void {

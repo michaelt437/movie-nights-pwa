@@ -46,8 +46,8 @@ export default class ListPage extends Vue {
 
   get filteredMovies (): Array<IMovie> {
     return this.$store.getters.getMoviesToWatch.filter(movie => {
-      return movie.title.toLowerCase().includes(this.searchInput) ||
-        movie.service.title.toLowerCase().includes(this.searchInput);
+      return movie.title.toLowerCase().includes(this.searchInput.toLowerCase()) ||
+        movie.service.title.toLowerCase().includes(this.searchInput.toLowerCase());
     })
       .filter(movie => {
         if (this.$store.getters.getServiceFilters.length) {
@@ -80,9 +80,9 @@ export default class ListPage extends Vue {
       .sort((movie1, movie2): number => {
         switch (this.$store.getters.getOrderFilter) {
           case "alpha":
-            if (movie1.title > movie2.title) {
+            if (movie1.title.toLowerCase() > movie2.title.toLowerCase()) {
               return 1;
-            } else if (movie1.title < movie2.title) {
+            } else if (movie1.title.toLowerCase() < movie2.title.toLowerCase()) {
               return -1;
             } else {
               return 0;
@@ -104,9 +104,9 @@ export default class ListPage extends Vue {
               return 0;
             }
           case "service_abc":
-            if (movie1.service.value > movie2.service.value) {
+            if (movie1.service.value.toLowerCase() > movie2.service.value.toLowerCase()) {
               return 1;
-            } else if (movie1.service.value < movie2.service.value) {
+            } else if (movie1.service.value.toLowerCase() < movie2.service.value.toLowerCase()) {
               return -1;
             } else {
               return 0;

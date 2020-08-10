@@ -42,7 +42,6 @@ export default class AppHeader extends Vue {
     const provider = new auth.GoogleAuthProvider();
     fb.auth().signInWithRedirect(provider)
       .then(response => {
-        console.log(response);
         this.$emit("update:isSignedIn", true);
       })
       .catch((error) => {

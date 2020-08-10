@@ -8,7 +8,7 @@
       class="text-center text-gray-200 py-4 flex-grow">
       <i :class="`fas fa-${link.icon} text-xl`"></i>
     </router-link>
-    <div class="text-center text-gray-700 py-4 flex-grow relative">
+    <div v-if="isDevelopment" class="text-center text-gray-700 py-4 flex-grow relative">
       <i class="fas fa-history text-xl"></i>
     </div>
     <span class="text-center text-green-500 py-4 flex-grow" @click="addMovie">
@@ -32,6 +32,10 @@ export default class AppFooter extends Vue {
       icon: "list"
     }
   ]
+
+  get isDevelopment (): boolean {
+    return process.env.NODE_ENV === "development";
+  }
 
   get users (): Array<IUser> {
     return this.$store.getters.getUsers.filter(user => user.name !== this.$store.getters.getCurrentUser.name);
