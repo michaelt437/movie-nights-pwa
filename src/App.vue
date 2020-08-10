@@ -204,6 +204,7 @@ export default class App extends Vue {
       const titleRect = document.querySelector(".app-title")!.getBoundingClientRect();
       this.titleBgSolid = titleRect.bottom < 0;
     });
+    console.log("base url", process.env.BASE_URL);
   }
 }
 </script>
