@@ -37,12 +37,12 @@ export default class AppFooter extends Vue {
     return process.env.NODE_ENV === "development";
   }
 
-  get users (): Array<IUser> {
-    return this.$store.getters.getUsers.filter(user => user.name !== this.$store.getters.getCurrentUser.name);
-  }
-
   addMovie (): void {
     this.$emit("popup", "PopupAddMovie");
+  }
+
+  create () {
+    console.log("mode: ", process.env.NODE_ENV);
   }
 }
 </script>
