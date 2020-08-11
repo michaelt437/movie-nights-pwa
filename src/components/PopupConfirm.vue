@@ -20,10 +20,12 @@ export default class PopupConfirm extends Vue {
   @Prop() readonly movie?: IMovie;
   @Prop(String) readonly message?: string;
   @Prop() readonly action?: Function;
+  @Prop() readonly postAction?: string;
 
   handleAction (): void {
     this.action!();
     this.closePopup();
+    this.$emit("toaster", this.postAction);
   }
 
   closePopup (): void {

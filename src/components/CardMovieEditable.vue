@@ -62,7 +62,7 @@ export default class CardMovieEditable extends Vue {
   }
 
   deletePrompt (): void {
-    this.$emit("popup", "PopupConfirm", this.movie, "Are you sure you want to delete this movie?", this.deleteMovie);
+    this.$emit("popup", "PopupConfirm", this.movie, "Are you sure you want to delete this movie?", this.deleteMovie, `${this.movie.title.toUpperCase()} has been deleted.`);
   }
 
   deleteMovie (): void {

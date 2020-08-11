@@ -108,12 +108,8 @@ export default class PopupAddMovie extends Vue {
     db.collection(this.$store.getters.getCurrentUserDocumentId)
       .add(this.movieToAdd)
       .then(() => {
-        this.resetMovieModel();
-        this.success = true;
-        setTimeout(() => {
-          this.success = false;
-          this.$emit("closePopup");
-        }, 1000);
+        this.$emit("toaster", `${this.movieToAdd.title.toUpperCase()} has been added.`);
+        this.closePopup();
       });
   }
 

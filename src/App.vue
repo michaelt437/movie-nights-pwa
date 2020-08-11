@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="pb-5 px-5" style="margin-top: 56px;">
+  <div id="app" class="pb-5 px-5 relative" style="margin-top: 56px;">
     <app-header
       :isSignedIn.sync="isSignedIn"
       :photoUrl="loggedInUser.photoURL"
@@ -18,9 +18,11 @@
         v-bind="{
           movie: propMovie,
           message: propMessage,
-          action: propAction
+          action: propAction,
+          postAction: propPostAction
          }"
         @closePopup="closePopup"
+        @toaster="invokeToaster"
       />
     </popup-base>
     <drawer-base v-if="drawerComponent !== null">
@@ -30,6 +32,9 @@
           @closeDrawer="closeDrawer" />
       </keep-alive>
     </drawer-base>
+    <div class="toaster bg-green-500 text-gray-200 rounded-md px-5 py-3 w-11/12 fixed bottom-0 z-20" :class="{ 'active' : toaster }">
+      {{ toasterText }}
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -73,9 +78,12 @@ export default class App extends Vue {
   drawerComponent = null;
   propMovie = {};
   propMessage = "";
+  propPostAction = "";
   moviesList: Array<IMovie> = [];
   propAction = "";
   loading = true;
+  toaster = false;
+  toasterText = "";
 
   handleScroll (bool): void {
     this.titleBgSolid = bool;
@@ -92,7 +100,7 @@ export default class App extends Vue {
       });
   }
 
-  invokePopup (name, props?, message?, action?): void {
+  invokePopup (name, props?, message?, action?, postAction?): void {
     this.popUpComponent = name;
     document.querySelector("body")!.classList.add("noscroll");
     if (props) {
@@ -104,6 +112,18 @@ export default class App extends Vue {
     if (action) {
       this.propAction = action;
     }
+    if (postAction) {
+      this.propPostAction = postAction;
+    }
+  }
+
+  invokeToaster (text): void {
+    this.toaster = true;
+    this.toasterText = text;
+    setTimeout(() => {
+      this.toaster = false;
+      this.toasterText = "";
+    }, 5000);
   }
 
   closePopup (): void {
@@ -207,3 +227,15 @@ export default class App extends Vue {
   }
 }
 </script>
+<style lang="scss">
+.toaster {
+  transform: translateY(100%);
+  opacity: 0;
+  transition: all .3s ease-in-out;
+
+  &.active {
+    opacity: 1;
+    transform: translateY(-50%);
+  }
+}
+</style>
