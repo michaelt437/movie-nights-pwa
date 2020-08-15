@@ -23,7 +23,7 @@
         </div>
       </transition>
     </div>
-    <button v-else class="btn btn-pink-600 text-sm text-white" @click="login">Log In</button>
+    <!-- <button v-else class="btn btn-pink-600 text-sm text-white" @click="login">Log In</button> -->
   </div>
 </template>
 <script lang="ts">

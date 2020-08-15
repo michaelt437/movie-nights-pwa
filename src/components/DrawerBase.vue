@@ -1,6 +1,6 @@
 <template>
-  <div class="overlay z-20">
-    <div class="sheet fixed rounded-t-md bg-white z-30">
+  <div class="overlay z-20 md:flex md:justify-center">
+    <div class="sheet fixed rounded-t-md bg-white z-30 md:w-1/3">
       <slot />
     </div>
   </div>
@@ -13,8 +13,10 @@ export default class DrawerBase extends Vue {}
 </script>
 <style lang="scss" scoped>
 .sheet {
-  right: 0;
-  left: 0;
   bottom: 0;
+  @media (max-width: 767px) {
+    right: 0;
+    left: 0;
+  }
 }
 </style>

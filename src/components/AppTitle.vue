@@ -1,7 +1,7 @@
 <template>
   <!-- Title -->
   <div
-    class="flex items-center text-white"
+    class="flex items-center text-white md:justify-center"
     :class="{ 'justify-center' : $route.name === 'Home'}"
     :style="containerHeight">
     <span class="app-title">

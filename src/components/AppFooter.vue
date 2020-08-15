@@ -2,6 +2,7 @@
   <div class="footer flex fixed bottom-0 left-0 w-full items-center bg-gray-900 z-10">
     <router-link
       v-for="link in links"
+      :title="link.name"
       :key="link.name"
       :to="{ name: link.name }"
       :class="{ 'text-teal-500' : $route.name === link.name }"

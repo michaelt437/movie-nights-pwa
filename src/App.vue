@@ -5,12 +5,17 @@
       :photoUrl="loggedInUser.photoURL"
       :titleBgSolid="titleBgSolid"
     />
-    <app-paralax-background />
+    <app-paralax-background class="md:hidden" />
     <app-title />
-    <div v-if="loading" class="loading flex justify-center mt-24">
-      <i class="fas fa-circle-notch fa-spin text-teal-400 text-5xl"></i>
+    <div v-if="isSignedIn" class="loading flex justify-center mt-24">
+      <template v-if="loading">
+        <i class="fas fa-circle-notch fa-spin text-teal-400 text-5xl"></i>
+      </template>
+      <router-view v-else @scrolling="handleScroll" @popup="invokePopup" @drawer="invokeDrawer" />
     </div>
-    <router-view v-else @scrolling="handleScroll" @popup="invokePopup" @drawer="invokeDrawer" />
+    <div v-else class="loading flex justify-center mt-24">
+      <button class="rounded-full bg-pink-600 py-5 text-white w-2/4" @click="login">Log In</button>
+    </div>
     <app-footer @popup="invokePopup" />
     <popup-base v-if="popUpComponent !== null">
       <component
@@ -52,7 +57,7 @@ import DrawerFilter from "@/components/DrawerFilter.vue";
 import DrawerPickFilter from "@/components/DrawerPickFilter.vue";
 import IUser from "@/interface/IUser";
 import IMovie from "./interface/IMovie";
-import { db, fb } from "@/db";
+import { db, fb, auth } from "@/db";
 
 @Component({
   components: {
@@ -87,6 +92,17 @@ export default class App extends Vue {
 
   handleScroll (bool): void {
     this.titleBgSolid = bool;
+  }
+
+  login (): void {
+    const provider = new auth.GoogleAuthProvider();
+    fb.auth().signInWithRedirect(provider)
+      .then(response => {
+        this.$emit("update:isSignedIn", true);
+      })
+      .catch((error) => {
+        console.error("Authentication error: ", error);
+      });
   }
 
   async init (): Promise<void> {
@@ -188,7 +204,7 @@ export default class App extends Vue {
     if (this.$store.getters.getTonightsPick) {
       const lastPickTime = this.$store.getters.getTonightsPick.watchDate;
 
-      if (this.$moment().valueOf() > this.$moment(lastPickTime).add(2, "minutes").valueOf()) {
+      if (this.$moment().valueOf() > this.$moment(lastPickTime).add(1, "days").hours(6).valueOf()) {
         this.$store.commit("resetRolls");
         this.$store.commit("updateUserHasRolled", false);
         this.$store.commit("setTonightsPick", null);

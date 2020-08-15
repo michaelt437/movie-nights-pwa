@@ -1,6 +1,6 @@
 <template>
   <div class="overlay flex justify-center items-center z-20">
-    <div class="popup-container w-11/12">
+    <div class="popup-container w-11/12 md:w-1/4">
       <slot />
     </div>
   </div>
