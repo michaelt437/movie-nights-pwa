@@ -7,3 +7,4 @@ const msg = JSON.stringify({
 
 xhr.open("POST", process.env.DEPLOY_HOOK);
 xhr.send(msg);
+console.log("hooked!");
