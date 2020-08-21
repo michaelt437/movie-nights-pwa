@@ -162,6 +162,22 @@ export default class CardMovieRoll extends Vue {
         hasPicked: true,
         pickedDateTime: _watchDate
       });
+
+    fetch(process.env.VUE_APP_SLACKHOOK, {
+      method: "POST",
+      body: JSON.stringify({
+        text: ":celebrate: Tonight's Pick! :celebrate:",
+        icon_emoji: ":niccage:",
+        attachments: [
+          {
+            fallback: `${this.randomMovie.title} - ${this.randomMovie.service.title} - ${this.randomMovie.duration}`,
+            author_name: `${this.$store.getters.getCurrentUser.name}`,
+            title: `${this.randomMovie.title.toUpperCase()}`,
+            text: `${this.randomMovie.service.title}\n_${this.randomMovie.duration} mins_`
+          }
+        ]
+      })
+    });
   }
 
   create () {
