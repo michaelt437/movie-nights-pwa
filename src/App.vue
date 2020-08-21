@@ -219,7 +219,7 @@ export default class App extends Vue {
           .update({
             hasPicked: false,
             hasRolled: false,
-            rolls: 4000
+            rolls: 4
           });
       }
     }
