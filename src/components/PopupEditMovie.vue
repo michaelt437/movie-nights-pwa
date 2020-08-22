@@ -10,6 +10,7 @@
         type="text"
         name="movie-title"
         id="movie-title"
+        autocomplete="off"
         v-model="movieToEdit.title"
         :placeholder="randomMovieTitle">
     </div>
@@ -19,6 +20,7 @@
         type="text"
         name="movie-duration"
         id="movie-duration"
+        autocomplete="off"
         v-model="movieToEdit.duration"
         placeholder="90">
     </div>
