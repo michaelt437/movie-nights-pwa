@@ -8,6 +8,7 @@
           id="search-input"
           v-model="searchInput"
           placeholder="Search..."
+          autocomplete="off"
           class="pl-6 w-full"
         >
       </div>
