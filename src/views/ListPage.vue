@@ -1,5 +1,5 @@
 <template>
-  <div id="list-page" class="relative xs:flex-grow">
+  <div id="list-page" class="relative flex-grow sm:flex-grow-0">
     <div class="btn-group items-center mb-2 relative">
       <i class="fas fa-search text-gray-500 absolute"></i>
       <div class="input search flex-grow mb-0">
