@@ -1,5 +1,5 @@
 <template>
-  <div id="home-page">
+  <div id="home-page" class="xs:flex-grow">
     <!-- tonight's pick -->
     <card-tonights-pick v-if="$store.getters.getTonightsPick !== null"/>
 

@@ -5,7 +5,7 @@
         {{ movie.title }}
         <label :for="`exclude-${titleCamelCase}`">
           <input type="checkbox" name="excludeMovie" :id="`exclude-${titleCamelCase}`" v-model="excludeMovie" hidden>
-          <span class="text-3xl text-blue-400 cursor-pointer">
+          <span class="text-3xl text-blue-400 cursor-pointer ml-2">
             <i v-show="excludeMovie" class="far fa-circle"></i>
             <i v-show="!excludeMovie" class="fas fa-check-circle"></i>
           </span>

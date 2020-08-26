@@ -78,6 +78,7 @@ body {
 
 .movie-card {
   box-shadow: 0px 10px 15px -5px rgba(0,0,0, .5);
+  width: 100%;
   @media (min-width: 768px) {
     min-width: 400px;
     max-width: 450px;
