@@ -213,16 +213,16 @@ export default class App extends Vue {
         db.collection("tonightsPick")
           .doc("movie")
           .delete();
-
-        db.collection("users")
-          .doc(this.$store.getters.getCurrentUserDocumentId)
-          .update({
-            hasPicked: false,
-            hasRolled: false,
-            rolls: 4
-          });
       }
     }
+
+    db.collection("users")
+      .doc(this.$store.getters.getCurrentUserDocumentId)
+      .update({
+        hasPicked: false,
+        hasRolled: false,
+        rolls: 4
+      });
   }
 
   // Lifecycle Hooks

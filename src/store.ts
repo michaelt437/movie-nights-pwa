@@ -80,7 +80,7 @@ const store = new Vuex.Store({
       state.tonightsPick = movie;
     },
     resetRolls (state): void {
-      state.currentUser.rolls = 4000;
+      state.currentUser.rolls = 4;
     },
     updateMovieExclude (state, { value, targetTitle }): void {
       const indexOfTargetMovie = state.moviesList.indexOf(state.moviesList.find(movie => movie.title === targetTitle) as IMovie);
