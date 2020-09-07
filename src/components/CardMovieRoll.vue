@@ -122,6 +122,10 @@ export default class CardMovieRoll extends Vue {
         rolls: fb.firestore.FieldValue.increment(-1)
       });
     this.$store.commit("decrementRolls");
+
+    if (this.$store.getters.getCurrentUser.rolls === 0) {
+      this.confirmSelection();
+    }
   }
 
   reRoll (): void {
