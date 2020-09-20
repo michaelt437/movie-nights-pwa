@@ -41,10 +41,10 @@
         <label
           :key="genre.value"
           :for="genre.value"
-          :class="{ 'active' : movieToEdit.genres.includes(genre.value)}"
+          :class="{ 'active' : movieToEdit.genres.includes(genre)}"
           class="chip"
           >
-            <input type="checkbox" :name="genre.value" :id="genre.value" :value="genre.value" v-model="movieToEdit.genres" hidden>
+            <input type="checkbox" :name="genre.value" :id="genre.value" :value="genre" v-model="movieToEdit.genres" hidden>
             {{ genre.title }}
         </label>
       </template>
@@ -70,7 +70,7 @@ import placeholders from "@/placeholders";
 import IMovie from "@/interface/IMovie";
 import IService from "@/interface/IService";
 import { db } from "@/db.ts";
-import { omit } from "lodash";
+import { omit, isEqual } from "lodash";
 
 @Component
 export default class PopupEditMovie extends Vue {
@@ -95,13 +95,16 @@ export default class PopupEditMovie extends Vue {
     { title: "Documentary", value: "documentary" },
     { title: "Drama", value: "drama" },
     { title: "Fantasy", value: "fantasy" },
+    { title: "Foreign", value: "foreign" },
+    { title: "Horror", value: "horror" },
     { title: "Musical", value: "musical" },
     { title: "Mystery", value: "mystery" },
     { title: "Romance", value: "romance" },
     { title: "Sci-Fi", value: "scifi" },
     { title: "Slice of Life", value: "sliceoflife" },
     { title: "Sports", value: "sports" },
-    { title: "Thriller", value: "thriller" }
+    { title: "Thriller", value: "thriller" },
+    { title: "Western", value: "western" }
   ]
 
   get randomMovieTitle (): string {
@@ -115,10 +118,8 @@ export default class PopupEditMovie extends Vue {
   }
 
   get disableButton (): boolean {
-    return (this.movieToEdit.title === this.movie.title && this.movieToEdit.duration === this.movie.duration && this.movieToEdit.service.title === this.movie.service.title) ||
-    this.movieToEdit.title === "" ||
-    this.movieToEdit.duration === "" || this.movieToEdit.duration === "0" ||
-    this.checkForPendingDuplicate;
+    return isEqual(this.movie, this.movieToEdit) ||
+      this.checkForPendingDuplicate;
   }
 
   get checkForPendingDuplicate (): boolean {

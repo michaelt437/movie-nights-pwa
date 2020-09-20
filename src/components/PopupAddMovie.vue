@@ -43,10 +43,10 @@
         <label
           :key="genre.value"
           :for="genre.value"
-          :class="{ 'active' : genresActive.includes(genre.value)}"
+          :class="{ 'active' : movieToAdd.genres.includes(genre)}"
           class="chip"
           >
-            <input type="checkbox" :name="genre.value" :id="genre.value" :value="genre.value" v-model="genresActive" hidden>
+            <input type="checkbox" :name="genre.value" :id="genre.value" :value="genre" v-model="movieToAdd.genres" hidden>
             {{ genre.title }}
         </label>
       </template>
@@ -81,11 +81,11 @@ export default class PopupAddMovie extends Vue {
     duration: "",
     watchDate: 0,
     hasWatched: false,
-    exclude: false
+    exclude: false,
+    genres: []
   }
 
   success = false;
-  genresActive = [];
   genres = [
     { title: "Action", value: "action" },
     { title: "Adventure", value: "adventure" },
@@ -94,13 +94,16 @@ export default class PopupAddMovie extends Vue {
     { title: "Documentary", value: "documentary" },
     { title: "Drama", value: "drama" },
     { title: "Fantasy", value: "fantasy" },
+    { title: "Foreign", value: "foreign" },
+    { title: "Horror", value: "horror" },
     { title: "Musical", value: "musical" },
     { title: "Mystery", value: "mystery" },
     { title: "Romance", value: "romance" },
     { title: "Sci-Fi", value: "scifi" },
     { title: "Slice of Life", value: "sliceoflife" },
     { title: "Sports", value: "sports" },
-    { title: "Thriller", value: "thriller" }
+    { title: "Thriller", value: "thriller" },
+    { title: "Western", value: "western" }
   ]
 
   get randomMovieTitle (): string {
@@ -133,7 +136,8 @@ export default class PopupAddMovie extends Vue {
       duration: "",
       watchDate: 0,
       hasWatched: false,
-      exclude: false
+      exclude: false,
+      genres: []
     };
   }
 
