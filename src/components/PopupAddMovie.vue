@@ -37,6 +37,20 @@
         :key="service.title"
         :value="service">{{ service.title }}</option>
     </select>
+    <label for="movie-service" class="text-sm">Genres</label>
+    <div class="chip-group flex-wrap mb-5">
+      <template v-for="genre in genres">
+        <label
+          :key="genre.value"
+          :for="genre.value"
+          :class="{ 'active' : genresActive.includes(genre.value)}"
+          class="chip"
+          >
+            <input type="checkbox" :name="genre.value" :id="genre.value" :value="genre.value" v-model="genresActive" hidden>
+            {{ genre.title }}
+        </label>
+      </template>
+    </div>
     <div class="btn-group flex">
       <span class="ml-auto"></span>
       <button class="btn btn-white outline" style="flex-basis: 30%;" @click="closePopup">
@@ -71,6 +85,23 @@ export default class PopupAddMovie extends Vue {
   }
 
   success = false;
+  genresActive = [];
+  genres = [
+    { title: "Action", value: "action" },
+    { title: "Adventure", value: "adventure" },
+    { title: "Animation", value: "animation" },
+    { title: "Crime", value: "crime" },
+    { title: "Documentary", value: "documentary" },
+    { title: "Drama", value: "drama" },
+    { title: "Fantasy", value: "fantasy" },
+    { title: "Musical", value: "musical" },
+    { title: "Mystery", value: "mystery" },
+    { title: "Romance", value: "romance" },
+    { title: "Sci-Fi", value: "scifi" },
+    { title: "Slice of Life", value: "sliceoflife" },
+    { title: "Sports", value: "sports" },
+    { title: "Thriller", value: "thriller" }
+  ]
 
   get randomMovieTitle (): string {
     const placeholderMoviesArrayLength = placeholders.movies.length;
