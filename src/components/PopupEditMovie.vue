@@ -41,7 +41,7 @@
         <label
           :key="genre.value"
           :for="genre.value"
-          :class="{ 'active' : movieToEdit.genres.includes(genre)}"
+          :class="hasGenre(genre.value)"
           class="chip"
           >
             <input type="checkbox" :name="genre.value" :id="genre.value" :value="genre" v-model="movieToEdit.genres" hidden>
@@ -69,6 +69,7 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import placeholders from "@/placeholders";
 import IMovie from "@/interface/IMovie";
 import IService from "@/interface/IService";
+import IGenre from "@/interface/IGenre";
 import { db } from "@/db.ts";
 import { omit, isEqual } from "lodash";
 
@@ -90,13 +91,16 @@ export default class PopupEditMovie extends Vue {
   genres = [
     { title: "Action", value: "action" },
     { title: "Adventure", value: "adventure" },
+    { title: "Anime", value: "anime" },
     { title: "Animation", value: "animation" },
+    { title: "Comedy", value: "comedy" },
     { title: "Crime", value: "crime" },
     { title: "Documentary", value: "documentary" },
     { title: "Drama", value: "drama" },
     { title: "Fantasy", value: "fantasy" },
     { title: "Foreign", value: "foreign" },
     { title: "Horror", value: "horror" },
+    { title: "Monster", value: "monster" },
     { title: "Musical", value: "musical" },
     { title: "Mystery", value: "mystery" },
     { title: "Romance", value: "romance" },
@@ -104,6 +108,7 @@ export default class PopupEditMovie extends Vue {
     { title: "Slice of Life", value: "sliceoflife" },
     { title: "Sports", value: "sports" },
     { title: "Thriller", value: "thriller" },
+    { title: "War", value: "war" },
     { title: "Western", value: "western" }
   ]
 
@@ -130,6 +135,12 @@ export default class PopupEditMovie extends Vue {
 
   get movieToEditOmitId (): IMovie {
     return omit(this.movieToEdit, "documentId");
+  }
+
+  hasGenre (genre: string): object {
+    return {
+      active: this.movieToEdit.genres.find((genreObj: IGenre) => genreObj.value === genre)
+    };
   }
 
   closePopup (): void {

@@ -65,6 +65,20 @@
         </label>
       </template>
     </div>
+    <p class="text-xl text-gray-800 mb-2"><strong>Genres</strong></p>
+    <div class="chip-group flex-wrap mb-5">
+      <template v-for="genre in genres">
+        <label
+          :key="genre.value"
+          :for="genre.value"
+          :class="{ 'active' : genreFilters.includes(genre.value) }"
+          class="chip"
+          >
+            <input type="checkbox" :name="genre.value" :id="genre.value" :value="genre.value" v-model="genreFilters" hidden>
+            {{ genre.title }}
+        </label>
+      </template>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -85,6 +99,26 @@ export default class DrawerFilter extends Vue {
     { label: "Long", value: "long" },
     { label: "Real Long", value: "realLong" }
   ];
+
+  genres = [
+    { title: "Action", value: "action" },
+    { title: "Adventure", value: "adventure" },
+    { title: "Animation", value: "animation" },
+    { title: "Crime", value: "crime" },
+    { title: "Documentary", value: "documentary" },
+    { title: "Drama", value: "drama" },
+    { title: "Fantasy", value: "fantasy" },
+    { title: "Foreign", value: "foreign" },
+    { title: "Horror", value: "horror" },
+    { title: "Musical", value: "musical" },
+    { title: "Mystery", value: "mystery" },
+    { title: "Romance", value: "romance" },
+    { title: "Sci-Fi", value: "scifi" },
+    { title: "Slice of Life", value: "sliceoflife" },
+    { title: "Sports", value: "sports" },
+    { title: "Thriller", value: "thriller" },
+    { title: "Western", value: "western" }
+  ]
 
   get streamingService (): Array<object> {
     return placeholders.streamingService;
@@ -120,6 +154,14 @@ export default class DrawerFilter extends Vue {
 
   set serviceFilters (value: Array<string>) {
     this.$store.commit("setServiceFilters", value);
+  }
+
+  get genreFilters (): Array<string> {
+    return this.$store.getters.getGenreFilters;
+  }
+
+  set genreFilters (value: Array<string>) {
+    this.$store.commit("setGenreFilters", value);
   }
 
   get activeFilters (): number {

@@ -78,6 +78,15 @@ export default class ListPage extends Vue {
           return true;
         }
       })
+      .filter(movie => {
+        if (this.$store.getters.getGenreFilters.length) {
+          return movie.genres.some(genre => {
+            return this.$store.getters.getGenreFilters.includes(genre.value);
+          });
+        } else {
+          return true;
+        }
+      })
       .sort((movie1, movie2): number => {
         switch (this.$store.getters.getOrderFilter) {
           case "alpha":

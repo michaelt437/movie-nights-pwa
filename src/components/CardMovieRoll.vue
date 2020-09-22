@@ -72,6 +72,15 @@ export default class CardMovieRoll extends Vue {
         } else {
           return true;
         }
+      })
+      .filter(movie => {
+        if (this.$store.getters.getGenreCategories.length) {
+          return movie.genres.some(genre => {
+            return this.$store.getters.getGenreCategories.includes(genre.value);
+          });
+        } else {
+          return true;
+        }
       });
   }
 

@@ -32,11 +32,26 @@
         </label>
       </template>
     </div>
+    <p class="text-xl text-gray-800 mb-2"><strong>Genres</strong></p>
+    <div class="chip-group flex-wrap mb-5">
+      <template v-for="genre in availableGenres">
+        <label
+          :key="genre.value"
+          :for="genre.value"
+          :class="{ 'active' : genreCategories.includes(genre.value) }"
+          class="chip"
+          >
+            <input type="checkbox" :name="genre.value" :id="genre.value" :value="genre.value" v-model="genreCategories" hidden>
+            {{ genre.title }}
+        </label>
+      </template>
+    </div>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import IService from "@/interface/IService";
+import IGenre from "@/interface/IGenre";
 import placeholders from "@/placeholders";
 
 @Component
@@ -59,6 +74,20 @@ export default class DrawerPickFilter extends Vue {
     return availableServices;
   }
 
+  get availableGenres (): Array<IGenre> {
+    const availableGenres: Array<IGenre> = [];
+    this.$store.getters.getMoviesToWatch.forEach(movie => {
+      if (!movie.exclude) {
+        movie.genres.forEach(genre => {
+          if (!availableGenres.find(genreValue => genreValue.value === genre.value)) {
+            availableGenres.push(genre);
+          }
+        });
+      }
+    });
+    return availableGenres;
+  }
+
   get durationCategories (): Array<string> {
     return this.$store.getters.getDurationCategories;
   }
@@ -73,6 +102,14 @@ export default class DrawerPickFilter extends Vue {
 
   set serviceCategories (value: Array<string>) {
     this.$store.commit("setServiceCategories", value);
+  }
+
+  get genreCategories (): Array<string> {
+    return this.$store.getters.getGenreCategories;
+  }
+
+  set genreCategories (value: Array<string>) {
+    this.$store.commit("setGenreCategories", value);
   }
 
   get pickCategories (): number | string {

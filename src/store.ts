@@ -16,8 +16,10 @@ const store = new Vuex.Store({
     excludeFilter: "",
     durationFilters: [] as Array<string>,
     serviceFilters: [] as Array<string>,
+    genreFilters: [] as Array<string>,
     durationCategories: [] as Array<string>,
-    serviceCategories: [] as Array<string>
+    serviceCategories: [] as Array<string>,
+    genreCategories: [] as Array<string>
   },
   getters: {
     getCurrentUser: (state): IUser => state.currentUser,
@@ -44,8 +46,10 @@ const store = new Vuex.Store({
     getExcludeFilter: (state): string => state.excludeFilter,
     getDurationFilters: (state): Array<string> => state.durationFilters,
     getServiceFilters: (state): Array<string> => state.serviceFilters,
+    getGenreFilters: (state): Array<string> => state.genreFilters,
     getDurationCategories: (state): Array<string> => state.durationCategories,
-    getServiceCategories: (state): Array<string> => state.serviceCategories
+    getServiceCategories: (state): Array<string> => state.serviceCategories,
+    getGenreCategories: (state): Array<string> => state.genreCategories
   },
   mutations: {
     setCurrentUser (state, user: IUser): void {
@@ -102,11 +106,17 @@ const store = new Vuex.Store({
     setServiceFilters (state, arrayOfServices: Array<string>): void {
       state.serviceFilters = arrayOfServices;
     },
+    setGenreFilters (state, arrayOfGenres: Array<string>): void {
+      state.genreFilters = arrayOfGenres;
+    },
     setDurationCategories (state, arrayOfDurations: Array<string>): void {
       state.durationCategories = arrayOfDurations;
     },
     setServiceCategories (state, arrayOfServices: Array<string>): void {
       state.serviceCategories = arrayOfServices;
+    },
+    setGenreCategories (state, arrayOfGenres: Array<string>): void {
+      state.genreCategories = arrayOfGenres;
     },
     resetListPageFilters (state): void {
       state.orderFilter = "";
