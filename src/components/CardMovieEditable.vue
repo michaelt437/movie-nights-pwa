@@ -14,7 +14,15 @@
       <div class="movie-card__service text-md my-2" :class="movie.service.value">{{ movie.service.title }}</div>
       <div class="movie-card__footer flex justify-between flex justify-between items-center">
         <div class="movie-card__duration text-sm">{{ movie.duration }} minutes</div>
-        <i class="fas mr-2 text-gray-400" :class="showActions ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+        <div class="movie-card__genres text-sm">
+          <span
+            v-for="genre in movie.genres"
+            :key="genre.value"
+            class="border border-gray-600 mr-1 px-2 rounded-sm">
+            {{ genre.title }}
+          </span>
+        </div>
+        <!-- <i class="fas mr-2 text-gray-400" :class="showActions ? 'fa-chevron-up' : 'fa-chevron-down'"></i> -->
       </div>
     </div>
     <div v-show="showActions" class="movie-card__actions px-5 py-3">
@@ -83,7 +91,7 @@ export default class CardMovieEditable extends Vue {
   }
 
   .movie-card--exclude {
-    .movie-card__title, .movie-card__service, .movie-card__duration {
+    .movie-card__title, .movie-card__service, .movie-card__duration, .movie-card__genres {
       opacity: .5;
     }
   }

@@ -196,6 +196,29 @@ const placeholders = {
       title: "Download",
       value: "download"
     }
+  ],
+  genres: [
+    { title: "Action", value: "action" },
+    { title: "Adventure", value: "adventure" },
+    { title: "Anime", value: "anime" },
+    { title: "Animation", value: "animation" },
+    { title: "Comedy", value: "comedy" },
+    { title: "Crime", value: "crime" },
+    { title: "Documentary", value: "documentary" },
+    { title: "Drama", value: "drama" },
+    { title: "Fantasy", value: "fantasy" },
+    { title: "Foreign", value: "foreign" },
+    { title: "Horror", value: "horror" },
+    { title: "Monster", value: "monster" },
+    { title: "Musical", value: "musical" },
+    { title: "Mystery", value: "mystery" },
+    { title: "Romance", value: "romance" },
+    { title: "Sci-Fi", value: "scifi" },
+    { title: "Slice of Life", value: "sliceoflife" },
+    { title: "Sports", value: "sports" },
+    { title: "Thriller", value: "thriller" },
+    { title: "War", value: "war" },
+    { title: "Western", value: "western" }
   ]
 };
 

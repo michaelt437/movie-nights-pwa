@@ -35,6 +35,20 @@
         :key="service.title"
         :value="service">{{ service.title }}</option>
     </select>
+    <label for="movie-service" class="text-sm">Genres</label>
+    <div class="chip-group flex-wrap mb-5">
+      <template v-for="genre in placeholders.genres">
+        <label
+          :key="genre.value"
+          :for="genre.value"
+          :class="hasGenre(genre.value)"
+          class="chip"
+          >
+            <input type="checkbox" :name="genre.value" :id="genre.value" :value="genre" v-model="movieToEdit.genres" hidden>
+            {{ genre.title }}
+        </label>
+      </template>
+    </div>
     <div class="btn-group flex">
       <span class="ml-auto"></span>
       <button class="btn btn-gray-400 outline" style="flex-basis: 30%;" @click="closePopup">
@@ -55,8 +69,9 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import placeholders from "@/placeholders";
 import IMovie from "@/interface/IMovie";
 import IService from "@/interface/IService";
+import IGenre from "@/interface/IGenre";
 import { db } from "@/db.ts";
-import { omit } from "lodash";
+import { omit, isEqual } from "lodash";
 
 @Component
 export default class PopupEditMovie extends Vue {
@@ -69,8 +84,11 @@ export default class PopupEditMovie extends Vue {
       title: "",
       value: ""
     },
-    duration: 0
+    duration: 0,
+    genres: []
   }
+
+  placeholders = placeholders;
 
   get randomMovieTitle (): string {
     const placeholderMoviesArrayLength = placeholders.movies.length;
@@ -83,10 +101,8 @@ export default class PopupEditMovie extends Vue {
   }
 
   get disableButton (): boolean {
-    return (this.movieToEdit.title === this.movie.title && this.movieToEdit.duration === this.movie.duration && this.movieToEdit.service.title === this.movie.service.title) ||
-    this.movieToEdit.title === "" ||
-    this.movieToEdit.duration === "" || this.movieToEdit.duration === "0" ||
-    this.checkForPendingDuplicate;
+    return isEqual(this.movie, this.movieToEdit) ||
+      this.checkForPendingDuplicate;
   }
 
   get checkForPendingDuplicate (): boolean {
@@ -97,6 +113,12 @@ export default class PopupEditMovie extends Vue {
 
   get movieToEditOmitId (): IMovie {
     return omit(this.movieToEdit, "documentId");
+  }
+
+  hasGenre (genre: string): object {
+    return {
+      active: this.movieToEdit.genres.find((genreObj: IGenre) => genreObj.value === genre)
+    };
   }
 
   closePopup (): void {
