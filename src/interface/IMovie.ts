@@ -10,6 +10,7 @@ interface IMovie {
   exclude?: boolean;
   documentId?: string;
   user?: string;
+  genres: Array<object>;
 }
 
 export default IMovie;

@@ -1,20 +1,25 @@
 <template>
   <div id="list-page" class="relative flex-grow sm:flex-grow-0">
-    <div class="btn-group items-center mb-2 relative">
+    <div class="flex items-center mb-12 border border-gray-700 rounded-md px-3 py-1">
       <i class="fas fa-search text-gray-500 absolute"></i>
-      <div class="input search flex-grow mb-0">
+      <div class="input search w-full">
         <input
           type="text"
           id="search-input"
           v-model="searchInput"
           placeholder="Search..."
           autocomplete="off"
-          class="pl-6 w-full"
-        >
+          class="pl-6 w-full outline-none"
+        />
+      </div>
+    </div>
+    <div class="btn-group items-center justify-between mb-4 relative text-gray-200">
+      <div class="btn btn-pink-600 pointer-events-none">
+        <span v-show="activeFilters">Showing</span> {{ filteredMovies.length }}
       </div>
       <button
-        class="btn border text-md text-gray-200"
-        :class="activeFilters ? 'btn-teal-400' : 'btn-transparent border-transparent'"
+        class="btn border text-md"
+        :class="activeFilters ? 'btn-teal-400' : 'btn-gray-500 outline'"
         @click="invokeDrawer">
         <span v-show="activeFilters">{{ activeFilters }}</span> Filter<span v-show="activeFilters > 1">s</span> <i class="fas fa-sliders-h ml-2"></i>
       </button>
@@ -78,6 +83,15 @@ export default class ListPage extends Vue {
           return true;
         }
       })
+      .filter(movie => {
+        if (this.$store.getters.getGenreFilters.length) {
+          return movie.genres.some(genre => {
+            return this.$store.getters.getGenreFilters.includes(genre.value);
+          });
+        } else {
+          return true;
+        }
+      })
       .sort((movie1, movie2): number => {
         switch (this.$store.getters.getOrderFilter) {
           case "alpha":
@@ -137,7 +151,7 @@ export default class ListPage extends Vue {
           default:
             return 0;
         }
-      }); ;
+      });
   }
 
   get activeFilters (): number {
@@ -146,6 +160,7 @@ export default class ListPage extends Vue {
     if (this.$store.state.excludeFilter !== "") count++;
     if (this.$store.state.durationFilters.length) count++;
     if (this.$store.state.serviceFilters.length) count++;
+    if (this.$store.state.genreFilters.length) count++;
     return count;
   }
 

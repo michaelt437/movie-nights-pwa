@@ -37,6 +37,20 @@
         :key="service.title"
         :value="service">{{ service.title }}</option>
     </select>
+    <label for="movie-service" class="text-sm">Genres</label>
+    <div class="chip-group flex-wrap mb-5">
+      <template v-for="genre in placeholders.genres">
+        <label
+          :key="genre.value"
+          :for="genre.value"
+          :class="{ 'active' : movieToAdd.genres.includes(genre)}"
+          class="chip"
+          >
+            <input type="checkbox" :name="genre.value" :id="genre.value" :value="genre" v-model="movieToAdd.genres" hidden>
+            {{ genre.title }}
+        </label>
+      </template>
+    </div>
     <div class="btn-group flex">
       <span class="ml-auto"></span>
       <button class="btn btn-white outline" style="flex-basis: 30%;" @click="closePopup">
@@ -56,7 +70,6 @@
 import { Component, Vue } from "vue-property-decorator";
 import { db } from "@/db.ts";
 import placeholders from "@/placeholders";
-import IMovie from "@/interface/IMovie";
 import IService from "@/interface/IService";
 
 @Component
@@ -67,9 +80,11 @@ export default class PopupAddMovie extends Vue {
     duration: "",
     watchDate: 0,
     hasWatched: false,
-    exclude: false
+    exclude: false,
+    genres: []
   }
 
+  placeholders = placeholders;
   success = false;
 
   get randomMovieTitle (): string {
@@ -102,7 +117,8 @@ export default class PopupAddMovie extends Vue {
       duration: "",
       watchDate: 0,
       hasWatched: false,
-      exclude: false
+      exclude: false,
+      genres: []
     };
   }
 
