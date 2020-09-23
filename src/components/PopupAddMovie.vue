@@ -39,7 +39,7 @@
     </select>
     <label for="movie-service" class="text-sm">Genres</label>
     <div class="chip-group flex-wrap mb-5">
-      <template v-for="genre in genres">
+      <template v-for="genre in placeholders.genres">
         <label
           :key="genre.value"
           :for="genre.value"
@@ -70,7 +70,6 @@
 import { Component, Vue } from "vue-property-decorator";
 import { db } from "@/db.ts";
 import placeholders from "@/placeholders";
-import IMovie from "@/interface/IMovie";
 import IService from "@/interface/IService";
 
 @Component
@@ -85,30 +84,8 @@ export default class PopupAddMovie extends Vue {
     genres: []
   }
 
+  placeholders = placeholders;
   success = false;
-  genres = [
-    { title: "Action", value: "action" },
-    { title: "Adventure", value: "adventure" },
-    { title: "Anime", value: "anime" },
-    { title: "Animation", value: "animation" },
-    { title: "Comedy", value: "comedy" },
-    { title: "Crime", value: "crime" },
-    { title: "Documentary", value: "documentary" },
-    { title: "Drama", value: "drama" },
-    { title: "Fantasy", value: "fantasy" },
-    { title: "Foreign", value: "foreign" },
-    { title: "Horror", value: "horror" },
-    { title: "Monster", value: "monster" },
-    { title: "Musical", value: "musical" },
-    { title: "Mystery", value: "mystery" },
-    { title: "Romance", value: "romance" },
-    { title: "Sci-Fi", value: "scifi" },
-    { title: "Slice of Life", value: "sliceoflife" },
-    { title: "Sports", value: "sports" },
-    { title: "Thriller", value: "thriller" },
-    { title: "War", value: "war" },
-    { title: "Western", value: "western" }
-  ]
 
   get randomMovieTitle (): string {
     const placeholderMoviesArrayLength = placeholders.movies.length;

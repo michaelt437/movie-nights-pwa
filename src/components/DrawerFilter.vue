@@ -67,7 +67,7 @@
     </div>
     <p class="text-xl text-gray-800 mb-2"><strong>Genres</strong></p>
     <div class="chip-group flex-wrap mb-5">
-      <template v-for="genre in genres">
+      <template v-for="genre in placeholders.genres">
         <label
           :key="genre.value"
           :for="genre.value"
@@ -100,25 +100,7 @@ export default class DrawerFilter extends Vue {
     { label: "Real Long", value: "realLong" }
   ];
 
-  genres = [
-    { title: "Action", value: "action" },
-    { title: "Adventure", value: "adventure" },
-    { title: "Animation", value: "animation" },
-    { title: "Crime", value: "crime" },
-    { title: "Documentary", value: "documentary" },
-    { title: "Drama", value: "drama" },
-    { title: "Fantasy", value: "fantasy" },
-    { title: "Foreign", value: "foreign" },
-    { title: "Horror", value: "horror" },
-    { title: "Musical", value: "musical" },
-    { title: "Mystery", value: "mystery" },
-    { title: "Romance", value: "romance" },
-    { title: "Sci-Fi", value: "scifi" },
-    { title: "Slice of Life", value: "sliceoflife" },
-    { title: "Sports", value: "sports" },
-    { title: "Thriller", value: "thriller" },
-    { title: "Western", value: "western" }
-  ]
+  placeholders = placeholders;
 
   get streamingService (): Array<object> {
     return placeholders.streamingService;
@@ -170,6 +152,7 @@ export default class DrawerFilter extends Vue {
     if (this.$store.getters.getExcludeFilter !== "") count++;
     if (this.$store.getters.getDurationFilters.length) count++;
     if (this.$store.getters.getServiceFilters.length) count++;
+    if (this.$store.getters.getGenreFilters.length) count++;
     return count;
   }
 

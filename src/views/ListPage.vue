@@ -155,6 +155,7 @@ export default class ListPage extends Vue {
     if (this.$store.state.excludeFilter !== "") count++;
     if (this.$store.state.durationFilters.length) count++;
     if (this.$store.state.serviceFilters.length) count++;
+    if (this.$store.state.genreFilters.length) count++;
     return count;
   }
 

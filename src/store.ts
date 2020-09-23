@@ -123,10 +123,12 @@ const store = new Vuex.Store({
       state.excludeFilter = "";
       state.durationFilters = [];
       state.serviceFilters = [];
+      state.genreFilters = [];
     },
     resetPickFilters (state): void {
       state.durationCategories = [];
       state.serviceCategories = [];
+      state.genreCategories = [];
     }
   },
   actions: {}

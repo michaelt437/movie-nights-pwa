@@ -52,7 +52,6 @@
 import { Component, Vue } from "vue-property-decorator";
 import IService from "@/interface/IService";
 import IGenre from "@/interface/IGenre";
-import placeholders from "@/placeholders";
 
 @Component
 export default class DrawerPickFilter extends Vue {
@@ -119,6 +118,9 @@ export default class DrawerPickFilter extends Vue {
     }
     if (this.$store.getters.getServiceCategories.length) {
       pickingFrom += this.$store.getters.getServiceCategories.length;
+    }
+    if (this.$store.getters.getGenreCategories.length) {
+      pickingFrom += this.$store.getters.getGenreCategories.length;
     }
     return !pickingFrom ? "All" : pickingFrom;
   }

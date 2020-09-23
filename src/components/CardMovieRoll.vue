@@ -19,8 +19,19 @@
       </div>
     </div>
 
-    <div v-else class="movie-card rounded-lg btn-indigo-600 text-center text-gray-200 py-8 mb-4 cursor-pointer relative" @click="makeRoll">
-      <div class="text-2xl">What's the pick?</div>
+    <div
+      v-else
+      class="movie-card rounded-lg btn-indigo-600 text-center text-gray-200 py-8 mb-4 cursor-pointer relative"
+      :class="{ 'pointer-events-none' : !moviesToPickList.length}"
+      @click="makeRoll">
+      <div class="text-2xl">
+        <template v-if="moviesToPickList.length">
+          What's the Pick?
+        </template>
+        <template v-else>
+          No matches
+        </template>
+      </div>
     </div>
 
     <button v-show="!rollPending" id="pick-filter" class="btn btn-teal-500 text-gray-200 absolute" @click.stop="invokeDrawer">Categories: {{ pickCategories }}</button>
@@ -109,6 +120,9 @@ export default class CardMovieRoll extends Vue {
     if (this.$store.getters.getServiceCategories.length) {
       pickingFrom += this.$store.getters.getServiceCategories.length;
     }
+    if (this.$store.getters.getGenreCategories.length) {
+      pickingFrom += this.$store.getters.getGenreCategories.length;
+    }
     return !pickingFrom ? "All" : pickingFrom;
   }
 
@@ -180,10 +194,12 @@ export default class CardMovieRoll extends Vue {
       method: "POST",
       body: JSON.stringify({
         text: ":celebrate: Tonight's Pick! :celebrate:",
+        // eslint-disable-next-line
         icon_emoji: ":niccage:",
         attachments: [
           {
             fallback: `${this.randomMovie.title} - ${this.randomMovie.service.title} - ${this.randomMovie.duration}`,
+            // eslint-disable-next-line
             author_name: `${this.$store.getters.getCurrentUser.name}`,
             title: `${this.randomMovie.title.toUpperCase()}`,
             text: `${this.randomMovie.service.title}\n_${this.randomMovie.duration} mins_`

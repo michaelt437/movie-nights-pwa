@@ -41,7 +41,6 @@
 <script lang='ts'>
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import IMovie from "@/interface/IMovie";
-import IGenre from "@/interface/IGenre";
 import { db } from "@/db.ts";
 
 @Component
