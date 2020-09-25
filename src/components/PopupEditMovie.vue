@@ -1,55 +1,57 @@
 <template>
-  <div class="rounded-lg bg-indigo-600 text-gray-200 px-5 pb-3 mb-4">
+  <div class="flex flex-col rounded-lg bg-indigo-600 text-gray-200 px-5 mb-4">
     <p class="text-2xl text-center py-5">Edit Details</p>
-    <label for="movie-title" class="text-sm">
-      Movie Title
-      <span v-show="checkForPendingDuplicate" class="text-red-500 italic"> - Duplicate title not yet picked</span>
-    </label>
-    <div class="input">
-      <input
-        type="text"
-        name="movie-title"
-        id="movie-title"
-        autocomplete="off"
-        v-model="movieToEdit.title"
-        :placeholder="randomMovieTitle">
+    <div class="popup-content overflow-y-auto">
+      <label for="movie-title" class="text-sm">
+        Movie Title
+        <span v-show="checkForPendingDuplicate" class="text-red-500 italic"> - Duplicate title not yet picked</span>
+      </label>
+      <div class="input">
+        <input
+          type="text"
+          name="movie-title"
+          id="movie-title"
+          autocomplete="off"
+          v-model="movieToEdit.title"
+          :placeholder="randomMovieTitle">
+      </div>
+      <label for="movie-duration" class="text-sm">Duration</label>
+      <div class="input">
+        <input
+          type="text"
+          name="movie-duration"
+          id="movie-duration"
+          autocomplete="off"
+          v-model="movieToEdit.duration"
+          placeholder="90">
+      </div>
+      <label for="movie-service" class="text-sm">Streaming Service</label>
+      <select
+        name="movie-service"
+        id="movie-service"
+        v-model="movieToEdit.service">
+        <option value="" selected disabled hidden>1channel.rus</option>
+        <option
+          v-for="service in services"
+          :key="service.title"
+          :value="service">{{ service.title }}</option>
+      </select>
+      <label for="movie-service" class="text-sm">Genres</label>
+      <div class="chip-group flex-wrap mb-5">
+        <template v-for="genre in placeholders.genres">
+          <label
+            :key="genre.value"
+            :for="genre.value"
+            :class="hasGenre(genre.value)"
+            class="chip"
+            >
+              <input type="checkbox" :name="genre.value" :id="genre.value" :value="genre" v-model="movieToEdit.genres" hidden>
+              {{ genre.title }}
+          </label>
+        </template>
+      </div>
     </div>
-    <label for="movie-duration" class="text-sm">Duration</label>
-    <div class="input">
-      <input
-        type="text"
-        name="movie-duration"
-        id="movie-duration"
-        autocomplete="off"
-        v-model="movieToEdit.duration"
-        placeholder="90">
-    </div>
-    <label for="movie-service" class="text-sm">Streaming Service</label>
-    <select
-      name="movie-service"
-      id="movie-service"
-      v-model="movieToEdit.service">
-      <option value="" selected disabled hidden>1channel.rus</option>
-      <option
-        v-for="service in services"
-        :key="service.title"
-        :value="service">{{ service.title }}</option>
-    </select>
-    <label for="movie-service" class="text-sm">Genres</label>
-    <div class="chip-group flex-wrap mb-5">
-      <template v-for="genre in placeholders.genres">
-        <label
-          :key="genre.value"
-          :for="genre.value"
-          :class="hasGenre(genre.value)"
-          class="chip"
-          >
-            <input type="checkbox" :name="genre.value" :id="genre.value" :value="genre" v-model="movieToEdit.genres" hidden>
-            {{ genre.title }}
-        </label>
-      </template>
-    </div>
-    <div class="btn-group flex">
+    <div class="btn-group flex py-3">
       <span class="ml-auto"></span>
       <button class="btn btn-gray-400 outline" style="flex-basis: 30%;" @click="closePopup">
         <i class="fas fa-times mr-1"></i> Cancel
