@@ -14,8 +14,8 @@ export default class PopupBase extends Vue {}
 <style lang="scss" scoped>
 .popup-container {
   @media (max-width: 767px) {
-    height: 600px;
-    max-height: 600px;
+    height: 485px;
+    max-height: 485px;
   }
 }
 </style>

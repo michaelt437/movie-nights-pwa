@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col rounded-lg bg-indigo-600 text-gray-200 px-5 mb-4 relative"
+    class="flex flex-col rounded-lg bg-indigo-600 text-gray-200 px-5 mb-4 relative h-full"
     :class="{ 'addSuccess' : success}">
     <p class="text-2xl text-center py-5">Add a movie</p>
     <div class="popup-content overflow-y-auto">

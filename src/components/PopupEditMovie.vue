@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col rounded-lg bg-indigo-600 text-gray-200 px-5 mb-4">
+  <div class="flex flex-col rounded-lg bg-indigo-600 text-gray-200 px-5 mb-4 h-full">
     <p class="text-2xl text-center py-5">Edit Details</p>
     <div class="popup-content overflow-y-auto">
       <label for="movie-title" class="text-sm">
