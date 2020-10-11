@@ -169,6 +169,10 @@ const placeholders = {
       value: "vrv"
     },
     {
+      title: "Shudder",
+      value: "shudder"
+    },
+    {
       title: "Criterion Collection",
       value: "criterion"
     },
@@ -183,6 +187,10 @@ const placeholders = {
     {
       title: "Viki",
       value: "viki"
+    },
+    {
+      title: "Youtube",
+      value: "youtube"
     },
     {
       title: "Hoopla",
