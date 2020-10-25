@@ -189,6 +189,10 @@ const placeholders = {
       value: "viki"
     },
     {
+      title: "Peacock TV",
+      value: "peacock"
+    },
+    {
       title: "Youtube",
       value: "youtube"
     },

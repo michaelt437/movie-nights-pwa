@@ -78,6 +78,7 @@ import { omit, isEqual } from "lodash";
 @Component
 export default class PopupEditMovie extends Vue {
   @Prop(Object) readonly movie!: IMovie;
+  @Prop() readonly action?: Function;
 
   movieToEdit: IMovie = {
     documentId: "",
@@ -124,6 +125,7 @@ export default class PopupEditMovie extends Vue {
   }
 
   closePopup (): void {
+    this.action!();
     this.$emit("closePopup");
   }
 
@@ -132,6 +134,7 @@ export default class PopupEditMovie extends Vue {
       .doc(this.movie.documentId)
       .update(this.movieToEditOmitId);
     this.$store.commit("submitEditsToMovie", this.movieToEdit);
+    this.action!();
     this.closePopup();
   }
 

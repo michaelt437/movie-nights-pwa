@@ -24,6 +24,13 @@ $stream-service: (
   -webkit-text-fill-color: transparent;
 }
 
+.peacock {
+  background: rgb(233,242,13);
+  background: -webkit-linear-gradient(left, rgba(233,242,13,1) 0%, rgba(237,114,20,1) 4%, rgba(235,26,19,1) 9%, rgba(122,22,237,1) 14%, rgba(33,131,240,1) 19%, rgba(0,255,64,1) 24%);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 @each $service, $color in $stream-service {
   .#{$service} {
     color: #{$color}

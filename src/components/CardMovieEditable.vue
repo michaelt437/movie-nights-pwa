@@ -66,7 +66,7 @@ export default class CardMovieEditable extends Vue {
   }
 
   editMovie (): void {
-    this.$emit("popup", "PopupEditMovie", this.movie);
+    this.$emit("popup", "PopupEditMovie", this.movie, null, () => { this.showActions = false; });
   }
 
   deletePrompt (): void {
