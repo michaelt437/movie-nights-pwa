@@ -1,6 +1,6 @@
 <template>
   <div class="movie-card rounded-lg bg-indigo-600 text-gray-200 px-5 pt-6 pb-3 mb-4 border border-yellow-500 relative">
-    <div class="absolute text-black btn btn-yellow-500 capitalize whitespace-no-wrap pointer-events-none" style="top: -20px; right: 50%; transform: translateX(50%);">
+    <div class="absolute text-black btn btn-yellow-500 capitalize whitespace-nowrap pointer-events-none" style="top: -20px; right: 50%; transform: translateX(50%);">
       <i class="fas fa-star text-white text-sm mr-3"></i>
       {{ movie.user }}'s Pick
       <i class="fas fa-star text-white text-sm ml-3"></i>
