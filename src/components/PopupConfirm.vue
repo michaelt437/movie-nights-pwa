@@ -6,7 +6,7 @@
       <button class="btn btn-white outline" @click="closePopup">
         <i class="fas fa-times mr-1"></i> Cancel
       </button>
-      <button class="btn btn-teal-400" @click="handleAction">
+      <button class="btn btn-green-400" @click="handleAction">
         <i class="fas fa-check mr-1"></i> Confirm
       </button>
     </div>

@@ -60,7 +60,7 @@
       </button>
       <button
         :class="{ 'disabled' : disableButton }"
-        class="btn btn-teal-400"
+        class="btn btn-green-400"
         style="flex-basis: 30%;"
         @click="disableButton ? null : addMovie()">
         <i class="fas fa-plus mr-1"></i> Add

@@ -19,7 +19,7 @@
       </div>
       <button
         class="btn border text-md"
-        :class="activeFilters ? 'btn-teal-400' : 'btn-gray-500 outline'"
+        :class="activeFilters ? 'btn-green-400' : 'btn-gray-500 outline'"
         @click="invokeDrawer">
         <span v-show="activeFilters">{{ activeFilters }}</span> Filter<span v-show="activeFilters > 1">s</span> <i class="fas fa-sliders-h ml-2"></i>
       </button>

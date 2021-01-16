@@ -9,7 +9,7 @@
     <app-title />
     <div v-if="isSignedIn" class="loading flex justify-center mt-24">
       <template v-if="loading">
-        <i class="fas fa-circle-notch fa-spin text-teal-400 text-5xl"></i>
+        <i class="fas fa-circle-notch fa-spin text-green-400 text-5xl"></i>
       </template>
       <router-view v-else @scrolling="handleScroll" @popup="invokePopup" @drawer="invokeDrawer" />
     </div>

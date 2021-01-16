@@ -5,7 +5,7 @@
       :title="link.name"
       :key="link.name"
       :to="{ name: link.name }"
-      :class="{ 'text-teal-500' : $route.name === link.name }"
+      :class="{ 'text-green-500' : $route.name === link.name }"
       class="text-center text-gray-200 py-4 flex-grow">
       <i :class="`fas fa-${link.icon} text-xl`"></i>
     </router-link>
