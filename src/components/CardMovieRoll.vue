@@ -12,7 +12,7 @@
           <button class="btn flex-grow" :class="reRollColor" @click="reRoll">
             <i class="fas fa-dice"></i> ({{ this.$store.getters.getCurrentUser.rolls }})
           </button>
-          <button class="btn btn-teal-400 flex-grow" style="flex-basis: 35%" @click="confirmSelection">
+          <button class="btn btn-green-400 flex-grow" style="flex-basis: 35%" @click="confirmSelection">
             <i class="fas fa-check"></i>
           </button>
         </div>
@@ -34,7 +34,7 @@
       </div>
     </div>
 
-    <button v-show="!rollPending" id="pick-filter" class="btn btn-teal-500 text-gray-200 absolute" @click.stop="invokeDrawer">Categories: {{ pickCategories }}</button>
+    <button v-show="!rollPending" id="pick-filter" class="btn btn-green-500 text-gray-200 absolute" @click.stop="invokeDrawer">Categories: {{ pickCategories }}</button>
   </div>
 </template>
 <script lang="ts">

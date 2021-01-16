@@ -58,7 +58,7 @@
       </button>
       <button
         :class="{ 'disabled' : disableButton }"
-        class="btn btn-teal-400"
+        class="btn btn-green-400"
         style="flex-basis: 30%;"
         @click="submitEdits">
         <i class="fas fa-check mr-1"></i> Save

@@ -27,7 +27,7 @@
     </div>
     <div v-show="showActions" class="movie-card__actions px-5 py-3">
       <div class="btn-group">
-        <button class="btn btn-teal-600 flex-grow" @click.stop="editMovie">
+        <button class="btn btn-green-600 flex-grow" @click.stop="editMovie">
           Edit
         </button>
         <button class="btn btn-red-600 flex-grow" @click.stop="deletePrompt">
