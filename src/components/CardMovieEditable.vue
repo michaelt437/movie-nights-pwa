@@ -1,15 +1,18 @@
 <template>
   <div class="movie-card rounded-lg text-gray-200 mb-4 flex flex-col overflow-hidden" :class="excludeMovie ? 'bg-gray-900 movie-card--exclude' : 'bg-gray-800'" @click="showActions = !showActions">
     <div class="movie-card__content py-3 px-5">
-      <div class="movie-card__title text-2xl flex justify-between items-center capitalize">
+      <div class="movie-card__title text-2xl flex items-center capitalize">
         {{ movie.title }}
-        <label :for="`exclude-${titleCamelCase}`">
-          <input type="checkbox" name="excludeMovie" :id="`exclude-${titleCamelCase}`" v-model="excludeMovie" hidden>
-          <span class="text-3xl text-blue-400 cursor-pointer ml-2">
-            <i v-show="excludeMovie" class="far fa-circle"></i>
-            <i v-show="!excludeMovie" class="fas fa-check-circle"></i>
-          </span>
-        </label>
+        <span class="flex items-center ml-auto">
+          <i v-show="isRewatch" class="fas fa-sync text-green-300" title="Rewatch"></i>
+          <label :for="`exclude-${titleCamelCase}`">
+            <input type="checkbox" name="excludeMovie" :id="`exclude-${titleCamelCase}`" v-model="excludeMovie" hidden>
+            <span class="text-3xl text-blue-400 cursor-pointer ml-2">
+              <i v-show="excludeMovie" class="far fa-circle"></i>
+              <i v-show="!excludeMovie" class="fas fa-check-circle"></i>
+            </span>
+          </label>
+        </span>
       </div>
       <div class="movie-card__service text-md my-2" :class="movie.service.value">{{ movie.service.title }}</div>
       <div class="movie-card__footer flex justify-between flex justify-between items-center">
@@ -63,6 +66,13 @@ export default class CardMovieEditable extends Vue {
 
   get titleCamelCase () {
     return this.movie.title.split(" ").join("");
+  }
+
+  get isRewatch (): boolean {
+    return Boolean(this.$store.getters.getMoviesWatched.find((paramMovie: IMovie) => {
+      return paramMovie.title.toLowerCase() === this.movie.title.toLowerCase() &&
+      paramMovie.hasWatched === true;
+    }));
   }
 
   editMovie (): void {

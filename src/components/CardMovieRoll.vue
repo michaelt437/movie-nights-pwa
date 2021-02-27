@@ -1,7 +1,10 @@
 <template>
   <div id="rolling-card" class="relative">
     <div v-if="rollPending" class="movie-card rounded-lg bg-indigo-600 text-gray-200 px-5 py-3 mb-4">
-      <div class="movie-card__title text-2xl capitalize">{{ randomMovie.title }}</div>
+      <div class="movie-card__title flex items-center text-2xl capitalize">
+        {{ randomMovie.title }}
+        <i v-show="isRewatch" class="fas fa-sync text-green-300 ml-auto" title="Rewatch"></i>
+      </div>
       <div class="movie-card__service text-lg my-2" :class="randomMovie.service.value">{{ randomMovie.service.title }}</div>
       <div class="movie-card__duration text-sm mb-5">{{ randomMovie.duration }} minutes</div>
       <div class="movie-card__footer">
@@ -49,10 +52,10 @@ import { db, fb } from "@/db.ts";
   }
 })
 export default class CardMovieRoll extends Vue {
-  private rollPending = false;
-  private prevIndex: number | null = null;
-  private currIndex: number | null = null;
-  private rollsLeft = 3;
+  rollPending = false;
+  prevIndex: number | null = null;
+  currIndex: number | null = null;
+  rollsLeft = 3;
 
   get moviesToPickList (): Array<IMovie> {
     return this.$store.getters.getMoviesToWatch.filter(movie => !movie.exclude)
@@ -124,6 +127,13 @@ export default class CardMovieRoll extends Vue {
       pickingFrom += this.$store.getters.getGenreCategories.length;
     }
     return !pickingFrom ? "All" : pickingFrom;
+  }
+
+  get isRewatch (): boolean {
+    return Boolean(this.$store.getters.getMoviesWatched.find((paramMovie: IMovie) => {
+      return paramMovie.title.toLowerCase() === this.randomMovie.title.toLowerCase() &&
+      paramMovie.hasWatched === true;
+    }));
   }
 
   invokeDrawer (): void {
