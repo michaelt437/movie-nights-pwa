@@ -5,7 +5,10 @@
       {{ movie.user }}'s Pick
       <i class="fas fa-star text-white text-sm ml-3"></i>
     </div>
-    <div class="movie-card__title text-2xl capitalize">{{ movie.title }}</div>
+    <div class="movie-card__title text-2xl flex items-center justify-between capitalize">
+      {{ movie.title }}
+      <i v-show="isRewatch" class="fas fa-sync text-green-300 ml-auto" title="Rewatch"></i>
+    </div>
     <div class="movie-card__service text-md my-2" :class="movie.service.value">{{ movie.service.title }}</div>
     <div class="movie-card__footer flex justify-between">
       <div class="movie-card__duration text-sm">{{ movie.duration }} minutes</div>
@@ -20,6 +23,13 @@ import IMovie from "@/interface/IMovie";
 export default class CardTonightsPick extends Vue {
   get movie (): IMovie {
     return this.$store.getters.getTonightsPick;
+  }
+
+  get isRewatch (): boolean {
+    return Boolean(this.$store.getters.getMoviesWatched.find((paramMovie: IMovie) => {
+      return paramMovie.title.toLowerCase() === this.movie.title.toLowerCase() &&
+      paramMovie.hasWatched === true;
+    }));
   }
 }
 </script>

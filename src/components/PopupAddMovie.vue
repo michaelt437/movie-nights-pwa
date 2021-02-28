@@ -6,7 +6,8 @@
     <div class="popup-content overflow-y-auto">
       <label for="movie-title" class="text-sm">
         Movie Title
-        <span v-show="checkForPendingDuplicate" class="text-red-500 italic"> - Duplicate title not yet picked</span>
+        <span v-show="checkForPendingDuplicate" class="text-red-500 italic"> - Already in the list</span>
+        <span v-show="isRewatch" class="text-green-500"> - Rewatch</span>
       </label>
       <div class="input">
         <input
@@ -73,6 +74,7 @@ import { Component, Vue } from "vue-property-decorator";
 import { db } from "@/db.ts";
 import placeholders from "@/placeholders";
 import IService from "@/interface/IService";
+import IMovie from "@/interface/IMovie";
 
 @Component
 export default class PopupAddMovie extends Vue {
@@ -109,6 +111,13 @@ export default class PopupAddMovie extends Vue {
   get checkForPendingDuplicate (): boolean {
     return Boolean(this.$store.getters.getMoviesToWatch.find(movie => {
       return movie.title.toLowerCase() === this.movieToAdd.title.toLowerCase();
+    }));
+  }
+
+  get isRewatch (): boolean {
+    return Boolean(this.$store.getters.getAllMovies.find((movie: IMovie) => {
+      return movie.title.toLowerCase() === this.movieToAdd.title.toLowerCase() &&
+        movie.hasWatched === true;
     }));
   }
 
