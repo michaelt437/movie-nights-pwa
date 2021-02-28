@@ -1,6 +1,9 @@
 <template>
   <div class="movie-card rounded-lg bg-gray-800 text-gray-200 px-5 py-3 mb-4">
-    <div class="movie-card__title text-2xl capitalize">{{ movie.title }}</div>
+    <div class="movie-card__title flex items-center text-2xl capitalize">
+      {{ movie.title }}
+      <i v-show="isRewatch" class="fas fa-sync text-green-300 ml-auto" title="Rewatch"></i>
+    </div>
     <div class="movie-card__service text-md my-2" :class="movie.service.value">{{ movie.service.title }}</div>
     <div class="movie-card__footer flex justify-between">
       <div class="movie-card__duration text-sm">{{ movie.duration }} minutes</div>
@@ -16,5 +19,12 @@ import IMovie from "@/interface/IMovie";
 @Component
 export default class CardMovie extends Vue {
   @Prop(Object) readonly movie!: IMovie;
+
+  get isRewatch (): boolean {
+    return Boolean(this.$store.getters.getMoviesWatched.find((paramMovie: IMovie) => {
+      return paramMovie.title.toLowerCase() === this.movie.title.toLowerCase() &&
+      paramMovie.watchDate! < this.movie.watchDate!;
+    }));
+  }
 }
 </script>

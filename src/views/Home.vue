@@ -8,8 +8,8 @@
 
     <!-- Picked cards -->
     <card-movie
-      v-for="movie in moviesWatched"
-      :key="movie.title"
+      v-for="(movie, index) in moviesWatched"
+      :key="`${movie.title}_${index}`"
       :movie="movie" />
     <div class="pt-4 py-16 text-gray-600 text-center">Your beginning...</div>
   </div>
