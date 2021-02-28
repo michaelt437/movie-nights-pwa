@@ -24,7 +24,7 @@ export default class CardTonightsPick extends Vue {
   get movie (): IMovie {
     return this.$store.getters.getTonightsPick;
   }
-  
+
   get isRewatch (): boolean {
     return Boolean(this.$store.getters.getMoviesWatched.find((paramMovie: IMovie) => {
       return paramMovie.title.toLowerCase() === this.movie.title.toLowerCase() &&

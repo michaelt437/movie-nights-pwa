@@ -143,11 +143,11 @@ export default class CardMovieRoll extends Vue {
   randomMovieIndex (): void {
     this.prevIndex = this.currIndex;
     this.currIndex = Math.floor(Math.random() * this.moviesToPickList.length);
-    
+
     if (this.moviesToPickList.length === 1) {
       return;
     }
-    
+
     if (this.currIndex === this.prevIndex) {
       this.randomMovieIndex();
     }
