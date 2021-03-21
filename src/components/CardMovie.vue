@@ -6,7 +6,7 @@
     </div>
     <div class="movie-card__service text-md my-2" :class="movie.service.value">{{ movie.service.title }}</div>
     <div class="movie-card__footer flex justify-between">
-      <div class="movie-card__duration text-sm">{{ movie.duration }} minutes</div>
+      <div class="movie-card__duration text-sm">{{ formatDuration(movie.duration) }}</div>
       <div class="movie-card__watch-date text-sm">{{ $moment(movie.watchDate).format("M.D.YYYY") }}</div>
     </div>
   </div>
@@ -25,6 +25,11 @@ export default class CardMovie extends Vue {
       return paramMovie.title.toLowerCase() === this.movie.title.toLowerCase() &&
       paramMovie.watchDate! < this.movie.watchDate!;
     }));
+  }
+
+  formatDuration (duration: string | number): string {
+    const _duration: number = (typeof duration === "string") ? parseInt(duration) : duration;
+    return `${Math.floor(_duration / 60)}hr ${_duration % 60}m`;
   }
 }
 </script>

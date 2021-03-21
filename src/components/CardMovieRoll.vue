@@ -6,7 +6,7 @@
         <i v-show="isRewatch" class="fas fa-sync text-green-300 ml-auto" title="Rewatch"></i>
       </div>
       <div class="movie-card__service text-lg my-2" :class="randomMovie.service.value">{{ randomMovie.service.title }}</div>
-      <div class="movie-card__duration text-sm mb-5">{{ randomMovie.duration }} minutes</div>
+      <div class="movie-card__duration text-sm mb-5">{{ formatDuration(randomMovie.duration) }}</div>
       <div class="movie-card__footer">
         <div class="btn-group flex">
           <button class="btn btn-white outline flex-grow" @click="rollPending = false">
@@ -179,6 +179,11 @@ export default class CardMovieRoll extends Vue {
     if (!this.$store.getters.getCurrentUser.hasRolled) {
       this.$store.commit("updateUserHasRolled", true);
     }
+  }
+
+  formatDuration (duration: string | number): string {
+    const _duration: number = (typeof duration === "string") ? parseInt(duration) : duration;
+    return `${Math.floor(_duration / 60)}hr ${_duration % 60}m`;
   }
 
   confirmSelection (): void {

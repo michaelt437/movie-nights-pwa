@@ -16,7 +16,7 @@
       </div>
       <div class="movie-card__service text-md my-2" :class="movie.service.value">{{ movie.service.title }}</div>
       <div class="movie-card__footer flex justify-between flex justify-between items-center">
-        <div class="movie-card__duration text-sm">{{ movie.duration }} minutes</div>
+        <div class="movie-card__duration text-sm">{{ formatDuration(movie.duration) }}</div>
         <div class="movie-card__genres text-sm">
           <span
             v-for="genre in movie.genres"
@@ -50,8 +50,8 @@ import { db } from "@/db.ts";
 export default class CardMovieEditable extends Vue {
   @Prop(Object) readonly movie!: IMovie;
 
-  private excludeMovie = false;
-  private showActions = false;
+  excludeMovie = false;
+  showActions = false;
 
   @Watch("excludeMovie", { deep: true })
   onExcludeToggle (value: boolean) {
@@ -88,6 +88,11 @@ export default class CardMovieEditable extends Vue {
       .doc(this.movie.documentId)
       .delete();
     this.$store.commit("deleteMovieFromList", this.movie);
+  }
+
+  formatDuration (duration: string | number): string {
+    const _duration: number = (typeof duration === "string") ? parseInt(duration) : duration;
+    return `${Math.floor(_duration / 60)}hr ${_duration % 60}m`;
   }
 
   mounted () {

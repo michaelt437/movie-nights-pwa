@@ -1,5 +1,5 @@
 <template>
-  <div id="list-page" class="relative flex-grow sm:flex-grow-0">
+  <div id="list-page" class="relative flex-grow md:flex-grow-0">
     <div class="flex items-center mb-12 border border-gray-700 rounded-md px-3 py-1">
       <i class="fas fa-search text-gray-500 absolute"></i>
       <div class="input search w-full">
