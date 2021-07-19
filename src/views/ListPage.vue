@@ -13,8 +13,17 @@
           autocomplete="off"
           class="pl-6 w-full outline-none"
         />
-        <span v-show="searchInput !== ''" id="search-clear" @click="clear()">
-          <i class="fas fa-times text-gray-500"></i>
+        <span
+          v-show="searchInput !== ''"
+          id="search-clear"
+          class="cursor-pointer"
+          @click="clearSearch()"
+        >
+          <i
+            class="fas fa-times text-gray-500"
+            aria-label="Clear search"
+            title="Clear search"
+          ></i>
         </span>
       </div>
     </div>
