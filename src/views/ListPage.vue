@@ -59,11 +59,11 @@ import IMovie from "@/interface/IMovie";
 export default class ListPage extends Vue {
   public searchInput = "";
 
-  get moviesToWatch(): Array<IMovie> {
+  get moviesToWatch (): Array<IMovie> {
     return this.$store.getters.getMoviesToWatch;
   }
 
-  get filteredMovies(): Array<IMovie> {
+  get filteredMovies (): Array<IMovie> {
     return this.$store.getters.getMoviesToWatch
       .filter(movie => {
         return (
@@ -185,7 +185,7 @@ export default class ListPage extends Vue {
       });
   }
 
-  get activeFilters(): number {
+  get activeFilters (): number {
     let count = 0;
     if (this.$store.state.orderFilter !== "") count++;
     if (this.$store.state.excludeFilter !== "") count++;
@@ -195,15 +195,15 @@ export default class ListPage extends Vue {
     return count;
   }
 
-  invokeDrawer(): void {
+  invokeDrawer (): void {
     this.$emit("drawer", "DrawerFilter");
   }
 
-  clearSearch(): void {
+  clearSearch (): void {
     this.searchInput = "";
   }
 
-  beforeDestroy(): void {
+  beforeDestroy (): void {
     this.$store.commit("resetListPageFilters");
   }
 }
