@@ -11,10 +11,20 @@
       <template v-if="loading">
         <i class="fas fa-circle-notch fa-spin text-green-400 text-5xl"></i>
       </template>
-      <router-view v-else @scrolling="handleScroll" @popup="invokePopup" @drawer="invokeDrawer" />
+      <router-view
+        v-else
+        @scrolling="handleScroll"
+        @popup="invokePopup"
+        @drawer="invokeDrawer"
+      />
     </div>
     <div v-else class="loading flex justify-center mt-24">
-      <button class="rounded-full bg-pink-600 py-5 text-white w-2/4" @click="login">Log In</button>
+      <button
+        class="rounded-full bg-pink-600 py-5 text-white w-2/4"
+        @click="login"
+      >
+        Log In
+      </button>
     </div>
     <app-footer @popup="invokePopup" />
     <popup-base v-if="popUpComponent !== null">
@@ -25,19 +35,20 @@
           message: propMessage,
           action: propAction,
           postAction: propPostAction
-         }"
+        }"
         @closePopup="closePopup"
         @toaster="invokeToaster"
       />
     </popup-base>
     <drawer-base v-if="drawerComponent !== null">
       <keep-alive>
-        <component
-          :is="drawerComponent"
-          @closeDrawer="closeDrawer" />
+        <component :is="drawerComponent" @closeDrawer="closeDrawer" />
       </keep-alive>
     </drawer-base>
-    <div class="toaster bg-green-500 text-gray-200 rounded-md px-5 py-3 w-11/12 fixed bottom-0 z-20" :class="{ 'active' : toaster }">
+    <div
+      class="toaster bg-green-500 text-gray-200 rounded-md px-5 py-3 w-11/12 fixed bottom-0 z-20"
+      :class="{ active: toaster }"
+    >
       {{ toasterText }}
     </div>
   </div>
@@ -96,19 +107,23 @@ export default class App extends Vue {
 
   login (): void {
     const provider = new auth.GoogleAuthProvider();
-    fb.auth().signInWithRedirect(provider)
+    fb.auth()
+      .signInWithRedirect(provider)
       .then(response => {
+        console.log("logged in", response);
         this.$emit("update:isSignedIn", true);
       })
-      .catch((error) => {
+      .catch(error => {
         console.error("Authentication error: ", error);
       });
   }
 
   async init (): Promise<void> {
-    await db.collection("users").where("email", "==", this.loggedInUser.email)
+    await db
+      .collection("users")
+      .where("email", "==", this.loggedInUser.email)
       .get()
-      .then((querySnapshot) => {
+      .then(querySnapshot => {
         querySnapshot.forEach(user => {
           this.$store.commit("setCurrentUser", user.data());
           this.$store.commit("setCurrentUserDocumentId", user.id);
@@ -148,9 +163,10 @@ export default class App extends Vue {
   }
 
   async fetchMoviesList (): Promise<any> {
-    await db.collection(this.$store.getters.getCurrentUserDocumentId)
-      .onSnapshot({ includeMetadataChanges: true }, (querySnapshot) => {
-        querySnapshot.docChanges().forEach((change) => {
+    await db
+      .collection(this.$store.getters.getCurrentUserDocumentId)
+      .onSnapshot({ includeMetadataChanges: true }, querySnapshot => {
+        querySnapshot.docChanges().forEach(change => {
           if (change.type === "added") {
             const movieObj = change.doc.data();
             movieObj.documentId = change.doc.id;
@@ -161,7 +177,8 @@ export default class App extends Vue {
   }
 
   async checkForTonightsPick (): Promise<any> {
-    await db.collection("tonightsPick")
+    await db
+      .collection("tonightsPick")
       .doc("movie")
       .get()
       .then(doc => {
@@ -189,7 +206,11 @@ export default class App extends Vue {
     return new Promise(resolve => {
       fb.auth().onAuthStateChanged((user: any | null) => {
         if (user) {
-          this.loggedInUser = Object.assign({}, this.loggedInUser, user.providerData[0]);
+          this.loggedInUser = Object.assign(
+            {},
+            this.loggedInUser,
+            user.providerData[0]
+          );
           this.isSignedIn = true;
           resolve(true);
         } else {
@@ -204,7 +225,13 @@ export default class App extends Vue {
     if (this.$store.getters.getTonightsPick) {
       const lastPickTime = this.$store.getters.getTonightsPick.watchDate;
 
-      if (this.$moment().valueOf() > this.$moment(lastPickTime).add(1, "days").hours(6).valueOf()) {
+      if (
+        this.$moment().valueOf() >
+        this.$moment(lastPickTime)
+          .add(1, "days")
+          .hours(6)
+          .valueOf()
+      ) {
         this.$store.commit("resetRolls");
         this.$store.commit("updateUserHasRolled", false);
         this.$store.commit("setTonightsPick", null);
@@ -237,7 +264,9 @@ export default class App extends Vue {
 
     window.addEventListener("scroll", (): void => {
       // header bg
-      const titleRect = document.querySelector(".app-title")!.getBoundingClientRect();
+      const titleRect = document
+        .querySelector(".app-title")!
+        .getBoundingClientRect();
       this.titleBgSolid = titleRect.bottom < 0;
     });
   }
@@ -247,7 +276,7 @@ export default class App extends Vue {
 .toaster {
   transform: translateY(100%);
   opacity: 0;
-  transition: all .3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 
   &.active {
     opacity: 1;
