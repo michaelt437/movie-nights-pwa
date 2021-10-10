@@ -1,8 +1,6 @@
-import { TMDBMovie, TMDBStreamProvider } from "@/types/tmdb";
-
-interface IMovieDatabaseService {
-  getMovieProviders(): TMDBStreamProvider[];
-  searchMovie(): TMDBMovie[];
+interface IMovieDatabaseService<M, S> {
+  getWatchProviders(): Promise<S[]>;
+  searchMovie(searchText: string): Promise<M[]>;
 }
 
 export default IMovieDatabaseService;
