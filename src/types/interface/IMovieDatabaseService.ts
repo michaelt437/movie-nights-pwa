@@ -1,5 +1,5 @@
 interface IMovieDatabaseService<M, S> {
-  getWatchProviders(): Promise<S[]>;
+  getWatchProviders(movieId: number): Promise<S[]>;
   searchMovie(searchText: string): Promise<M[]>;
 }
 
