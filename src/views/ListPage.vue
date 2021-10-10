@@ -58,7 +58,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import CardMovieEditable from "@/components/CardMovieEditable.vue";
-import IMovie from "@/interface/IMovie";
+import IMovie from "@/types/interface/IMovie";
 
 @Component({
   components: {

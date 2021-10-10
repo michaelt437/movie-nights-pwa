@@ -66,8 +66,8 @@ import PopupConfirm from "@/components/PopupConfirm.vue";
 import DrawerBase from "@/components/DrawerBase.vue";
 import DrawerFilter from "@/components/DrawerFilter.vue";
 import DrawerPickFilter from "@/components/DrawerPickFilter.vue";
-import IUser from "@/interface/IUser";
-import IMovie from "./interface/IMovie";
+import IUser from "@/types/interface/IUser";
+import IMovie from "@/types/interface/IMovie";
 import { db, fb, auth } from "@/db";
 
 @Component({

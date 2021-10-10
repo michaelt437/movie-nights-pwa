@@ -1,10 +1,14 @@
 <template>
-  <div class="flex flex-col rounded-lg bg-indigo-600 text-gray-200 px-5 mb-4 h-full">
+  <div
+    class="flex flex-col rounded-lg bg-indigo-600 text-gray-200 px-5 mb-4 h-full"
+  >
     <p class="text-2xl text-center py-5">Edit Details</p>
     <div class="popup-content overflow-y-auto">
       <label for="movie-title" class="text-sm">
         Movie Title
-        <span v-show="checkForPendingDuplicate" class="text-red-500 italic"> - Duplicate title not yet picked</span>
+        <span v-show="checkForPendingDuplicate" class="text-red-500 italic">
+          - Duplicate title not yet picked</span
+        >
       </label>
       <div class="input">
         <input
@@ -13,7 +17,8 @@
           id="movie-title"
           autocomplete="off"
           v-model="movieToEdit.title"
-          :placeholder="randomMovieTitle">
+          :placeholder="randomMovieTitle"
+        />
       </div>
       <label for="movie-duration" class="text-sm">Duration</label>
       <div class="input">
@@ -23,18 +28,22 @@
           id="movie-duration"
           autocomplete="off"
           v-model="movieToEdit.duration"
-          placeholder="90">
+          placeholder="90"
+        />
       </div>
       <label for="movie-service" class="text-sm">Streaming Service</label>
       <select
         name="movie-service"
         id="movie-service"
-        v-model="movieToEdit.service">
+        v-model="movieToEdit.service"
+      >
         <option value="" selected disabled hidden>1channel.rus</option>
         <option
           v-for="service in services"
           :key="service.title"
-          :value="service">{{ service.title }}</option>
+          :value="service"
+          >{{ service.title }}</option
+        >
       </select>
       <label for="movie-service" class="text-sm">Genres</label>
       <div class="chip-group flex-wrap mb-5">
@@ -44,23 +53,35 @@
             :for="genre.value"
             :class="hasGenre(genre.value)"
             class="chip"
-            >
-              <input type="checkbox" :name="genre.value" :id="genre.value" :value="genre" v-model="movieToEdit.genres" hidden>
-              {{ genre.title }}
+          >
+            <input
+              type="checkbox"
+              :name="genre.value"
+              :id="genre.value"
+              :value="genre"
+              v-model="movieToEdit.genres"
+              hidden
+            />
+            {{ genre.title }}
           </label>
         </template>
       </div>
     </div>
     <div class="btn-group flex py-3">
       <span class="ml-auto"></span>
-      <button class="btn btn-gray-400 outline" style="flex-basis: 30%;" @click="closePopup">
+      <button
+        class="btn btn-gray-400 outline"
+        style="flex-basis: 30%;"
+        @click="closePopup"
+      >
         <i class="fas fa-times mr-1"></i> Cancel
       </button>
       <button
-        :class="{ 'disabled' : disableButton }"
+        :class="{ disabled: disableButton }"
         class="btn btn-green-400"
         style="flex-basis: 30%;"
-        @click="submitEdits">
+        @click="submitEdits"
+      >
         <i class="fas fa-check mr-1"></i> Save
       </button>
     </div>
@@ -69,9 +90,9 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import placeholders from "@/placeholders";
-import IMovie from "@/interface/IMovie";
-import IService from "@/interface/IService";
-import IGenre from "@/interface/IGenre";
+import IMovie from "@/types/interface/IMovie";
+import IService from "@/types/interface/IService";
+import IGenre from "@/types/interface/IGenre";
 import { db } from "@/db.ts";
 import { omit, isEqual } from "lodash";
 
@@ -89,13 +110,15 @@ export default class PopupEditMovie extends Vue {
     },
     duration: 0,
     genres: []
-  }
+  };
 
   placeholders = placeholders;
 
   get randomMovieTitle (): string {
     const placeholderMoviesArrayLength = placeholders.movies.length;
-    const randomPlaceholderIndex = Math.floor(Math.random() * placeholderMoviesArrayLength);
+    const randomPlaceholderIndex = Math.floor(
+      Math.random() * placeholderMoviesArrayLength
+    );
     return placeholders.movies[randomPlaceholderIndex];
   }
 
@@ -104,14 +127,19 @@ export default class PopupEditMovie extends Vue {
   }
 
   get disableButton (): boolean {
-    return isEqual(this.movie, this.movieToEdit) ||
-      this.checkForPendingDuplicate;
+    return (
+      isEqual(this.movie, this.movieToEdit) || this.checkForPendingDuplicate
+    );
   }
 
   get checkForPendingDuplicate (): boolean {
-    return this.$store.getters.getMoviesToWatch.find(movie => {
-      return movie.title.toLowerCase() === this.movieToEdit.title.toLowerCase();
-    }) && this.movieToEdit.title !== this.movie.title;
+    return (
+      this.$store.getters.getMoviesToWatch.find(movie => {
+        return (
+          movie.title.toLowerCase() === this.movieToEdit.title.toLowerCase()
+        );
+      }) && this.movieToEdit.title !== this.movie.title
+    );
   }
 
   get movieToEditOmitId (): IMovie {
@@ -120,7 +148,9 @@ export default class PopupEditMovie extends Vue {
 
   hasGenre (genre: string): object {
     return {
-      active: this.movieToEdit.genres.find((genreObj: IGenre) => genreObj.value === genre)
+      active: this.movieToEdit.genres.find(
+        (genreObj: IGenre) => genreObj.value === genre
+      )
     };
   }
 

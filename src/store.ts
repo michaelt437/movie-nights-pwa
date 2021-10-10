@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import IMovie from "@/interface/IMovie";
-import IUser from "@/interface/IUser";
+import IMovie from "@/types/interface/IMovie";
+import IUser from "@/types/interface/IUser";
 
 Vue.use(Vuex);
 
@@ -31,15 +31,21 @@ const store = new Vuex.Store({
       });
     },
     getMoviesWatched: (state): Array<IMovie> => {
-      return state.moviesList.filter((movie: IMovie) => movie.hasWatched && (movie.documentId !== state.tonightsPick?.documentId)).sort((movie1, movie2) => {
-        if (movie1.watchDate! > movie2.watchDate!) {
-          return -1;
-        } else if (movie1.watchDate! < movie2.watchDate!) {
-          return 1;
-        } else {
-          return 0;
-        }
-      });
+      return state.moviesList
+        .filter(
+          (movie: IMovie) =>
+            movie.hasWatched &&
+            movie.documentId !== state.tonightsPick?.documentId
+        )
+        .sort((movie1, movie2) => {
+          if (movie1.watchDate! > movie2.watchDate!) {
+            return -1;
+          } else if (movie1.watchDate! < movie2.watchDate!) {
+            return 1;
+          } else {
+            return 0;
+          }
+        });
     },
     getTonightsPick: (state): IMovie | null => state.tonightsPick,
     getOrderFilter: (state): string => state.orderFilter,
@@ -63,7 +69,11 @@ const store = new Vuex.Store({
     },
     submitEditsToMovie (state, movieEdits: IMovie): void {
       const moviesList: Array<IMovie> = state.moviesList;
-      const movieToEditIndex = moviesList.indexOf(moviesList.find(movie => movie.documentId === movieEdits.documentId) as IMovie);
+      const movieToEditIndex = moviesList.indexOf(
+        moviesList.find(
+          movie => movie.documentId === movieEdits.documentId
+        ) as IMovie
+      );
       Vue.set(state.moviesList, movieToEditIndex, movieEdits);
     },
     addMovieToList (state, movie: IMovie): void {
@@ -71,7 +81,11 @@ const store = new Vuex.Store({
     },
     deleteMovieFromList (state, movieToDelete: IMovie): void {
       const moviesList: Array<IMovie> = state.moviesList;
-      const movieToDeleteIndex = moviesList.indexOf(moviesList.find(movie => movie.documentId === movieToDelete.documentId) as IMovie);
+      const movieToDeleteIndex = moviesList.indexOf(
+        moviesList.find(
+          movie => movie.documentId === movieToDelete.documentId
+        ) as IMovie
+      );
       moviesList.splice(movieToDeleteIndex, 1);
     },
     decrementRolls (state): void {
@@ -87,7 +101,9 @@ const store = new Vuex.Store({
       state.currentUser.rolls = 4;
     },
     updateMovieExclude (state, { value, targetTitle }): void {
-      const indexOfTargetMovie = state.moviesList.indexOf(state.moviesList.find(movie => movie.title === targetTitle) as IMovie);
+      const indexOfTargetMovie = state.moviesList.indexOf(
+        state.moviesList.find(movie => movie.title === targetTitle) as IMovie
+      );
 
       state.moviesList[indexOfTargetMovie].exclude = value;
     },

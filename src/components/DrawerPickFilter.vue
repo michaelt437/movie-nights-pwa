@@ -10,11 +10,18 @@
         <label
           :key="option.value"
           :for="option.value"
-          :class="{ 'active' : durationCategories.includes(option.value)}"
+          :class="{ active: durationCategories.includes(option.value) }"
           class="chip"
-          >
-            <input type="checkbox" :name="option.value" :id="option.value" :value="option.value" v-model="durationCategories" hidden>
-            {{ option.label }}
+        >
+          <input
+            type="checkbox"
+            :name="option.value"
+            :id="option.value"
+            :value="option.value"
+            v-model="durationCategories"
+            hidden
+          />
+          {{ option.label }}
         </label>
       </template>
     </div>
@@ -24,11 +31,18 @@
         <label
           :key="service.value"
           :for="service.value"
-          :class="{ 'active' : serviceCategories.includes(service.value)}"
+          :class="{ active: serviceCategories.includes(service.value) }"
           class="chip"
-          >
-            <input type="checkbox" :name="service.value" :id="service.value" :value="service.value" v-model="serviceCategories" hidden>
-            {{ service.title }}
+        >
+          <input
+            type="checkbox"
+            :name="service.value"
+            :id="service.value"
+            :value="service.value"
+            v-model="serviceCategories"
+            hidden
+          />
+          {{ service.title }}
         </label>
       </template>
     </div>
@@ -38,11 +52,18 @@
         <label
           :key="genre.value"
           :for="genre.value"
-          :class="{ 'active' : genreCategories.includes(genre.value) }"
+          :class="{ active: genreCategories.includes(genre.value) }"
           class="chip"
-          >
-            <input type="checkbox" :name="genre.value" :id="genre.value" :value="genre.value" v-model="genreCategories" hidden>
-            {{ genre.title }}
+        >
+          <input
+            type="checkbox"
+            :name="genre.value"
+            :id="genre.value"
+            :value="genre.value"
+            v-model="genreCategories"
+            hidden
+          />
+          {{ genre.title }}
         </label>
       </template>
     </div>
@@ -50,8 +71,8 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import IService from "@/interface/IService";
-import IGenre from "@/interface/IGenre";
+import IService from "@/types/interface/IService";
+import IGenre from "@/types/interface/IGenre";
 
 @Component
 export default class DrawerPickFilter extends Vue {
@@ -65,7 +86,11 @@ export default class DrawerPickFilter extends Vue {
     const availableServices: Array<IService> = [];
     this.$store.getters.getMoviesToWatch.forEach(movie => {
       if (!movie.exclude) {
-        if (!availableServices.find(service => service.title === movie.service.title)) {
+        if (
+          !availableServices.find(
+            service => service.title === movie.service.title
+          )
+        ) {
           availableServices.push(movie.service);
         }
       }
@@ -78,7 +103,11 @@ export default class DrawerPickFilter extends Vue {
     this.$store.getters.getMoviesToWatch.forEach(movie => {
       if (!movie.exclude) {
         movie.genres.forEach(genre => {
-          if (!availableGenres.find(genreValue => genreValue.value === genre.value)) {
+          if (
+            !availableGenres.find(
+              genreValue => genreValue.value === genre.value
+            )
+          ) {
             availableGenres.push(genre);
           }
         });
