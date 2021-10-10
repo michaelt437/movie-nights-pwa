@@ -18,7 +18,7 @@ implements IMovieDatabaseService<TMDBMovie, TMDBStreamProvider> {
       )
       .then(res => res.data);
     const results = apiResponse.results.US?.flatrate;
-    return results;
+    return results ?? [];
   }
 
   async searchMovie (searchText: string): Promise<TMDBMovie[]> {
