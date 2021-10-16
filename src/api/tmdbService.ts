@@ -14,7 +14,7 @@ implements IMovieDatabaseService<TMDBMovie, TMDBStreamProvider> {
   async getWatchProviders (movieId: number): Promise<TMDBStreamProvider[]> {
     const apiResponse = await axios
       .get<TMDBWatchProviderDTO>(
-        `${uriRoot}movie/${movieId}/watch/providers?apiKey=${process.env.VUE_APP_TMDBKEY}`
+        `${uriRoot}movie/${movieId}/watch/providers?api_key=${process.env.VUE_APP_TMDBKEY}`
       )
       .then(res => res.data);
     const results = apiResponse.results.US?.flatrate;
@@ -24,7 +24,7 @@ implements IMovieDatabaseService<TMDBMovie, TMDBStreamProvider> {
   async searchMovie (searchText: string): Promise<TMDBMovie[]> {
     const apiResponse = await axios
       .get<TMDBSearchDTO>(
-        `${uriRoot}search/movie?apiKey=${
+        `${uriRoot}search/movie?api_key=${
           process.env.VUE_APP_TMDBKEY
         }&language=en-US&query=${encodeURIComponent(
           searchText
