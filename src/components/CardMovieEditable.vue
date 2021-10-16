@@ -34,9 +34,7 @@
       >
         {{ movie.service.title }}
       </div>
-      <div
-        class="movie-card__footer flex justify-between flex justify-between items-center"
-      >
+      <div class="movie-card__footer flex justify-between items-center">
         <div class="movie-card__duration text-sm">
           {{ formatDuration(movie.duration) }}
         </div>
@@ -68,7 +66,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
-import { db } from "@/db.ts";
+import { db } from "@/db";
 
 @Component
 export default class CardMovieEditable extends Vue {
