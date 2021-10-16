@@ -6,7 +6,7 @@ import "./registerServiceWorker";
 import { firestorePlugin } from "vuefire";
 import moment from "moment";
 import router from "./router";
-import store from "./store";
+import AppStoreContainer from "@/StateManagementContainer";
 
 Vue.config.productionTip = false;
 Vue.prototype.$moment = moment;
@@ -15,6 +15,6 @@ Vue.use(firestorePlugin);
 
 new Vue({
   router,
-  store,
-  render: (h) => h(App)
+  store: AppStoreContainer.store,
+  render: h => h(App)
 }).$mount("#app");

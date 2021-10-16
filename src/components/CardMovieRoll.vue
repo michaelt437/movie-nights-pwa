@@ -1,21 +1,44 @@
 <template>
   <div id="rolling-card" class="relative">
-    <div v-if="rollPending" class="movie-card rounded-lg bg-indigo-600 text-gray-200 px-5 py-3 mb-4">
+    <div
+      v-if="rollPending"
+      class="movie-card rounded-lg bg-indigo-600 text-gray-200 px-5 py-3 mb-4"
+    >
       <div class="movie-card__title flex items-center text-2xl capitalize">
         {{ randomMovie.title }}
-        <i v-show="isRewatch" class="fas fa-sync text-green-300 ml-auto" title="Rewatch"></i>
+        <i
+          v-show="isRewatch"
+          class="fas fa-sync text-green-300 ml-auto"
+          title="Rewatch"
+        ></i>
       </div>
-      <div class="movie-card__service text-lg my-2" :class="randomMovie.service.value">{{ randomMovie.service.title }}</div>
-      <div class="movie-card__duration text-sm mb-5">{{ formatDuration(randomMovie.duration) }}</div>
+      <div
+        class="movie-card__service text-lg my-2"
+        :class="randomMovie.service.value"
+      >
+        {{ randomMovie.service.title }}
+      </div>
+      <div class="movie-card__duration text-sm mb-5">
+        {{ formatDuration(randomMovie.duration) }}
+      </div>
       <div class="movie-card__footer">
         <div class="btn-group flex">
-          <button class="btn btn-white outline flex-grow" @click="rollPending = false">
+          <button
+            class="btn btn-white outline flex-grow"
+            @click="rollPending = false"
+          >
             <i class="fas fa-times"></i>
           </button>
           <button class="btn flex-grow" :class="reRollColor" @click="reRoll">
-            <i class="fas fa-dice"></i> ({{ this.$store.getters.getCurrentUser.rolls }})
+            <i class="fas fa-dice"></i> ({{
+              this.$store.getters.getCurrentUser.rolls
+            }})
           </button>
-          <button class="btn btn-green-400 flex-grow" style="flex-basis: 35%" @click="confirmSelection">
+          <button
+            class="btn btn-green-400 flex-grow"
+            style="flex-basis: 35%"
+            @click="confirmSelection"
+          >
             <i class="fas fa-check"></i>
           </button>
         </div>
@@ -25,8 +48,9 @@
     <div
       v-else
       class="movie-card rounded-lg btn-indigo-600 text-center text-gray-200 py-8 mb-4 cursor-pointer relative"
-      :class="{ 'pointer-events-none' : !moviesToPickList.length}"
-      @click="makeRoll">
+      :class="{ 'pointer-events-none': !moviesToPickList.length }"
+      @click="makeRoll"
+    >
       <div class="text-2xl">
         <template v-if="moviesToPickList.length">
           What's the Pick?
@@ -37,12 +61,19 @@
       </div>
     </div>
 
-    <button v-show="!rollPending" id="pick-filter" class="btn btn-green-500 text-gray-200 absolute" @click.stop="invokeDrawer">Categories: {{ pickCategories }}</button>
+    <button
+      v-show="!rollPending"
+      id="pick-filter"
+      class="btn btn-green-500 text-gray-200 absolute"
+      @click.stop="invokeDrawer"
+    >
+      Categories: {{ pickCategories }}
+    </button>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import IMovie from "@/interface/IMovie";
+import IMovie from "@/types/interface/IMovie";
 import CardMovie from "@/components/CardMovie.vue";
 import { db, fb } from "@/db.ts";
 
@@ -58,10 +89,13 @@ export default class CardMovieRoll extends Vue {
   rollsLeft = 3;
 
   get moviesToPickList (): Array<IMovie> {
-    return this.$store.getters.getMoviesToWatch.filter(movie => !movie.exclude)
+    return this.$store.getters.getMoviesToWatch
+      .filter(movie => !movie.exclude)
       .filter(movie => {
         if (this.$store.getters.getServiceCategories.length) {
-          return this.$store.getters.getServiceCategories.includes(movie.service.value);
+          return this.$store.getters.getServiceCategories.includes(
+            movie.service.value
+          );
         } else {
           return true;
         }
@@ -74,7 +108,10 @@ export default class CardMovieRoll extends Vue {
             }
           }
           if (this.$store.getters.getDurationCategories.includes("long")) {
-            if (Number(movie.duration) >= 107 && Number(movie.duration) <= 134) {
+            if (
+              Number(movie.duration) >= 107 &&
+              Number(movie.duration) <= 134
+            ) {
               return movie;
             }
           }
@@ -130,10 +167,15 @@ export default class CardMovieRoll extends Vue {
   }
 
   get isRewatch (): boolean {
-    return Boolean(this.$store.getters.getMoviesWatched.find((paramMovie: IMovie) => {
-      return paramMovie.title.toLowerCase() === this.randomMovie.title.toLowerCase() &&
-      paramMovie.hasWatched === true;
-    }));
+    return Boolean(
+      this.$store.getters.getMoviesWatched.find((paramMovie: IMovie) => {
+        return (
+          paramMovie.title.toLowerCase() ===
+            this.randomMovie.title.toLowerCase() &&
+          paramMovie.hasWatched === true
+        );
+      })
+    );
   }
 
   invokeDrawer (): void {
@@ -182,7 +224,8 @@ export default class CardMovieRoll extends Vue {
   }
 
   formatDuration (duration: string | number): string {
-    const _duration: number = (typeof duration === "string") ? parseInt(duration) : duration;
+    const _duration: number =
+      typeof duration === "string" ? parseInt(duration) : duration;
     return `${Math.floor(_duration / 60)}hr ${_duration % 60}m`;
   }
 
@@ -233,7 +276,6 @@ export default class CardMovieRoll extends Vue {
     this.rollsLeft = this.$store.getters.getCurrentUser.rolls;
   }
 }
-
 </script>
 <style lang="scss" scoped>
 #pick-filter {
