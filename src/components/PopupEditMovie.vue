@@ -4,68 +4,7 @@
   >
     <p class="text-2xl text-center py-5">Edit Details</p>
     <div class="popup-content overflow-y-auto">
-      <label for="movie-title" class="text-sm">
-        Movie Title
-        <span v-show="checkForPendingDuplicate" class="text-red-500 italic">
-          - Duplicate title not yet picked</span
-        >
-      </label>
-      <div class="input">
-        <input
-          type="text"
-          name="movie-title"
-          id="movie-title"
-          autocomplete="off"
-          v-model="movieToEdit.title"
-          :placeholder="randomMovieTitle"
-        />
-      </div>
-      <label for="movie-duration" class="text-sm">Duration</label>
-      <div class="input">
-        <input
-          type="text"
-          name="movie-duration"
-          id="movie-duration"
-          autocomplete="off"
-          v-model="movieToEdit.duration"
-          placeholder="90"
-        />
-      </div>
-      <label for="movie-service" class="text-sm">Streaming Service</label>
-      <select
-        name="movie-service"
-        id="movie-service"
-        v-model="movieToEdit.service"
-      >
-        <option value="" selected disabled hidden>1channel.rus</option>
-        <option
-          v-for="service in services"
-          :key="service.title"
-          :value="service"
-          >{{ service.title }}</option
-        >
-      </select>
-      <label for="movie-service" class="text-sm">Genres</label>
-      <div class="chip-group flex-wrap mb-5">
-        <template v-for="genre in placeholders.genres">
-          <label
-            :key="genre.value"
-            :for="genre.value"
-            :class="hasGenre(genre.value)"
-            class="chip"
-          >
-            <input
-              type="checkbox"
-              :name="genre.value"
-              :id="genre.value"
-              :value="genre"
-              v-model="movieToEdit.genres"
-              hidden
-            />
-            {{ genre.title }}
-          </label>
-        </template>
-      </div>
+      <!-- home video option? -->
     </div>
     <div class="btn-group flex py-3">
       <span class="ml-auto"></span>
@@ -89,11 +28,9 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import placeholders from "@/placeholders";
 import IMovie from "@/types/interface/IMovie";
-import IService from "@/types/interface/IService";
 import IGenre from "@/types/interface/IGenre";
-import { db } from "@/db.ts";
+import { db } from "@/db";
 import { omit, isEqual } from "lodash";
 
 @Component
@@ -112,34 +49,8 @@ export default class PopupEditMovie extends Vue {
     genres: []
   };
 
-  placeholders = placeholders;
-
-  get randomMovieTitle (): string {
-    const placeholderMoviesArrayLength = placeholders.movies.length;
-    const randomPlaceholderIndex = Math.floor(
-      Math.random() * placeholderMoviesArrayLength
-    );
-    return placeholders.movies[randomPlaceholderIndex];
-  }
-
-  get services (): Array<IService> {
-    return placeholders.streamingService;
-  }
-
   get disableButton (): boolean {
-    return (
-      isEqual(this.movie, this.movieToEdit) || this.checkForPendingDuplicate
-    );
-  }
-
-  get checkForPendingDuplicate (): boolean {
-    return (
-      this.$store.getters.getMoviesToWatch.find(movie => {
-        return (
-          movie.title.toLowerCase() === this.movieToEdit.title.toLowerCase()
-        );
-      }) && this.movieToEdit.title !== this.movie.title
-    );
+    return isEqual(this.movie, this.movieToEdit);
   }
 
   get movieToEditOmitId (): IMovie {

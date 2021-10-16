@@ -22,52 +22,6 @@
           :placeholder="randomMovieTitle"
         />
       </div>
-      <label for="movie-duration" class="text-sm">Duration</label>
-      <div class="input">
-        <input
-          type="text"
-          name="movie-duration"
-          id="movie-duration"
-          autocomplete="off"
-          v-model="movieToAdd.duration"
-          placeholder="90"
-        />
-      </div>
-      <label for="movie-service" class="text-sm">Streaming Service</label>
-      <select
-        name="movie-service"
-        id="movie-service"
-        v-model="movieToAdd.service"
-      >
-        <option value="" selected disabled hidden>1channel.rus</option>
-        <option
-          v-for="service in services"
-          :key="service.title"
-          :value="service"
-          >{{ service.title }}</option
-        >
-      </select>
-      <label for="movie-service" class="text-sm">Genres</label>
-      <div class="chip-group flex-wrap mb-5">
-        <template v-for="genre in placeholders.genres">
-          <label
-            :key="genre.value"
-            :for="genre.value"
-            :class="{ active: movieToAdd.genres.includes(genre) }"
-            class="chip"
-          >
-            <input
-              type="checkbox"
-              :name="genre.value"
-              :id="genre.value"
-              :value="genre"
-              v-model="movieToAdd.genres"
-              hidden
-            />
-            {{ genre.title }}
-          </label>
-        </template>
-      </div>
     </div>
     <div class="btn-group flex py-3">
       <span class="ml-auto"></span>
@@ -91,9 +45,8 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { db } from "@/db.ts";
+import { db } from "@/db";
 import placeholders from "@/placeholders";
-import IService from "@/types/interface/IService";
 import IMovie from "@/types/interface/IMovie";
 
 @Component
@@ -117,10 +70,6 @@ export default class PopupAddMovie extends Vue {
       Math.random() * placeholderMoviesArrayLength
     );
     return placeholders.movies[randomPlaceholderIndex];
-  }
-
-  get services (): Array<IService> {
-    return placeholders.streamingService;
   }
 
   get disableButton (): boolean {
