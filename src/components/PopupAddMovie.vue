@@ -18,7 +18,7 @@
           name="movie-title"
           id="movie-title"
           autocomplete="off"
-          v-model="movieToAdd.title"
+          v-model="searchText"
           :placeholder="randomMovieTitle"
         />
       </div>
@@ -44,10 +44,11 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import { db } from "@/db";
 import placeholders from "@/placeholders";
 import IMovie from "@/types/interface/IMovie";
+import debounce from "lodash/debounce";
 
 @Component
 export default class PopupAddMovie extends Vue {
@@ -61,6 +62,7 @@ export default class PopupAddMovie extends Vue {
     genres: []
   };
 
+  searchText = "";
   placeholders = placeholders;
   success = false;
 
@@ -103,6 +105,13 @@ export default class PopupAddMovie extends Vue {
     );
   }
 
+  @Watch("searchText")
+  searchMovie (searchText: string) {
+    if (searchText !== "") {
+      this.executeSearchMovie(searchText);
+    }
+  }
+
   resetMovieModel (): void {
     this.movieToAdd = {
       title: "",
@@ -131,5 +140,9 @@ export default class PopupAddMovie extends Vue {
     this.$emit("closePopup");
     this.resetMovieModel();
   }
+
+  executeSearchMovie = debounce(searchText => {
+    this.$store.dispatch("searchMovie", { searchText });
+  }, 1000);
 }
 </script>

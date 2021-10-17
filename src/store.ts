@@ -3,6 +3,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import IMovie from "@/types/interface/IMovie";
 import IUser from "@/types/interface/IUser";
+import { TMDBMovie } from "@/types/tmdb";
 import IMovieDatabaseService from "@/types/interface/IMovieDatabaseService";
 
 Vue.use(Vuex);
@@ -33,7 +34,8 @@ class AppStore<MovieType, StreamProviderType> {
       genreFilters: [] as Array<string>,
       durationCategories: [] as Array<string>,
       serviceCategories: [] as Array<string>,
-      genreCategories: [] as Array<string>
+      genreCategories: [] as Array<string>,
+      searchResults: [] as TMDBMovie[]
     };
 
     this.getters = {
@@ -161,14 +163,18 @@ class AppStore<MovieType, StreamProviderType> {
         state.durationCategories = [];
         state.serviceCategories = [];
         state.genreCategories = [];
+      },
+      setSearchResults (state, data: TMDBMovie[]): void {
+        state.searchResults = data;
       }
     };
     this.actions = {
-      searchMovie (
-        context,
+      async searchMovie (
+        { commit },
         payload: { searchText: string }
       ): Promise<MovieType[]> {
-        return apiService.searchMovie(payload.searchText);
+        const data = await apiService.searchMovie(payload.searchText);
+        commit("setSearchResults", data);
       },
       fetchWatchProviders (
         context,
