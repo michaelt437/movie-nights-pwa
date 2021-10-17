@@ -172,7 +172,7 @@ class AppStore<MovieType, StreamProviderType> {
       async searchMovie (
         { commit },
         payload: { searchText: string }
-      ): Promise<MovieType[]> {
+      ): Promise<void> {
         const data = await apiService.searchMovie(payload.searchText);
         commit("setSearchResults", data);
       },
