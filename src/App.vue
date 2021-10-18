@@ -26,7 +26,7 @@
         Log In
       </button>
     </div>
-    <app-footer @popup="invokePopup" />
+    <app-footer @popup="invokePopup" @drawer="invokeDrawer" />
     <popup-base v-if="popUpComponent !== null">
       <component
         :is="popUpComponent"
