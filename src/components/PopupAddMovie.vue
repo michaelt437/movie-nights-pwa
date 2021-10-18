@@ -1,17 +1,13 @@
 <template>
   <div
-    class="flex flex-col rounded-lg bg-indigo-600 text-gray-200 px-5 mb-4 relative h-full"
+    class="flex flex-col bg-indigo-600 text-gray-200 px-5 py-3 relative h-full"
     :class="{ addSuccess: success }"
   >
-    <p class="text-2xl text-center py-5">Add a movie</p>
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-4xl">Add a Movie</h2>
+      <i class="fas fa-times" @click="closeDrawer"></i>
+    </div>
     <div class="popup-content overflow-y-auto">
-      <label for="movie-title" class="text-sm">
-        Movie Title
-        <span v-show="checkForPendingDuplicate" class="text-red-500 italic">
-          - Already in the list</span
-        >
-        <span v-show="isRewatch" class="text-green-500"> - Rewatch</span>
-      </label>
       <div class="input">
         <input
           type="text"
@@ -22,24 +18,12 @@
           :placeholder="randomMovieTitle"
         />
       </div>
-    </div>
-    <div class="btn-group flex py-3">
-      <span class="ml-auto"></span>
-      <button
-        class="btn btn-white outline"
-        style="flex-basis: 30%;"
-        @click="closePopup"
-      >
-        <i class="fas fa-times mr-1"></i> Cancel
-      </button>
-      <button
-        :class="{ disabled: disableButton }"
-        class="btn btn-green-400"
-        style="flex-basis: 30%;"
-        @click="disableButton ? null : addMovie()"
-      >
-        <i class="fas fa-plus mr-1"></i> Add
-      </button>
+      <label for="movie-title" class="text-sm">
+        <span v-show="checkForPendingDuplicate" class="text-red-500 italic">
+          Already in the list</span
+        >
+        <span v-show="isRewatch" class="text-green-500"> Rewatch</span>
+      </label>
     </div>
   </div>
 </template>
@@ -132,12 +116,12 @@ export default class PopupAddMovie extends Vue {
           "toaster",
           `${this.movieToAdd.title.toUpperCase()} has been added.`
         );
-        this.closePopup();
+        this.closeDrawer();
       });
   }
 
-  closePopup (): void {
-    this.$emit("closePopup");
+  closeDrawer (): void {
+    this.$emit("closeDrawer");
     this.resetMovieModel();
   }
 
