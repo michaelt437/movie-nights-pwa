@@ -99,7 +99,7 @@ export default class App extends Vue {
   propAction = "";
   loading = true;
   toaster = false;
-  toasterText = "";
+  toasterText = "test";
 
   handleScroll (bool): void {
     this.titleBgSolid = bool;
