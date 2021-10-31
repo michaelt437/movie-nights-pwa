@@ -15,7 +15,7 @@
         />
         <span
           v-show="searchInput !== ''"
-          id="search-clear"
+          id="input-clear"
           class="cursor-pointer"
           @click="clearSearch()"
         >

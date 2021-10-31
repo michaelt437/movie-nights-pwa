@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col bg-indigo-600 text-gray-200 px-5 py-3 relative h-full"
+    class="flex flex-col bg-gray-200 px-5 py-3 relative h-full"
     :class="{ addSuccess: success }"
   >
     <div class="flex justify-between items-center mb-6">
@@ -8,15 +8,26 @@
       <i class="fas fa-times" @click="closeDrawer"></i>
     </div>
     <div class="popup-content overflow-y-auto">
-      <div class="input">
+      <div class="input relative">
         <input
           type="text"
           name="movie-title"
           id="movie-title"
           autocomplete="off"
           v-model="searchText"
-          :placeholder="randomMovieTitle"
-        />
+          :placeholder="`Search for ${randomMovieTitle}...`"
+        /><span
+          v-show="searchText !== ''"
+          id="input-clear"
+          class="cursor-pointer"
+          @click="clearSearch()"
+        >
+          <i
+            class="fas fa-times text-gray-500"
+            aria-label="Clear search"
+            title="Clear search"
+          ></i>
+        </span>
       </div>
       <label for="movie-title" class="text-sm">
         <span v-show="checkForPendingDuplicate" class="text-red-500 italic">
@@ -70,7 +81,7 @@ export default class PopupAddMovie extends Vue {
 
   get checkForPendingDuplicate (): boolean {
     return Boolean(
-      this.$store.getters.getMoviesToWatch.find(movie => {
+      this.$store.getters.getMoviesToWatch.find((movie: IMovie) => {
         return (
           movie.title.toLowerCase() === this.movieToAdd.title.toLowerCase()
         );
@@ -87,6 +98,10 @@ export default class PopupAddMovie extends Vue {
         );
       })
     );
+  }
+
+  get searchResults () {
+    return this.$store.state.searchResults;
   }
 
   @Watch("searchText")
@@ -120,12 +135,16 @@ export default class PopupAddMovie extends Vue {
       });
   }
 
+  clearSearch (): void {
+    this.searchText = "";
+  }
+
   closeDrawer (): void {
     this.$emit("closeDrawer");
     this.resetMovieModel();
   }
 
-  executeSearchMovie = debounce(searchText => {
+  executeSearchMovie = debounce((searchText: string) => {
     this.$store.dispatch("searchMovie", { searchText });
   }, 1000);
 }
