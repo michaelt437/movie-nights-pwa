@@ -1,40 +1,45 @@
 <template>
   <div
-    class="flex flex-col bg-gray-200 px-5 py-3 relative h-full"
+    class="flex flex-col bg-gray-200 py-3 relative h-full"
     :class="{ addSuccess: success }"
   >
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex justify-between items-center px-5 mb-6">
       <h2 class="text-4xl">Add a Movie</h2>
-      <i class="fas fa-times" @click="closeDrawer"></i>
+      <i class="fas fa-times cursor-pointer" @click="closeDrawer"></i>
     </div>
-    <div class="popup-content overflow-y-auto">
-      <div class="input relative">
-        <input
-          type="text"
-          name="movie-title"
-          id="movie-title"
-          autocomplete="off"
-          v-model="searchText"
-          :placeholder="`Search for ${randomMovieTitle}...`"
-        /><span
-          v-show="searchText !== ''"
-          id="input-clear"
-          class="cursor-pointer"
-          @click="clearSearch()"
-        >
-          <i
-            class="fas fa-times text-gray-500"
-            aria-label="Clear search"
-            title="Clear search"
-          ></i>
-        </span>
-      </div>
+    <div class="input mx-5 relative">
+      <input
+        type="text"
+        name="movie-title"
+        id="movie-title"
+        autocomplete="off"
+        v-model="searchText"
+        :placeholder="`Search for ${randomMovieTitle}...`"
+      /><span
+        v-show="searchText !== ''"
+        id="input-clear"
+        class="cursor-pointer"
+        @click="clearSearch()"
+      >
+        <i
+          class="fas fa-times text-gray-500"
+          aria-label="Clear search"
+          title="Clear search"
+        ></i>
+      </span>
+    </div>
+    <div class="popup-content overflow-y-auto px-5 ">
       <label for="movie-title" class="text-sm">
         <span v-show="checkForPendingDuplicate" class="text-red-500 italic">
           Already in the list</span
         >
         <span v-show="isRewatch" class="text-green-500"> Rewatch</span>
       </label>
+      <card-search-result
+        v-for="result in searchResults"
+        :key="result.id"
+        :movie="result"
+      />
     </div>
   </div>
 </template>
@@ -44,8 +49,13 @@ import { db } from "@/db";
 import placeholders from "@/placeholders";
 import IMovie from "@/types/interface/IMovie";
 import debounce from "lodash/debounce";
+import CardSearchResult from "@/components/CardSearchResult.vue";
 
-@Component
+@Component({
+  components: {
+    CardSearchResult
+  }
+})
 export default class PopupAddMovie extends Vue {
   movieToAdd = {
     title: "",
