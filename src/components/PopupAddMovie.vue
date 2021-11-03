@@ -29,17 +29,12 @@
         ></i>
       </span>
     </div>
-    <div class="popup-content overflow-y-auto px-5 ">
-      <label for="movie-title" class="text-sm">
-        <span v-show="checkForPendingDuplicate" class="text-red-500 italic">
-          Already in the list</span
-        >
-        <span v-show="isRewatch" class="text-green-500"> Rewatch</span>
-      </label>
+    <div class="popup-content overflow-y-auto px-5">
       <card-search-result
         v-for="result in searchResults"
         :key="result.id"
         :movie="result"
+        @add-movie="addMovie"
       />
     </div>
   </div>
@@ -58,16 +53,6 @@ import CardSearchResult from "@/components/CardSearchResult.vue";
   }
 })
 export default class PopupAddMovie extends Vue {
-  movieToAdd = {
-    title: "",
-    service: "",
-    duration: "",
-    watchDate: 0,
-    hasWatched: false,
-    exclude: false,
-    genres: []
-  };
-
   searchText = "";
   placeholders = placeholders;
   success = false;
@@ -80,35 +65,12 @@ export default class PopupAddMovie extends Vue {
     return placeholders.movies[randomPlaceholderIndex];
   }
 
-  get disableButton (): boolean {
-    return (
-      this.movieToAdd.title === "" ||
-      this.movieToAdd.duration === "" ||
-      this.movieToAdd.duration === "0" ||
-      this.movieToAdd.service === "" ||
-      this.checkForPendingDuplicate
-    );
-  }
-
   get checkForPendingDuplicate (): boolean {
-    return Boolean(
-      this.$store.getters.getMoviesToWatch.find((movie: IMovie) => {
-        return (
-          movie.title.toLowerCase() === this.movieToAdd.title.toLowerCase()
-        );
-      })
-    );
+    return false;
   }
 
   get isRewatch (): boolean {
-    return Boolean(
-      this.$store.getters.getAllMovies.find((movie: IMovie) => {
-        return (
-          movie.title.toLowerCase() === this.movieToAdd.title.toLowerCase() &&
-          movie.hasWatched === true
-        );
-      })
-    );
+    return false;
   }
 
   get searchResults () {
@@ -117,31 +79,14 @@ export default class PopupAddMovie extends Vue {
 
   @Watch("searchText")
   searchMovie (searchText: string) {
-    if (searchText !== "") {
-      this.executeSearchMovie(searchText);
-    }
+    if (searchText.trim() !== "") this.executeSearchMovie(searchText);
   }
 
-  resetMovieModel (): void {
-    this.movieToAdd = {
-      title: "",
-      service: "",
-      duration: "",
-      watchDate: 0,
-      hasWatched: false,
-      exclude: false,
-      genres: []
-    };
-  }
-
-  addMovie (): void {
+  addMovie (movieToAdd: IMovie): void {
     db.collection(this.$store.getters.getCurrentUserDocumentId)
-      .add(this.movieToAdd)
+      .add(movieToAdd)
       .then(() => {
-        this.$emit(
-          "toaster",
-          `${this.movieToAdd.title.toUpperCase()} has been added.`
-        );
+        this.$emit("toaster", `${movieToAdd.title.toUpperCase()} has been added.`);
         this.closeDrawer();
       });
   }
@@ -153,7 +98,11 @@ export default class PopupAddMovie extends Vue {
 
   closeDrawer (): void {
     this.$emit("closeDrawer");
-    this.resetMovieModel();
+    this.clearSearchResults();
+  }
+
+  clearSearchResults (): void {
+    this.$store.commit("setSearchResults", []);
   }
 
   executeSearchMovie = debounce((searchText: string) => {
