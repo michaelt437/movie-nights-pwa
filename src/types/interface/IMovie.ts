@@ -1,20 +1,20 @@
 import IService from "./IService";
 import { TMDBMovie, TMDBStreamProvider } from "@/types/tmdb";
 
-interface IMovie {
-  title: string;
-  service: IService;
-  duration: number | string;
+type IMovieBase = {
+  title?: string;
+  service?: IService;
+  duration?: number | string;
   hasWatched?: boolean;
   watchDate?: number;
   addedDate?: string;
   exclude?: boolean;
   documentId?: string;
   user?: string;
-  genres: Array<object>;
+  genres?: Array<object>;
 }
 
-interface IMovie2 extends TMDBMovie {
+type IMovie = IMovieBase & TMDBMovie & {
   hasWatched: boolean;
   addedDate: string;
   exclude: boolean;
