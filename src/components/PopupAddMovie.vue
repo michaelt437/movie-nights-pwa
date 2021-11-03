@@ -14,6 +14,7 @@
         id="movie-title"
         autocomplete="off"
         v-model="searchText"
+        ref="searchInput"
         :placeholder="`Search for ${randomMovieTitle}...`"
       /><span
         v-show="searchText !== ''"
@@ -147,6 +148,7 @@ export default class PopupAddMovie extends Vue {
 
   clearSearch (): void {
     this.searchText = "";
+    (this.$refs.searchInput as HTMLInputElement).focus();
   }
 
   closeDrawer (): void {
