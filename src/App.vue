@@ -42,7 +42,7 @@
     </popup-base>
     <drawer-base v-if="drawerComponent !== null">
       <keep-alive>
-        <component :is="drawerComponent" @closeDrawer="closeDrawer" />
+        <component :is="drawerComponent" @closeDrawer="closeDrawer" @toaster="invokeToaster" />
       </keep-alive>
     </drawer-base>
     <div

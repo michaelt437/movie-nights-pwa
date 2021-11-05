@@ -48,7 +48,7 @@
     <template v-for="movie in filteredMovies">
       <card-movie-editable
         v-on="$listeners"
-        :key="movie.title"
+        :key="movie.documentId"
         :movie="movie"
       />
     </template>
