@@ -23,21 +23,38 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
-import { TMDBMovie } from "@/types/tmdb";
+import { TMDBMovie, TMDBStreamProvider } from "@/types/tmdb";
 
 @Component
 export default class CardSearchResult extends Vue {
   @Prop(Object) readonly movie!: TMDBMovie;
 
-  addMovie (): void {
-    const movieToAdd: IMovie = {
+  get movieToAdd (): IMovie {
+    const _movie: IMovie = {
       ...this.movie,
       hasWatched: false,
       providers: [],
-      addedDate: new Date().toString(),
-      exclude: false
+      addedDate: Number(Date.parse(Date())),
+      exclude: false,
+      watchDate: 0
     };
-    this.$emit("add-movie", movieToAdd);
+    return _movie;
+  }
+
+  async watchProviders (): Promise<TMDBStreamProvider[]> {
+    return this.$store
+      .dispatch("fetchWatchProviders", {
+        movieId: this.movie.id
+      })
+      .then(data => data);
+  }
+
+  async addMovie (): Promise<void> {
+    const movieToAddWithProviders = {
+      ...this.movieToAdd,
+      providers: await this.watchProviders()
+    };
+    this.$emit("add-movie", this.movieToAdd);
   }
 }
 </script>

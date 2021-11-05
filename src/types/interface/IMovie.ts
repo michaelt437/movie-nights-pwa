@@ -7,7 +7,6 @@ type IMovieBase = {
   duration?: number | string;
   hasWatched?: boolean;
   watchDate?: number;
-  addedDate?: string;
   exclude?: boolean;
   documentId?: string;
   user?: string;
@@ -16,7 +15,7 @@ type IMovieBase = {
 
 type IMovie = IMovieBase & TMDBMovie & {
   hasWatched: boolean;
-  addedDate: string;
+  addedDate: number;
   exclude: boolean;
   documentId?: string;
   providers: TMDBStreamProvider[];

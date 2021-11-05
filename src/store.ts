@@ -176,11 +176,13 @@ class AppStore<MovieType, StreamProviderType> {
         const data = await apiService.searchMovie(payload.searchText);
         commit("setSearchResults", data);
       },
-      fetchWatchProviders (
+      async fetchWatchProviders (
         context,
         payload: { movieId: number }
       ): Promise<StreamProviderType[]> {
-        return apiService.getWatchProviders(payload.movieId);
+        const data = await apiService.getWatchProviders(payload.movieId);
+        console.log("data from store?", data);
+        return data;
       }
     };
     this.store = new Vuex.Store({
