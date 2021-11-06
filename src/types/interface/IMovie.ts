@@ -1,5 +1,5 @@
 import IService from "./IService";
-import { TMDBMovie, TMDBStreamProvider } from "@/types/tmdb";
+import { TMBDMovieSearch, TMDBStreamProvider } from "@/types/tmdb";
 
 type IMovieBase = {
   title?: string;
@@ -11,15 +11,16 @@ type IMovieBase = {
   documentId?: string;
   user?: string;
   genres?: Array<object>;
-}
+};
 
-type IMovie = IMovieBase & TMDBMovie & {
-  hasWatched: boolean;
-  addedDate: number;
-  exclude: boolean;
-  documentId?: string;
-  providers: TMDBStreamProvider[];
-  user?: string;
-}
+type IMovie = IMovieBase &
+  TMBDMovieSearch & {
+    hasWatched: boolean;
+    addedDate: number;
+    exclude: boolean;
+    documentId?: string;
+    providers: TMDBStreamProvider[];
+    user?: string;
+  };
 
 export default IMovie;
