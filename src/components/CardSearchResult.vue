@@ -11,10 +11,12 @@
     <div class="movie-card__actions py-3">
       <div class="btn-group">
         <button
-          class="btn btn-green-400 text-white flex-grow"
+          class="btn text-white flex-grow"
+          :class="isDuplicate ? 'btn-gray-400' : 'btn-green-400'"
+          :disabled="isDuplicate"
           @click="addMovie"
         >
-          Add Movie
+          {{ isDuplicate ? "Added" : "Add Movie" }}
         </button>
       </div>
     </div>
@@ -41,12 +43,20 @@ export default class CardSearchResult extends Vue {
     return _movie;
   }
 
+  get isDuplicate (): boolean {
+    return (
+      this.$store.getters.getMoviesToWatch.findIndex(
+        (m) => m.id === this.movie.id
+      ) > -1
+    );
+  }
+
   async watchProviders (): Promise<TMDBStreamProvider[]> {
     return this.$store
       .dispatch("fetchWatchProviders", {
         movieId: this.movie.id
       })
-      .then(data => data);
+      .then((data) => data);
   }
 
   async addMovie (): Promise<void> {
@@ -54,7 +64,7 @@ export default class CardSearchResult extends Vue {
       ...this.movieToAdd,
       providers: await this.watchProviders()
     };
-    this.$emit("add-movie", this.movieToAdd);
+    if (!this.isDuplicate) this.$emit("add-movie", this.movieToAdd);
   }
 }
 </script>
