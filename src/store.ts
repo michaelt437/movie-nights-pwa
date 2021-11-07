@@ -40,7 +40,7 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       serviceCategories: [] as Array<string>,
       genreCategories: [] as Array<string>,
       searchResults: [] as MovieSearchType[],
-      config: {} as object
+      config: {} as object // TODO type as config?
     };
 
     this.getters = {
