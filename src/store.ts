@@ -9,7 +9,7 @@ import IMovieDatabaseService from "@/types/interface/IMovieDatabaseService";
 Vue.use(Vuex);
 
 @injectable()
-class AppStore<MovieType, StreamProviderType> {
+class AppStore<MovieSearchType, StreamProviderType, MovieType> {
   public state;
   public getters;
   public mutations;
@@ -18,7 +18,11 @@ class AppStore<MovieType, StreamProviderType> {
   public store;
   constructor (
     @inject("IMovieDatabaseService")
-      apiService: IMovieDatabaseService<MovieType, StreamProviderType>
+      apiService: IMovieDatabaseService<
+      MovieSearchType,
+      StreamProviderType,
+      MovieType
+    >
   ) {
     this.apiService = apiService;
     this.state = {
@@ -181,7 +185,13 @@ class AppStore<MovieType, StreamProviderType> {
         payload: { movieId: number }
       ): Promise<StreamProviderType[]> {
         const data = await apiService.getWatchProviders(payload.movieId);
-        console.log("data from store?", data);
+        return data;
+      },
+      async fetchMovieDetails (
+        context,
+        payload: { movieId: number }
+      ): Promise<MovieType> {
+        const data = await apiService.getMovieDetails(payload.movieId);
         return data;
       }
     };

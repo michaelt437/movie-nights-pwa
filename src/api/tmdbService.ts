@@ -1,6 +1,7 @@
 import axios from "axios";
 import IMovieDatabaseService from "@/types/interface/IMovieDatabaseService";
 import {
+  TMDBMovie,
   TMBDMovieSearch,
   TMDBSearchDTO,
   TMDBStreamProvider,
@@ -29,6 +30,14 @@ implements IMovieDatabaseService<TMBDMovieSearch, TMDBStreamProvider> {
     );
     const results = apiResponse.data?.results;
     return results ?? [];
+  }
+
+  async getMovieDetails (movieId: number): Promise<TMDBMovie> {
+    const apiResponse = await axios.get<TMDBMovie>(
+      `${uriRoot}movie/${movieId}?api_key=${process.env.VUE_APP_TMDBKEY}`
+    );
+    const result = apiResponse.data;
+    return result ?? {};
   }
 }
 
