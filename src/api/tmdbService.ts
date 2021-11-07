@@ -11,7 +11,8 @@ import {
 const uriRoot = "https://api.themoviedb.org/3/";
 
 class TMDBService
-implements IMovieDatabaseService<TMBDMovieSearch, TMDBStreamProvider> {
+implements
+    IMovieDatabaseService<TMBDMovieSearch, TMDBStreamProvider, TMDBMovie> {
   async getWatchProviders (movieId: number): Promise<TMDBStreamProvider[]> {
     const apiResponse = await axios.get<TMDBWatchProviderDTO>(
       `${uriRoot}movie/${movieId}/watch/providers?api_key=${process.env.VUE_APP_TMDBKEY}`
