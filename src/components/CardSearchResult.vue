@@ -25,11 +25,11 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
-import { TMDBMovie, TMDBStreamProvider } from "@/types/tmdb";
+import { TMBDMovieSearch, TMDBStreamProvider } from "@/types/tmdb";
 
 @Component
 export default class CardSearchResult extends Vue {
-  @Prop(Object) readonly movie!: TMDBMovie;
+  @Prop(Object) readonly movie!: TMBDMovieSearch;
 
   get movieToAdd (): IMovie {
     const _movie: IMovie = {
@@ -60,11 +60,17 @@ export default class CardSearchResult extends Vue {
   }
 
   async addMovie (): Promise<void> {
-    const movieToAddWithProviders = {
-      ...this.movieToAdd,
-      providers: await this.watchProviders()
+    const movieWithDetails = await this.$store.dispatch("fetchMovieDetails", {
+      movieId: this.movie.id
+    });
+    const movieWithDetailsParam: IMovie = {
+      ...movieWithDetails,
+      providers: await this.watchProviders(),
+      exclude: false,
+      hasWatched: false,
+      addedDate: Number(Date.parse(Date()))
     };
-    if (!this.isDuplicate) this.$emit("add-movie", this.movieToAdd);
+    this.$emit("add-movie", movieWithDetailsParam);
   }
 }
 </script>
