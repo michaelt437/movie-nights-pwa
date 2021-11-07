@@ -62,12 +62,12 @@ type TMDBMovie = {
   overview: string;
   popularity: number;
   poster_path: string;
-  production_companies: any[];
-  production_countries: any[];
+  production_companies: object[];
+  production_countries: object[];
   release_date: string;
   revenue: number;
   runtime: number;
-  spoken_languages: any[];
+  spoken_languages: object[];
   status: string;
   tagline: string;
   title: string;
