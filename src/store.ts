@@ -39,7 +39,8 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       durationCategories: [] as Array<string>,
       serviceCategories: [] as Array<string>,
       genreCategories: [] as Array<string>,
-      searchResults: [] as TMBDMovieSearch[]
+      searchResults: [] as MovieSearchType[],
+      config: {} as object // TODO type as config?
     };
 
     this.getters = {
@@ -170,6 +171,9 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       },
       setSearchResults (state, data: TMBDMovieSearch[]): void {
         state.searchResults = data;
+      },
+      setConfiguration (state, config): void {
+        state.config = config;
       }
     };
     this.actions = {
@@ -193,6 +197,10 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       ): Promise<MovieType> {
         const data = await apiService.getMovieDetails(payload.movieId);
         return data;
+      },
+      async fetchConfiguration (context): Promise<void> {
+        const data = await apiService.getConfiguration();
+        context.commit("setConfiguration", data);
       }
     };
     this.store = new Vuex.Store({
