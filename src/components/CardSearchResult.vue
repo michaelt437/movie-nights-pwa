@@ -46,7 +46,7 @@ export default class CardSearchResult extends Vue {
   get isDuplicate (): boolean {
     return (
       this.$store.getters.getMoviesToWatch.findIndex(
-        m => m.id === this.movie.id
+        (m) => m.id === this.movie.id
       ) > -1
     );
   }
@@ -56,15 +56,21 @@ export default class CardSearchResult extends Vue {
       .dispatch("fetchWatchProviders", {
         movieId: this.movie.id
       })
-      .then(data => data);
+      .then((data) => data);
   }
 
   async addMovie (): Promise<void> {
-    const movieToAddWithProviders = {
-      ...this.movieToAdd,
-      providers: await this.watchProviders()
+    const movieWithDetails = await this.$store.dispatch("fetchMovieDetails", {
+      movieId: this.movie.id
+    });
+    const movieWithDetailsParam: IMovie = {
+      ...movieWithDetails,
+      providers: await this.watchProviders(),
+      exclude: false,
+      hasWatched: false,
+      addedDate: Number(Date.parse(Date()))
     };
-    if (!this.isDuplicate) this.$emit("add-movie", this.movieToAdd);
+    this.$emit("add-movie", movieWithDetailsParam);
   }
 }
 </script>

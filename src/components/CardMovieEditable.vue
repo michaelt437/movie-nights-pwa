@@ -1,6 +1,13 @@
 <template>
   <div
-    class="movie-card rounded-lg text-gray-200 mb-4 flex flex-col overflow-hidden"
+    class="
+      movie-card
+      rounded-lg
+      text-gray-200
+      mb-4
+      flex flex-col
+      overflow-hidden
+    "
     :class="excludeMovie ? 'bg-gray-900 movie-card--exclude' : 'bg-gray-800'"
     @click="showActions = !showActions"
   >
@@ -28,26 +35,19 @@
           </label>
         </span>
       </div>
-      <div
-        class="movie-card__service text-md my-2"
-        :class="movie.service.value"
-      >
-        {{ movie.service.title }}
-      </div>
-      <div class="movie-card__footer flex justify-between items-center">
+      <div class="movie-card__footer flex justify-between items-center mt-2">
         <div class="movie-card__duration text-sm">
-          {{ formatDuration(movie.duration) }}
+          {{ formatDuration(movie.runtime) }}
         </div>
         <div class="movie-card__genres text-sm">
           <span
             v-for="genre in movie.genres"
-            :key="genre.value"
+            :key="genre.id"
             class="border border-gray-600 mr-1 px-2 rounded-sm"
           >
-            {{ genre.title }}
+            {{ genre.name }}
           </span>
         </div>
-        <!-- <i class="fas mr-2 text-gray-400" :class="showActions ? 'fa-chevron-up' : 'fa-chevron-down'"></i> -->
       </div>
     </div>
     <div v-show="showActions" class="movie-card__actions px-5 py-3">
