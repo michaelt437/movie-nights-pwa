@@ -31,18 +31,6 @@ import { TMBDMovieSearch, TMDBStreamProvider } from "@/types/tmdb";
 export default class CardSearchResult extends Vue {
   @Prop(Object) readonly movie!: TMBDMovieSearch;
 
-  get movieToAdd (): IMovie {
-    const _movie: IMovie = {
-      ...this.movie,
-      hasWatched: false,
-      providers: [],
-      addedDate: Number(Date.parse(Date())),
-      exclude: false,
-      watchDate: 0
-    };
-    return _movie;
-  }
-
   get isDuplicate (): boolean {
     return (
       this.$store.getters.getMoviesToWatch.findIndex(
