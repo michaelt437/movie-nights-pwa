@@ -35,6 +35,12 @@
           </label>
         </span>
       </div>
+      <div class="movie-card__service text-md mt-2">
+        {{
+          (movie.providers[0] && movie.providers[0].provider_name) ||
+          "Unavailable"
+        }}
+      </div>
       <div class="movie-card__footer flex justify-between items-center mt-2">
         <div class="movie-card__duration text-sm">
           {{ formatDuration(movie.runtime) }}
