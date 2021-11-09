@@ -35,7 +35,13 @@
           </label>
         </span>
       </div>
-      <div class="movie-card__service text-md mt-2">
+      <div class="movie-card__service flex items-center text-md mt-2">
+        <img
+          v-if="providerLogo"
+          :src="providerLogo"
+          title="provider"
+          class="rounded-full w-5 h-5 mr-2"
+        />
         {{
           (movie.providers[0] && movie.providers[0].provider_name) ||
           "Unavailable"
@@ -72,6 +78,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
+import { TMDBConfig } from "@/types/tmdb";
 import { db } from "@/db";
 
 @Component
@@ -108,6 +115,16 @@ export default class CardMovieEditable extends Vue {
         );
       })
     );
+  }
+
+  get tmdbConfig (): TMDBConfig {
+    return this.$store.state.config;
+  }
+
+  get providerLogo (): string | undefined {
+    if (this.movie.providers.length > 0) {
+      return `${this.tmdbConfig.images.secure_base_url}${this.tmdbConfig.images.logo_sizes[0]}${this.movie.providers[0].logo_path}`;
+    }
   }
 
   editMovie (): void {
