@@ -1,7 +1,15 @@
 <template>
   <div id="list-page" class="relative flex-grow md:flex-grow-0">
     <div
-      class="flex items-center mb-12 border border-gray-700 rounded-md px-3 py-1"
+      class="
+        flex
+        items-center
+        mb-12
+        border border-gray-700
+        rounded-md
+        px-3
+        py-1
+      "
     >
       <i class="fas fa-search text-gray-500 absolute"></i>
       <div class="input search w-full relative">
@@ -53,6 +61,9 @@
       />
     </template>
     <div class="pt-4 py-16 text-gray-600 text-center">Your beginning...</div>
+    <div class="pt-4 py-16 text-gray-600 text-center">
+      Streaming provider data via JustWatch
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -74,7 +85,7 @@ export default class ListPage extends Vue {
 
   get filteredMovies (): Array<IMovie> {
     return this.$store.getters.getMoviesToWatch
-      .filter(movie => {
+      .filter((movie) => {
         return (
           movie.title.toLowerCase().includes(this.searchInput.toLowerCase()) ||
           movie.service.title
@@ -82,7 +93,7 @@ export default class ListPage extends Vue {
             .includes(this.searchInput.toLowerCase())
         );
       })
-      .filter(movie => {
+      .filter((movie) => {
         if (this.$store.getters.getServiceFilters.length) {
           return this.$store.getters.getServiceFilters.includes(
             movie.service.value
@@ -91,7 +102,7 @@ export default class ListPage extends Vue {
           return true;
         }
       })
-      .filter(movie => {
+      .filter((movie) => {
         if (this.$store.getters.getDurationFilters.length) {
           if (this.$store.getters.getDurationFilters.includes("short")) {
             if (Number(movie.duration) < 107) {
@@ -115,9 +126,9 @@ export default class ListPage extends Vue {
           return true;
         }
       })
-      .filter(movie => {
+      .filter((movie) => {
         if (this.$store.getters.getGenreFilters.length) {
-          return movie.genres.some(genre => {
+          return movie.genres.some((genre) => {
             return this.$store.getters.getGenreFilters.includes(genre.value);
           });
         } else {
