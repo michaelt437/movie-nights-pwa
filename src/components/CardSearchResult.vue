@@ -3,7 +3,7 @@
     <div
       class="movie-card__title flex items-center font-bold text-lg capitalize"
     >
-      {{ movie.title }}
+      {{ movie.title }} ({{ $moment(movie.release_date).format("YYYY") }})
     </div>
     <div class="movie-card__desc max-h-32 overflow-hidden my-2">
       {{ movie.overview }}
