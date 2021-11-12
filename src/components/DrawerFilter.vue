@@ -87,20 +87,27 @@
       </template>
     </div>
     <!-- TODO new way to list services -->
-    <!-- <p class="text-xl text-gray-800 mb-2"><strong>Service</strong></p>
+    <p class="text-xl text-gray-800 mb-2"><strong>Provider</strong></p>
     <div class="chip-group flex-wrap mb-5">
-      <template v-for="service in streamingService">
+      <template v-for="provider in collectiveProviders">
         <label
-          :key="service.value"
-          :for="service.value"
-          :class="{ 'active' : serviceFilters.includes(service.value)}"
+          :key="provider.provider_id"
+          :for="provider.provider_name"
+          :class="{ active: serviceFilters.includes(provider.provider_name) }"
           class="chip"
-          >
-            <input type="checkbox" :name="service.value" :id="service.value" :value="service.value" v-model="serviceFilters" hidden>
-            {{ service.title }}
+        >
+          <input
+            type="checkbox"
+            :name="provider.provider_name"
+            :id="provider.provider_name"
+            :value="provider.provider_name"
+            v-model="serviceFilters"
+            hidden
+          />
+          {{ provider.provider_name }}
         </label>
       </template>
-    </div> -->
+    </div>
     <!-- TODO new way to list genres -->
     <!-- <p class="text-xl text-gray-800 mb-2"><strong>Genres</strong></p>
     <div class="chip-group flex-wrap mb-5">
@@ -121,6 +128,8 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import placeholders from "@/placeholders";
+import { TMDBStreamProvider } from "@/types/tmdb";
+import IMovie from "@/types/interface/IMovie";
 
 @Component
 export default class DrawerFilter extends Vue {
@@ -139,9 +148,22 @@ export default class DrawerFilter extends Vue {
 
   placeholders = placeholders;
 
-  // get streamingService (): Array<object> {
-  //   return placeholders.streamingService;
-  // }
+  get collectiveProviders (): TMDBStreamProvider[] {
+    const _presentProviders: TMDBStreamProvider[] = [];
+    this.$store.getters.getMoviesToWatch.forEach((movie: IMovie) => {
+      if (!movie.exclude && movie.providers.length) {
+        if (
+          !_presentProviders.find(
+            (provider) =>
+              provider.provider_id === movie.providers[0].provider_id
+          )
+        ) {
+          _presentProviders.push(movie.providers[0]);
+        }
+      }
+    });
+    return _presentProviders;
+  }
 
   get orderFilter (): string {
     return this.$store.getters.getOrderFilter;
