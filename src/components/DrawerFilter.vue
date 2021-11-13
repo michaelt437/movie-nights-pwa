@@ -142,21 +142,21 @@ export default class DrawerFilter extends Vue {
     { label: "ABC", value: "alpha" },
     { label: "By Shortest", value: "duration_asc" },
     { label: "By Longest", value: "duration_desc" },
-    { label: "By Service", value: "service_abc" }
+    { label: "By Service", value: "service_abc" },
   ];
 
   durationOptions = [
     { label: "Short", value: "short" },
     { label: "Long", value: "long" },
-    { label: "Real Long", value: "realLong" }
+    { label: "Real Long", value: "realLong" },
   ];
 
   placeholders = placeholders;
 
-  get collectiveProviders (): TMDBStreamProvider[] {
+  get collectiveProviders(): TMDBStreamProvider[] {
     const _presentProviders: TMDBStreamProvider[] = [];
     this.$store.getters.getMoviesToWatch.forEach((movie: IMovie) => {
-      if (!movie.exclude && movie.providers.length) {
+      if (movie.providers.length) {
         if (
           !_presentProviders.find(
             (provider) =>
@@ -170,7 +170,7 @@ export default class DrawerFilter extends Vue {
     return _presentProviders;
   }
 
-  get collectiveGenres (): TMDBGenre[] {
+  get collectiveGenres(): TMDBGenre[] {
     const _presentGenres: TMDBGenre[] = [];
     this.$store.getters.getMoviesToWatch.forEach((movie) => {
       movie.genres.forEach((genre) => {
@@ -182,47 +182,47 @@ export default class DrawerFilter extends Vue {
     return _presentGenres.sort(this.sortGenres);
   }
 
-  get orderFilter (): string {
+  get orderFilter(): string {
     return this.$store.getters.getOrderFilter;
   }
 
-  set orderFilter (value: string) {
+  set orderFilter(value: string) {
     this.$store.commit("setOrderFilter", value);
   }
 
-  get excludeFilter (): string {
+  get excludeFilter(): string {
     return this.$store.getters.getExcludeFilter;
   }
 
-  set excludeFilter (value: string) {
+  set excludeFilter(value: string) {
     this.$store.commit("setExcludeFilter", value);
   }
 
-  get durationFilters (): Array<string> {
+  get durationFilters(): Array<string> {
     return this.$store.getters.getDurationFilters;
   }
 
-  set durationFilters (value: Array<string>) {
+  set durationFilters(value: Array<string>) {
     this.$store.commit("setDurationFilters", value);
   }
 
-  get serviceFilters (): Array<string> {
+  get serviceFilters(): Array<string> {
     return this.$store.getters.getServiceFilters;
   }
 
-  set serviceFilters (value: Array<string>) {
+  set serviceFilters(value: Array<string>) {
     this.$store.commit("setServiceFilters", value);
   }
 
-  get genreFilters (): Array<string> {
+  get genreFilters(): Array<string> {
     return this.$store.getters.getGenreFilters;
   }
 
-  set genreFilters (value: Array<string>) {
+  set genreFilters(value: Array<string>) {
     this.$store.commit("setGenreFilters", value);
   }
 
-  get activeFilters (): number {
+  get activeFilters(): number {
     let count = 0;
     if (this.$store.getters.getOrderFilter !== "") count++;
     if (this.$store.getters.getExcludeFilter !== "") count++;
@@ -232,7 +232,7 @@ export default class DrawerFilter extends Vue {
     return count;
   }
 
-  uncheckRadio (e, type): void {
+  uncheckRadio(e, type): void {
     if (e.currentTarget.classList.contains("active")) {
       e.currentTarget.lastElementChild.checked = false;
       this[`${type}Filter`] = "";
@@ -240,11 +240,11 @@ export default class DrawerFilter extends Vue {
     }
   }
 
-  closeDrawer (): void {
+  closeDrawer(): void {
     this.$emit("closeDrawer");
   }
 
-  sortGenres (genre1: TMDBGenre, genre2: TMDBGenre): number {
+  sortGenres(genre1: TMDBGenre, genre2: TMDBGenre): number {
     if (genre1.name > genre2.name) return 1;
     else if (genre1.name < genre2.name) return -1;
     else return 0;
