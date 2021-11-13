@@ -18,55 +18,9 @@
           name="movie-title"
           id="movie-title"
           autocomplete="off"
-          v-model="movieToAdd.title"
+          v-model="searchText"
           :placeholder="randomMovieTitle"
         />
-      </div>
-      <label for="movie-duration" class="text-sm">Duration</label>
-      <div class="input">
-        <input
-          type="text"
-          name="movie-duration"
-          id="movie-duration"
-          autocomplete="off"
-          v-model="movieToAdd.duration"
-          placeholder="90"
-        />
-      </div>
-      <label for="movie-service" class="text-sm">Streaming Service</label>
-      <select
-        name="movie-service"
-        id="movie-service"
-        v-model="movieToAdd.service"
-      >
-        <option value="" selected disabled hidden>1channel.rus</option>
-        <option
-          v-for="service in services"
-          :key="service.title"
-          :value="service"
-          >{{ service.title }}</option
-        >
-      </select>
-      <label for="movie-service" class="text-sm">Genres</label>
-      <div class="chip-group flex-wrap mb-5">
-        <template v-for="genre in placeholders.genres">
-          <label
-            :key="genre.value"
-            :for="genre.value"
-            :class="{ active: movieToAdd.genres.includes(genre) }"
-            class="chip"
-          >
-            <input
-              type="checkbox"
-              :name="genre.value"
-              :id="genre.value"
-              :value="genre"
-              v-model="movieToAdd.genres"
-              hidden
-            />
-            {{ genre.title }}
-          </label>
-        </template>
       </div>
     </div>
     <div class="btn-group flex py-3">
@@ -90,11 +44,11 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { db } from "@/db.ts";
+import { Component, Vue, Watch } from "vue-property-decorator";
+import { db } from "@/db";
 import placeholders from "@/placeholders";
-import IService from "@/types/interface/IService";
 import IMovie from "@/types/interface/IMovie";
+import debounce from "lodash/debounce";
 
 @Component
 export default class PopupAddMovie extends Vue {
@@ -108,6 +62,7 @@ export default class PopupAddMovie extends Vue {
     genres: []
   };
 
+  searchText = "";
   placeholders = placeholders;
   success = false;
 
@@ -117,10 +72,6 @@ export default class PopupAddMovie extends Vue {
       Math.random() * placeholderMoviesArrayLength
     );
     return placeholders.movies[randomPlaceholderIndex];
-  }
-
-  get services (): Array<IService> {
-    return placeholders.streamingService;
   }
 
   get disableButton (): boolean {
@@ -154,6 +105,13 @@ export default class PopupAddMovie extends Vue {
     );
   }
 
+  @Watch("searchText")
+  searchMovie (searchText: string) {
+    if (searchText !== "") {
+      this.executeSearchMovie(searchText);
+    }
+  }
+
   resetMovieModel (): void {
     this.movieToAdd = {
       title: "",
@@ -182,5 +140,9 @@ export default class PopupAddMovie extends Vue {
     this.$emit("closePopup");
     this.resetMovieModel();
   }
+
+  executeSearchMovie = debounce(searchText => {
+    this.$store.dispatch("searchMovie", { searchText });
+  }, 1000);
 }
 </script>

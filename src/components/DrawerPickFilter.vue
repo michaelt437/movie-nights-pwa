@@ -25,7 +25,8 @@
         </label>
       </template>
     </div>
-    <p class="text-xl text-gray-800 mb-2"><strong>Service</strong></p>
+    <!-- TODO new way to list service and genres -->
+    <!-- <p class="text-xl text-gray-800 mb-2"><strong>Service</strong></p>
     <div class="chip-group flex-wrap mb-5">
       <template v-for="service in streamingService">
         <label
@@ -66,7 +67,7 @@
           {{ genre.title }}
         </label>
       </template>
-    </div>
+    </div> -->
   </div>
 </template>
 <script lang="ts">

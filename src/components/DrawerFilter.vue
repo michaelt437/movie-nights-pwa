@@ -1,7 +1,12 @@
 <template>
   <div class="px-5 py-3">
     <div class="flex text-gray-500 justify-between items-center mb-6">
-      <h2 class="text-4xl"><span v-show="activeFilters">{{ activeFilters }}</span> Filter<span v-show="activeFilters > 1">s</span></h2>
+      <h2 class="text-4xl">
+        <span v-show="activeFilters">{{ activeFilters }}</span> Filter<span
+          v-show="activeFilters > 1"
+          >s</span
+        >
+      </h2>
       <i class="fas fa-times" @click="closeDrawer"></i>
     </div>
     <p class="text-xl text-gray-800 mb-2"><strong>Order</strong></p>
@@ -10,30 +15,53 @@
         <label
           :key="option.value"
           :for="option.value"
-          :class="{ 'active' : orderFilter.includes(option.value)}"
+          :class="{ active: orderFilter.includes(option.value) }"
           class="chip rounded-full"
           @click.stop="uncheckRadio($event, 'order')"
-          >
-            <input type="radio" :name="option.value" :id="option.value" :value="option.value" v-model="orderFilter" hidden>
-            {{ option.label }}
+        >
+          <input
+            type="radio"
+            :name="option.value"
+            :id="option.value"
+            :value="option.value"
+            v-model="orderFilter"
+            hidden
+          />
+          {{ option.label }}
         </label>
       </template>
     </div>
     <div class="chip-group flex-wrap mb-5">
       <label
         for="availFirst"
-        :class="{ 'active' : excludeFilter === 'available'}"
+        :class="{ active: excludeFilter === 'available' }"
         class="chip rounded-full"
-        @click.stop="uncheckRadio($event, 'exclude')">
-        <input type="radio" name="availFirst" id="availFirst" value="available" v-model="excludeFilter" hidden>
+        @click.stop="uncheckRadio($event, 'exclude')"
+      >
+        <input
+          type="radio"
+          name="availFirst"
+          id="availFirst"
+          value="available"
+          v-model="excludeFilter"
+          hidden
+        />
         Available First
       </label>
       <label
         for="excludeFirst"
-        :class="{ 'active' : excludeFilter === 'exclude'}"
+        :class="{ active: excludeFilter === 'exclude' }"
         class="chip rounded-full"
-        @click.stop="uncheckRadio($event, 'exclude')">
-        <input type="radio" name="excludeFirst" id="excludeFirst" value="exclude" v-model="excludeFilter" hidden>
+        @click.stop="uncheckRadio($event, 'exclude')"
+      >
+        <input
+          type="radio"
+          name="excludeFirst"
+          id="excludeFirst"
+          value="exclude"
+          v-model="excludeFilter"
+          hidden
+        />
         Excluded First
       </label>
     </div>
@@ -43,15 +71,23 @@
         <label
           :key="option.value"
           :for="option.value"
-          :class="{ 'active' : durationFilters.includes(option.value)}"
+          :class="{ active: durationFilters.includes(option.value) }"
           class="chip"
-          >
-            <input type="checkbox" :name="option.value" :id="option.value" :value="option.value" v-model="durationFilters" hidden>
-            {{ option.label }}
+        >
+          <input
+            type="checkbox"
+            :name="option.value"
+            :id="option.value"
+            :value="option.value"
+            v-model="durationFilters"
+            hidden
+          />
+          {{ option.label }}
         </label>
       </template>
     </div>
-    <p class="text-xl text-gray-800 mb-2"><strong>Service</strong></p>
+    <!-- TODO new way to list services -->
+    <!-- <p class="text-xl text-gray-800 mb-2"><strong>Service</strong></p>
     <div class="chip-group flex-wrap mb-5">
       <template v-for="service in streamingService">
         <label
@@ -64,8 +100,9 @@
             {{ service.title }}
         </label>
       </template>
-    </div>
-    <p class="text-xl text-gray-800 mb-2"><strong>Genres</strong></p>
+    </div> -->
+    <!-- TODO new way to list genres -->
+    <!-- <p class="text-xl text-gray-800 mb-2"><strong>Genres</strong></p>
     <div class="chip-group flex-wrap mb-5">
       <template v-for="genre in placeholders.genres">
         <label
@@ -78,7 +115,7 @@
             {{ genre.title }}
         </label>
       </template>
-    </div>
+    </div> -->
   </div>
 </template>
 <script lang="ts">
@@ -102,9 +139,9 @@ export default class DrawerFilter extends Vue {
 
   placeholders = placeholders;
 
-  get streamingService (): Array<object> {
-    return placeholders.streamingService;
-  }
+  // get streamingService (): Array<object> {
+  //   return placeholders.streamingService;
+  // }
 
   get orderFilter (): string {
     return this.$store.getters.getOrderFilter;
