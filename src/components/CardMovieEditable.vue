@@ -1,6 +1,13 @@
 <template>
   <div
-    class="movie-card rounded-lg text-gray-200 mb-4 flex flex-col overflow-hidden"
+    class="
+      movie-card
+      rounded-lg
+      text-gray-200
+      mb-4
+      flex flex-col
+      overflow-hidden
+    "
     :class="excludeMovie ? 'bg-gray-900 movie-card--exclude' : 'bg-gray-800'"
     @click="showActions = !showActions"
   >
@@ -28,26 +35,31 @@
           </label>
         </span>
       </div>
-      <div
-        class="movie-card__service text-md my-2"
-        :class="movie.service.value"
-      >
-        {{ movie.service.title }}
+      <div class="movie-card__service flex items-center text-md mt-2">
+        <img
+          v-if="providerLogo"
+          :src="providerLogo"
+          title="provider"
+          class="rounded-full w-5 h-5 mr-2"
+        />
+        {{
+          (movie.providers[0] && movie.providers[0].provider_name) ||
+          "Unavailable"
+        }}
       </div>
-      <div class="movie-card__footer flex justify-between items-center">
+      <div class="movie-card__footer flex justify-between items-center mt-2">
         <div class="movie-card__duration text-sm">
-          {{ formatDuration(movie.duration) }}
+          {{ formatDuration(movie.runtime) }}
         </div>
         <div class="movie-card__genres text-sm">
           <span
             v-for="genre in movie.genres"
-            :key="genre.value"
+            :key="genre.id"
             class="border border-gray-600 mr-1 px-2 rounded-sm"
           >
-            {{ genre.title }}
+            {{ genre.name }}
           </span>
         </div>
-        <!-- <i class="fas mr-2 text-gray-400" :class="showActions ? 'fa-chevron-up' : 'fa-chevron-down'"></i> -->
       </div>
     </div>
     <div v-show="showActions" class="movie-card__actions px-5 py-3">
@@ -66,6 +78,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
+import { TMDBConfig } from "@/types/tmdb";
 import { db } from "@/db";
 
 @Component
@@ -102,6 +115,16 @@ export default class CardMovieEditable extends Vue {
         );
       })
     );
+  }
+
+  get tmdbConfig (): TMDBConfig {
+    return this.$store.state.config;
+  }
+
+  get providerLogo (): string | undefined {
+    if (this.movie.providers.length > 0) {
+      return `${this.tmdbConfig.images.secure_base_url}${this.tmdbConfig.images.logo_sizes[0]}${this.movie.providers[0].logo_path}`;
+    }
   }
 
   editMovie (): void {

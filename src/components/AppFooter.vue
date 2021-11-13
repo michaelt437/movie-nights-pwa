@@ -25,7 +25,6 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import IUser from "@/types/interface/IUser";
 
 @Component
 export default class AppFooter extends Vue {
@@ -45,7 +44,7 @@ export default class AppFooter extends Vue {
   }
 
   addMovie (): void {
-    this.$emit("popup", "PopupAddMovie");
+    this.$emit("drawer", "PopupAddMovie");
   }
 
   create () {

@@ -38,7 +38,7 @@ export default class PopupEditMovie extends Vue {
   @Prop(Object) readonly movie!: IMovie;
   @Prop() readonly action?: Function;
 
-  movieToEdit: IMovie = {
+  movieToEdit: any = {
     documentId: "",
     title: "",
     service: {

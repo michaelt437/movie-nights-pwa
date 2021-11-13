@@ -75,7 +75,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
 import CardMovie from "@/components/CardMovie.vue";
-import { db, fb } from "@/db.ts";
+import { db, fb } from "@/db";
 
 @Component({
   components: {
@@ -261,11 +261,11 @@ export default class CardMovieRoll extends Vue {
         icon_emoji: ":niccage:",
         attachments: [
           {
-            fallback: `${this.randomMovie.title} - ${this.randomMovie.service.title} - ${this.randomMovie.duration}`,
+            fallback: `${this.randomMovie.title} - ${this.randomMovie.service!.title} - ${this.randomMovie.duration}`,
             // eslint-disable-next-line
             author_name: `${this.$store.getters.getCurrentUser.name}`,
             title: `${this.randomMovie.title.toUpperCase()}`,
-            text: `${this.randomMovie.service.title}\n_${this.randomMovie.duration} mins_`
+            text: `${this.randomMovie.service!.title}\n_${this.randomMovie.duration} mins_`
           }
         ]
       })

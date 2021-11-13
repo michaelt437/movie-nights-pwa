@@ -86,41 +86,55 @@
         </label>
       </template>
     </div>
-    <!-- TODO new way to list services -->
-    <!-- <p class="text-xl text-gray-800 mb-2"><strong>Service</strong></p>
+    <p class="text-xl text-gray-800 mb-2"><strong>Provider</strong></p>
     <div class="chip-group flex-wrap mb-5">
-      <template v-for="service in streamingService">
+      <template v-for="provider in collectiveProviders">
         <label
-          :key="service.value"
-          :for="service.value"
-          :class="{ 'active' : serviceFilters.includes(service.value)}"
+          :key="provider.provider_id"
+          :for="provider.provider_name"
+          :class="{ active: serviceFilters.includes(provider.provider_name) }"
           class="chip"
-          >
-            <input type="checkbox" :name="service.value" :id="service.value" :value="service.value" v-model="serviceFilters" hidden>
-            {{ service.title }}
+        >
+          <input
+            type="checkbox"
+            :name="provider.provider_name"
+            :id="provider.provider_name"
+            :value="provider.provider_name"
+            v-model="serviceFilters"
+            hidden
+          />
+          {{ provider.provider_name }}
         </label>
       </template>
-    </div> -->
-    <!-- TODO new way to list genres -->
-    <!-- <p class="text-xl text-gray-800 mb-2"><strong>Genres</strong></p>
+    </div>
+    <p class="text-xl text-gray-800 mb-2"><strong>Genres</strong></p>
     <div class="chip-group flex-wrap mb-5">
-      <template v-for="genre in placeholders.genres">
+      <template v-for="genre in collectiveGenres">
         <label
-          :key="genre.value"
-          :for="genre.value"
-          :class="{ 'active' : genreFilters.includes(genre.value) }"
+          :key="genre.id"
+          :for="genre.id"
+          :class="{ active: genreFilters.includes(genre.name) }"
           class="chip"
-          >
-            <input type="checkbox" :name="genre.value" :id="genre.value" :value="genre.value" v-model="genreFilters" hidden>
-            {{ genre.title }}
+        >
+          <input
+            type="checkbox"
+            :name="genre.id"
+            :id="genre.id"
+            :value="genre.name"
+            v-model="genreFilters"
+            hidden
+          />
+          {{ genre.name }}
         </label>
       </template>
-    </div> -->
+    </div>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import placeholders from "@/placeholders";
+import { TMDBGenre, TMDBStreamProvider } from "@/types/tmdb";
+import IMovie from "@/types/interface/IMovie";
 
 @Component
 export default class DrawerFilter extends Vue {
@@ -139,9 +153,34 @@ export default class DrawerFilter extends Vue {
 
   placeholders = placeholders;
 
-  // get streamingService (): Array<object> {
-  //   return placeholders.streamingService;
-  // }
+  get collectiveProviders (): TMDBStreamProvider[] {
+    const _presentProviders: TMDBStreamProvider[] = [];
+    this.$store.getters.getMoviesToWatch.forEach((movie: IMovie) => {
+      if (movie.providers.length) {
+        if (
+          !_presentProviders.find(
+            (provider) =>
+              provider.provider_id === movie.providers[0].provider_id
+          )
+        ) {
+          _presentProviders.push(movie.providers[0]);
+        }
+      }
+    });
+    return _presentProviders;
+  }
+
+  get collectiveGenres (): TMDBGenre[] {
+    const _presentGenres: TMDBGenre[] = [];
+    this.$store.getters.getMoviesToWatch.forEach((movie) => {
+      movie.genres.forEach((genre) => {
+        if (!_presentGenres.find((pGenre) => pGenre.id === genre.id)) {
+          _presentGenres.push(genre);
+        }
+      });
+    });
+    return _presentGenres.sort(this.sortGenres);
+  }
 
   get orderFilter (): string {
     return this.$store.getters.getOrderFilter;
@@ -203,6 +242,12 @@ export default class DrawerFilter extends Vue {
 
   closeDrawer (): void {
     this.$emit("closeDrawer");
+  }
+
+  sortGenres (genre1: TMDBGenre, genre2: TMDBGenre): number {
+    if (genre1.name > genre2.name) return 1;
+    else if (genre1.name < genre2.name) return -1;
+    else return 0;
   }
 }
 </script>

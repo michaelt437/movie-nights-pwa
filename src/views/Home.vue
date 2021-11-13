@@ -13,6 +13,9 @@
       :movie="movie"
     />
     <div class="pt-4 py-16 text-gray-600 text-center">Your beginning...</div>
+    <div class="pt-4 py-16 text-gray-600 text-center">
+      Streaming provider data via JustWatch
+    </div>
   </div>
 </template>
 

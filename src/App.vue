@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="pb-5 px-5 relative" style="margin-top: 56px;">
+  <div id="app" class="pb-5 px-5 relative" style="margin-top: 56px">
     <app-header
       :isSignedIn.sync="isSignedIn"
       :photoUrl="loggedInUser.photoURL"
@@ -26,7 +26,7 @@
         Log In
       </button>
     </div>
-    <app-footer @popup="invokePopup" />
+    <app-footer @popup="invokePopup" @drawer="invokeDrawer" />
     <popup-base v-if="popUpComponent !== null">
       <component
         :is="popUpComponent"
@@ -34,7 +34,7 @@
           movie: propMovie,
           message: propMessage,
           action: propAction,
-          postAction: propPostAction
+          postAction: propPostAction,
         }"
         @closePopup="closePopup"
         @toaster="invokeToaster"
@@ -42,11 +42,26 @@
     </popup-base>
     <drawer-base v-if="drawerComponent !== null">
       <keep-alive>
-        <component :is="drawerComponent" @closeDrawer="closeDrawer" />
+        <component
+          :is="drawerComponent"
+          @closeDrawer="closeDrawer"
+          @toaster="invokeToaster"
+        />
       </keep-alive>
     </drawer-base>
     <div
-      class="toaster bg-green-500 text-gray-200 rounded-md px-5 py-3 w-11/12 fixed bottom-0 z-20"
+      class="
+        toaster
+        bg-green-500
+        text-gray-200
+        rounded-md
+        px-5
+        py-3
+        w-11/12
+        fixed
+        bottom-0
+        z-20
+      "
       :class="{ active: toaster }"
     >
       {{ toasterText }}
@@ -109,11 +124,11 @@ export default class App extends Vue {
     const provider = new auth.GoogleAuthProvider();
     fb.auth()
       .signInWithRedirect(provider)
-      .then(response => {
+      .then((response) => {
         console.log("logged in", response);
         this.$emit("update:isSignedIn", true);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Authentication error: ", error);
       });
   }
@@ -123,8 +138,8 @@ export default class App extends Vue {
       .collection("users")
       .where("email", "==", this.loggedInUser.email)
       .get()
-      .then(querySnapshot => {
-        querySnapshot.forEach(user => {
+      .then((querySnapshot) => {
+        querySnapshot.forEach((user) => {
           this.$store.commit("setCurrentUser", user.data());
           this.$store.commit("setCurrentUserDocumentId", user.id);
         });
@@ -165,8 +180,8 @@ export default class App extends Vue {
   async fetchMoviesList (): Promise<any> {
     await db
       .collection(this.$store.getters.getCurrentUserDocumentId)
-      .onSnapshot({ includeMetadataChanges: true }, querySnapshot => {
-        querySnapshot.docChanges().forEach(change => {
+      .onSnapshot({ includeMetadataChanges: true }, (querySnapshot) => {
+        querySnapshot.docChanges().forEach((change) => {
           if (change.type === "added") {
             const movieObj = change.doc.data();
             movieObj.documentId = change.doc.id;
@@ -181,7 +196,7 @@ export default class App extends Vue {
       .collection("tonightsPick")
       .doc("movie")
       .get()
-      .then(doc => {
+      .then((doc) => {
         if (doc.data() !== undefined) {
           this.$store.commit("updateRollPermission", false);
           this.$store.commit("setTonightsPick", doc.data());
@@ -203,7 +218,7 @@ export default class App extends Vue {
   }
 
   checkFirebaseAuthState (): Promise<boolean> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       fb.auth().onAuthStateChanged((user: any | null) => {
         if (user) {
           this.loggedInUser = Object.assign(
@@ -227,19 +242,14 @@ export default class App extends Vue {
 
       if (
         this.$moment().valueOf() >
-        this.$moment(lastPickTime)
-          .add(1, "days")
-          .hours(6)
-          .valueOf()
+        this.$moment(lastPickTime).add(1, "days").hours(6).valueOf()
       ) {
         this.$store.commit("resetRolls");
         this.$store.commit("updateUserHasRolled", false);
         this.$store.commit("setTonightsPick", null);
         this.$store.commit("updateRollPermission", true);
 
-        db.collection("tonightsPick")
-          .doc("movie")
-          .delete();
+        db.collection("tonightsPick").doc("movie").delete();
       }
     }
 
@@ -258,6 +268,7 @@ export default class App extends Vue {
     await this.init();
     await this.fetchMoviesList();
     await this.checkForTonightsPick();
+    await this.$store.dispatch("fetchConfiguration");
     this.resetRollCheck();
     this.loading = false;
     this.$store.commit("setMoviesList", this.moviesList);
