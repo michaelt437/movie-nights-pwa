@@ -108,27 +108,33 @@
         </label>
       </template>
     </div>
-    <!-- TODO new way to list genres -->
-    <!-- <p class="text-xl text-gray-800 mb-2"><strong>Genres</strong></p>
+    <p class="text-xl text-gray-800 mb-2"><strong>Genres</strong></p>
     <div class="chip-group flex-wrap mb-5">
-      <template v-for="genre in placeholders.genres">
+      <template v-for="genre in collectiveGenres">
         <label
-          :key="genre.value"
-          :for="genre.value"
-          :class="{ 'active' : genreFilters.includes(genre.value) }"
+          :key="genre.id"
+          :for="genre.id"
+          :class="{ active: genreFilters.includes(genre.name) }"
           class="chip"
-          >
-            <input type="checkbox" :name="genre.value" :id="genre.value" :value="genre.value" v-model="genreFilters" hidden>
-            {{ genre.title }}
+        >
+          <input
+            type="checkbox"
+            :name="genre.id"
+            :id="genre.id"
+            :value="genre.name"
+            v-model="genreFilters"
+            hidden
+          />
+          {{ genre.name }}
         </label>
       </template>
-    </div> -->
+    </div>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import placeholders from "@/placeholders";
-import { TMDBStreamProvider } from "@/types/tmdb";
+import { TMDBGenre, TMDBStreamProvider } from "@/types/tmdb";
 import IMovie from "@/types/interface/IMovie";
 
 @Component
@@ -163,6 +169,18 @@ export default class DrawerFilter extends Vue {
       }
     });
     return _presentProviders;
+  }
+
+  get collectiveGenres (): TMDBGenre[] {
+    const _presentGenres: TMDBGenre[] = [];
+    this.$store.getters.getMoviesToWatch.forEach((movie) => {
+      movie.genres.forEach((genre) => {
+        if (!_presentGenres.find((pGenre) => pGenre.id === genre.id)) {
+          _presentGenres.push(genre);
+        }
+      });
+    });
+    return _presentGenres;
   }
 
   get orderFilter (): string {
