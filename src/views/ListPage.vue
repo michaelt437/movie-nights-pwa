@@ -96,7 +96,7 @@ export default class ListPage extends Vue {
       .filter((movie) => {
         if (this.$store.getters.getServiceFilters.length) {
           return this.$store.getters.getServiceFilters.includes(
-            movie.service.value
+            movie.providers[0]?.provider_name
           );
         } else {
           return true;
@@ -164,16 +164,24 @@ export default class ListPage extends Vue {
               return 0;
             }
           case "service_abc":
-            if (
-              movie1.service.value.toLowerCase() >
-              movie2.service.value.toLowerCase()
-            ) {
-              return 1;
-            } else if (
-              movie1.service.value.toLowerCase() <
-              movie2.service.value.toLowerCase()
-            ) {
+            if (movie1.providers && movie2.providers) {
+              if (
+                movie1.providers[0]?.provider_name.toLowerCase() >
+                movie2.providers[0]?.provider_name.toLowerCase()
+              ) {
+                return 1;
+              } else if (
+                movie1.providers[0]?.provider_name.toLowerCase() <
+                movie2.providers[0]?.provider_name.toLowerCase()
+              ) {
+                return -1;
+              } else {
+                return 0;
+              }
+            } else if (movie1.providers && !movie2.providers) {
               return -1;
+            } else if (!movie2.providers && movie2.providers) {
+              return 1;
             } else {
               return 0;
             }
