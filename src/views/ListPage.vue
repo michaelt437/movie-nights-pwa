@@ -105,20 +105,17 @@ export default class ListPage extends Vue {
       .filter((movie) => {
         if (this.$store.getters.getDurationFilters.length) {
           if (this.$store.getters.getDurationFilters.includes("short")) {
-            if (Number(movie.duration) < 107) {
+            if (Number(movie.runtime) < 107) {
               return movie;
             }
           }
           if (this.$store.getters.getDurationFilters.includes("long")) {
-            if (
-              Number(movie.duration) >= 107 &&
-              Number(movie.duration) <= 134
-            ) {
+            if (Number(movie.runtime) >= 107 && Number(movie.runtime) <= 134) {
               return movie;
             }
           }
           if (this.$store.getters.getDurationFilters.includes("realLong")) {
-            if (Number(movie.duration) > 134) {
+            if (Number(movie.runtime) > 134) {
               return movie;
             }
           }
