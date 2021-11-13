@@ -86,7 +86,6 @@
         </label>
       </template>
     </div>
-    <!-- TODO new way to list services -->
     <p class="text-xl text-gray-800 mb-2"><strong>Provider</strong></p>
     <div class="chip-group flex-wrap mb-5">
       <template v-for="provider in collectiveProviders">
@@ -180,7 +179,7 @@ export default class DrawerFilter extends Vue {
         }
       });
     });
-    return _presentGenres;
+    return _presentGenres.sort(this.sortGenres);
   }
 
   get orderFilter (): string {
@@ -243,6 +242,12 @@ export default class DrawerFilter extends Vue {
 
   closeDrawer (): void {
     this.$emit("closeDrawer");
+  }
+
+  sortGenres (genre1: TMDBGenre, genre2: TMDBGenre): number {
+    if (genre1.name > genre2.name) return 1;
+    else if (genre1.name < genre2.name) return -1;
+    else return 0;
   }
 }
 </script>

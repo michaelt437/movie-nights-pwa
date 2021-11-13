@@ -129,7 +129,7 @@ export default class ListPage extends Vue {
       .filter((movie) => {
         if (this.$store.getters.getGenreFilters.length) {
           return movie.genres.some((genre) => {
-            return this.$store.getters.getGenreFilters.includes(genre.value);
+            return this.$store.getters.getGenreFilters.includes(genre.name);
           });
         } else {
           return true;
