@@ -83,7 +83,7 @@ import { Component, Vue } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
 import CardMovie from "@/components/CardMovie.vue";
 import { db, fb } from "@/db";
-import { TMDBConfig } from "@/types/tmdb";
+import { TMDBConfig, TMDBGenre } from "@/types/tmdb";
 
 @Component({
   components: {
@@ -98,8 +98,8 @@ export default class CardMovieRoll extends Vue {
 
   get moviesToPickList (): Array<IMovie> {
     return this.$store.getters.getMoviesToWatch
-      .filter((movie) => !movie.exclude)
-      .filter((movie) => {
+      .filter((movie: IMovie) => !movie.exclude)
+      .filter((movie: IMovie) => {
         if (this.$store.getters.getServiceCategories.length) {
           return this.$store.getters.getServiceCategories.includes(
             movie.providers[0].provider_name
@@ -108,7 +108,7 @@ export default class CardMovieRoll extends Vue {
           return true;
         }
       })
-      .filter((movie) => {
+      .filter((movie: IMovie) => {
         if (this.$store.getters.getDurationCategories.length) {
           if (this.$store.getters.getDurationCategories.includes("short")) {
             if (Number(movie.runtime) < 107) {
@@ -129,9 +129,9 @@ export default class CardMovieRoll extends Vue {
           return true;
         }
       })
-      .filter((movie) => {
+      .filter((movie: IMovie) => {
         if (this.$store.getters.getGenreCategories.length) {
-          return movie.genres.some((genre) => {
+          return movie.genres.some((genre: TMDBGenre) => {
             return this.$store.getters.getGenreCategories.includes(genre.name);
           });
         } else {
