@@ -148,17 +148,17 @@ export default class ListPage extends Vue {
               return 0;
             }
           case "duration_asc":
-            if (Number(movie1.duration) > Number(movie2.duration)) {
+            if (Number(movie1.runtime) > Number(movie2.runtime)) {
               return 1;
-            } else if (Number(movie1.duration) < Number(movie2.duration)) {
+            } else if (Number(movie1.runtime) < Number(movie2.runtime)) {
               return -1;
             } else {
               return 0;
             }
           case "duration_desc":
-            if (Number(movie2.duration) > Number(movie1.duration)) {
+            if (Number(movie2.runtime) > Number(movie1.runtime)) {
               return 1;
-            } else if (Number(movie2.duration) < Number(movie1.duration)) {
+            } else if (Number(movie2.runtime) < Number(movie1.runtime)) {
               return -1;
             } else {
               return 0;
