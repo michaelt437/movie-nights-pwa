@@ -25,7 +25,6 @@
         </label>
       </template>
     </div>
-    <!-- TODO new way to list service and genres -->
     <p class="text-xl text-gray-800 mb-2"><strong>Service</strong></p>
     <div class="chip-group flex-wrap mb-5">
       <template v-for="provider in availableProviders">
@@ -72,8 +71,6 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import IService from "@/types/interface/IService";
-import IGenre from "@/types/interface/IGenre";
 import { TMDBGenre, TMDBStreamProvider } from "@/types/tmdb";
 import IMovie from "@/types/interface/IMovie";
 
