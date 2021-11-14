@@ -109,10 +109,15 @@ export default class CardMovieEditable extends Vue {
   get isRewatch (): boolean {
     return Boolean(
       this.$store.getters.getMoviesWatched.find((paramMovie: IMovie) => {
-        return (
-          paramMovie.title.toLowerCase() === this.movie.title.toLowerCase() &&
-          paramMovie.hasWatched === true
-        );
+        if (paramMovie.service) {
+          return (
+            paramMovie.title.toLowerCase() === this.movie.title.toLowerCase() &&
+            paramMovie.hasWatched
+          );
+        }
+        if (paramMovie.id) {
+          return paramMovie.id === this.movie.id && paramMovie.hasWatched;
+        }
       })
     );
   }
