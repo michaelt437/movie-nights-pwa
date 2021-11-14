@@ -45,7 +45,7 @@ import { TMDBConfig } from "@/types/tmdb";
 export default class CardMovie extends Vue {
   @Prop(Object) readonly movie!: IMovie;
 
-  get isRewatch(): boolean {
+  get isRewatch (): boolean {
     return Boolean(
       this.$store.getters.getMoviesWatched.find((paramMovie: IMovie) => {
         return (
@@ -56,11 +56,11 @@ export default class CardMovie extends Vue {
     );
   }
 
-  get tmdbConfig(): TMDBConfig {
+  get tmdbConfig (): TMDBConfig {
     return this.$store.state.config;
   }
 
-  get providerLogo(): string | undefined {
+  get providerLogo (): string | undefined {
     if (this.movie.providers) {
       return `${this.tmdbConfig.images.secure_base_url}${this.tmdbConfig.images.logo_sizes[0]}${this.movie.providers[0].logo_path}`;
     } else {
@@ -68,7 +68,7 @@ export default class CardMovie extends Vue {
     }
   }
 
-  formatDuration(duration: string | number): string {
+  formatDuration (duration: string | number): string {
     const _duration: number =
       typeof duration === "string" ? parseInt(duration) : duration;
     return `${Math.floor(_duration / 60)}hr ${_duration % 60}m`;
