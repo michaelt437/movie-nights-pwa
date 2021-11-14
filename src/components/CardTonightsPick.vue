@@ -45,7 +45,10 @@
         title="Rewatch"
       ></i>
     </div>
-    <div class="movie-card__service text-md my-2" :class="movie.service.value">
+    <div
+      class="movie-card__service flex items-center text-md my-2"
+      :class="movie.providers ? '' : movie.service.value"
+    >
       <img
         v-if="movie.providers"
         :src="providerLogo"
