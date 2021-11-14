@@ -174,11 +174,15 @@ export default class CardMovieRoll extends Vue {
   get isRewatch (): boolean {
     return Boolean(
       this.$store.getters.getMoviesWatched.find((paramMovie: IMovie) => {
-        return (
-          paramMovie.title.toLowerCase() ===
-            this.randomMovie.title.toLowerCase() &&
-          paramMovie.hasWatched === true
-        );
+        if (paramMovie.service) {
+          return (
+            paramMovie.title.toLowerCase() ===
+              this.randomMovie.title.toLowerCase() && paramMovie.hasWatched
+          );
+        }
+        if (paramMovie.id) {
+          return paramMovie.id === this.randomMovie.id && paramMovie.hasWatched;
+        }
       })
     );
   }

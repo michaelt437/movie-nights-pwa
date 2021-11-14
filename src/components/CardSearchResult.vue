@@ -4,6 +4,11 @@
       class="movie-card__title flex items-center font-bold text-lg capitalize"
     >
       {{ movie.title }} ({{ $moment(movie.release_date).format("YYYY") }})
+      <i
+        v-show="isRewatch && !isDuplicate"
+        class="fas fa-sync text-green-300 ml-auto"
+        title="Rewatch"
+      ></i>
     </div>
     <div class="movie-card__desc max-h-32 overflow-hidden my-2">
       {{ movie.overview }}
@@ -36,6 +41,22 @@ export default class CardSearchResult extends Vue {
       this.$store.getters.getMoviesToWatch.findIndex(
         (m) => m.id === this.movie.id
       ) > -1
+    );
+  }
+
+  get isRewatch (): boolean {
+    return Boolean(
+      this.$store.getters.getMoviesWatched.find((paramMovie: IMovie) => {
+        if (paramMovie.service) {
+          return (
+            paramMovie.title.toLowerCase() === this.movie.title.toLowerCase() &&
+            paramMovie.hasWatched
+          );
+        }
+        if (paramMovie.id) {
+          return paramMovie.id === this.movie.id && paramMovie.hasWatched;
+        }
+      })
     );
   }
 
