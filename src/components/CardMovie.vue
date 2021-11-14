@@ -51,11 +51,14 @@ export default class CardMovie extends Vue {
         if (paramMovie.service) {
           return (
             paramMovie.title.toLowerCase() === this.movie.title.toLowerCase() &&
-            paramMovie.hasWatched
+            paramMovie.watchDate < this.movie.watchDate
           );
         }
         if (paramMovie.id) {
-          return paramMovie.id === this.movie.id && paramMovie.hasWatched;
+          return (
+            paramMovie.id === this.movie.id &&
+            paramMovie.watchDate < this.movie.watchDate
+          );
         }
       })
     );
