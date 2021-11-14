@@ -8,12 +8,26 @@
         title="Rewatch"
       ></i>
     </div>
-    <div class="movie-card__service text-md my-2" :class="movie.service.value">
-      {{ movie.service.title }}
+    <div
+      class="movie-card__service flex items-center text-md my-2"
+      :class="movie.providers ? '' : movie.service.value"
+    >
+      <img
+        v-if="movie.providers"
+        :src="providerLogo"
+        title="provider"
+        class="rounded-full w-5 h-5 mr-2"
+      />
+      <template v-if="movie.providers">
+        {{ movie.providers[0].provider_name }}
+      </template>
+      <template v-else>
+        {{ movie.service.title }}
+      </template>
     </div>
     <div class="movie-card__footer flex justify-between">
       <div class="movie-card__duration text-sm">
-        {{ formatDuration(movie.duration) }}
+        {{ formatDuration(movie.duration || movie.runtime) }}
       </div>
       <div class="movie-card__watch-date text-sm">
         {{ $moment(movie.watchDate).format("M.D.YYYY") }}
@@ -25,6 +39,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
+import { TMDBConfig } from "@/types/tmdb";
 
 @Component
 export default class CardMovie extends Vue {
@@ -39,6 +54,18 @@ export default class CardMovie extends Vue {
         );
       })
     );
+  }
+
+  get tmdbConfig (): TMDBConfig {
+    return this.$store.state.config;
+  }
+
+  get providerLogo (): string | undefined {
+    if (this.movie.providers) {
+      return `${this.tmdbConfig.images.secure_base_url}${this.tmdbConfig.images.logo_sizes[0]}${this.movie.providers[0].logo_path}`;
+    } else {
+      return undefined;
+    }
   }
 
   formatDuration (duration: string | number): string {
