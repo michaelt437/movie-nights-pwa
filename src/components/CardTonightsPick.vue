@@ -76,6 +76,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
 import { TMDBConfig } from "@/types/tmdb";
+
 @Component
 export default class CardTonightsPick extends Vue {
   get movie (): IMovie {
