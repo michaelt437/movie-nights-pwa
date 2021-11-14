@@ -31,7 +31,9 @@
         <label
           :key="provider.provider_id"
           :for="provider.provider_id"
-          :class="{ active: serviceCategories.includes(provider.provider_id) }"
+          :class="{
+            active: serviceCategories.includes(provider.provider_name),
+          }"
           class="chip"
         >
           <input
