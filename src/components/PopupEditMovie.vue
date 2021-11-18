@@ -4,16 +4,19 @@
     <div class="popup-content overflow-y-auto">
       <!-- home video option? -->
       <template v-if="movie.providers.length">
-        <label for="providers">Edit Primary Provider</label>
-        <select id="providers" class="text-sm" v-model="selectedProvider">
-          <option
-            v-for="provider in movie.providers"
-            :key="provider.provider_id"
-            :value="provider"
-          >
-            {{ provider.provider_name }}
-          </option>
-        </select>
+        <div class="select">
+          <label for="providers">Edit Primary Provider</label>
+          <select id="providers" class="text-sm" v-model="selectedProvider">
+            <option
+              v-for="provider in movie.providers"
+              :key="provider.provider_id"
+              :value="provider"
+            >
+              {{ provider.provider_name }}
+            </option>
+          </select>
+          <i class="fas fa-caret-down absolute top-10 right-5" />
+        </div>
       </template>
     </div>
     <div class="btn-group flex py-5">
@@ -75,7 +78,9 @@ export default class PopupEditMovie extends Vue {
 
   mounted () {
     this.movieToEdit = JSON.parse(JSON.stringify(this.movie));
-    if (this.movieToEdit.providers.length) { this.selectedProvider = this.movieToEdit.providers[0]; }
+    if (this.movieToEdit.providers.length) {
+      this.selectedProvider = this.movieToEdit.providers[0];
+    }
   }
 }
 </script>
