@@ -55,7 +55,7 @@ export default class PopupEditMovie extends Vue {
   selectedProvider: TMDBStreamProvider = {} as TMDBStreamProvider;
 
   get disableButton (): boolean {
-    return isEqual(this.movie, this.movieToEdit);
+    return isEqual(this.selectedProvider, this.movie.providers[0]);
   }
 
   get movieToEditOmitId (): IMovie {
@@ -67,7 +67,20 @@ export default class PopupEditMovie extends Vue {
     this.$emit("closePopup");
   }
 
+  unshiftSelectedProvider (): void {
+    this.movieToEdit.providers.unshift(
+      this.movieToEdit.providers.splice(
+        this.movieToEdit.providers.findIndex(
+          (provider) =>
+            provider.provider_id === this.selectedProvider.provider_id
+        ),
+        1
+      )[0]
+    );
+  }
+
   submitEdits (): void {
+    this.unshiftSelectedProvider();
     db.collection(this.$store.getters.getCurrentUserDocumentId)
       .doc(this.movie.documentId)
       .update(this.movieToEditOmitId);
