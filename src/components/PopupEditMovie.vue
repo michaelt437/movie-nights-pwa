@@ -3,17 +3,30 @@
     <p class="text-2xl text-center py-5">Edit Watch Provider</p>
     <div class="popup-content overflow-y-auto">
       <!-- home video option? -->
-      <!--     <div
-        class="rounded-lg px-3 py-8 bg-indigo-100 border border-indigo-300 mb-3"
-      >
+      <div class="tabs mb-5">
+        <div
+          class="tab"
+          :class="{
+            active: selectedProviderSource === WatchProviderSource.JustWatch,
+          }"
+          @click="selectedProviderSource = WatchProviderSource.JustWatch"
+        >
+          Streaming
+        </div>
+        <div
+          class="tab"
+          :class="{
+            active: selectedProviderSource === WatchProviderSource.Manual,
+          }"
+          @click="selectedProviderSource = WatchProviderSource.Manual"
+        >
+          Custom
+        </div>
+      </div>
+      <template v-if="selectedProviderSource === WatchProviderSource.JustWatch">
         <template v-if="movie.providers.length">
-          <label for="autoProvider" class="mb-2">JustWatch Providers</label>
           <div class="select">
-            <select
-              id="autoProvider"
-              class="text-sm relative"
-              v-model="selectedProvider"
-            >
+            <select v-model="selectedProvider">
               <option
                 v-for="provider in movie.providers"
                 :key="provider.provider_id"
@@ -22,58 +35,19 @@
                 {{ provider.provider_name }}
               </option>
             </select>
-            <i class="fas fa-caret-down absolute top-4 right-5" />
+            <i class="fas fa-caret-down absolute top-5 right-5" />
           </div>
         </template>
-      </div>
-      <div class="rounded-lg p-3 border border-gray-300 mb-3">
-        <label for="manualProvider" class="mb-2">Manual</label>
+      </template>
+      <template v-else>
         <div class="input">
           <input
             type="text"
-            id="manualProvider"
-            name="manualProvider"
-            placeholder="stuff`"
+            placeholder="Where can you watch this movie?"
+            v-model="customProvider.provider_name"
           />
         </div>
-      </div> -->
-      <label
-        for="justWatchRadio"
-        class="block rounded-lg px-3 py-5 mb-3 border border-gray-300"
-        :class="{
-          'bg-indigo-100 border-indigo-300':
-            selectedProviderSource === WatchProviderSource.JustWatch,
-        }"
-      >
-        <input
-          id="justWatchRadio"
-          type="radio"
-          name="watchprovider"
-          hidden
-          :value="WatchProviderSource.JustWatch"
-          v-model="selectedProviderSource"
-        />
-        JustWatch Providers
-      </label>
-      <label
-        for="manualProvider"
-        class="flex rounded-lg px-3 py-3 mb-3 border border-gray-300"
-        :class="{
-          'bg-indigo-100 border-indigo-300':
-            selectedProviderSource === WatchProviderSource.Manual,
-        }"
-      >
-        <input
-          id="manualProvider"
-          type="radio"
-          hidden
-          :value="WatchProviderSource.Manual"
-          v-model="selectedProviderSource"
-        />Manual
-        <div class="input">
-          <input type="text" placeholder="..." />
-        </div>
-      </label>
+      </template>
     </div>
     <div class="btn-group flex py-5">
       <span class="ml-auto"></span>
@@ -88,7 +62,7 @@
         :class="{ disabled: disableButton }"
         class="btn btn-green-400 text-white"
         style="flex-basis: 30%"
-        @click="submitEdits"
+        @click="!disableButton && submitEdits"
       >
         <i class="fas fa-check mr-1"></i> Save
       </button>
@@ -96,7 +70,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
 import { db } from "@/db";
 import { omit, isEqual } from "lodash";
@@ -112,13 +86,24 @@ export default class PopupEditMovie extends Vue {
   WatchProviderSource: typeof WatchProviderSource = WatchProviderSource;
   selectedProviderSource: WatchProviderSource = WatchProviderSource.JustWatch;
   selectedProvider: TMDBStreamProvider = {} as TMDBStreamProvider;
+  customProvider: Partial<TMDBStreamProvider> = {
+    provider_id: 10000,
+    provider_name: "",
+  };
 
   get disableButton(): boolean {
-    return isEqual(this.selectedProvider, this.movie.providers[0]);
+    if (this.selectedProviderSource === WatchProviderSource.JustWatch)
+      return isEqual(this.selectedProvider, this.movie.providers[0]);
+    else return this.customProvider.provider_name?.trim() === "";
   }
 
   get movieToEditOmitId(): IMovie {
     return omit(this.movieToEdit, "documentId");
+  }
+
+  @Watch("selectedProviderSource")
+  clearCustomProviderName(): void {
+    this.customProvider.provider_name = "";
   }
 
   closePopup(): void {
