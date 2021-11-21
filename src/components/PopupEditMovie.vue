@@ -7,23 +7,26 @@
         <div
           class="tab"
           :class="{
-            active: selectedProviderSource === WatchProviderSource.JustWatch,
+            active:
+              movieToEdit.customProvider === WatchProviderSource.JustWatch,
           }"
-          @click="selectedProviderSource = WatchProviderSource.JustWatch"
+          @click="setProviderSource(WatchProviderSource.JustWatch)"
         >
           Streaming
         </div>
         <div
           class="tab"
           :class="{
-            active: selectedProviderSource === WatchProviderSource.Manual,
+            active: movieToEdit.customProvider === WatchProviderSource.Manual,
           }"
-          @click="selectedProviderSource = WatchProviderSource.Manual"
+          @click="setProviderSource(WatchProviderSource.Manual)"
         >
           Custom
         </div>
       </div>
-      <template v-if="selectedProviderSource === WatchProviderSource.JustWatch">
+      <template
+        v-if="movieToEdit.customProvider === WatchProviderSource.JustWatch"
+      >
         <template v-if="movie.providers.length">
           <div class="select">
             <select v-model="selectedProvider">
@@ -44,7 +47,7 @@
           <input
             type="text"
             placeholder="Where can you watch this movie?"
-            v-model="customProvider.provider_name"
+            v-model="movieToEdit.customProviderModel.provider_name"
           />
         </div>
       </template>
@@ -84,15 +87,30 @@ export default class PopupEditMovie extends Vue {
 
   movieToEdit: IMovie = {} as IMovie;
   WatchProviderSource: typeof WatchProviderSource = WatchProviderSource;
-  selectedProviderSource: WatchProviderSource = WatchProviderSource.JustWatch;
   selectedProvider: TMDBStreamProvider = {} as TMDBStreamProvider;
-  customProvider: Partial<TMDBStreamProvider> = {
-    provider_id: 10000,
-    provider_name: ""
-  };
+
+  get customProviderValue (): WatchProviderSource {
+    return this.movieToEdit.customProvider!;
+  }
+
+  get selectedProviderSource (): WatchProviderSource {
+    return this.movieToEdit.customProvider!;
+  }
+
+  set selectedProviderSource (val: WatchProviderSource) {
+    this.movieToEdit.customProvider = val;
+  }
 
   get disableButton (): boolean {
-    if (this.selectedProviderSource === WatchProviderSource.JustWatch) { return isEqual(this.selectedProvider, this.movie.providers[0]); } else return this.customProvider.provider_name?.trim() === "";
+    if (this.selectedProviderSource === WatchProviderSource.JustWatch) {
+      return isEqual(this.selectedProvider, this.movie.providers[0]);
+    } else {
+      return (
+        this.movieToEdit.customProviderModel!.provider_name?.trim() === "" ||
+        this.movieToEdit.customProviderModel?.provider_name ===
+          this.movie.customProviderModel?.provider_name
+      );
+    }
   }
 
   get movieToEditOmitId (): IMovie {
@@ -100,13 +118,22 @@ export default class PopupEditMovie extends Vue {
   }
 
   @Watch("selectedProviderSource")
-  clearCustomProviderName (): void {
-    this.customProvider.provider_name = "";
+  resetCustomProviderName (value: WatchProviderSource): void {
+    if (value === WatchProviderSource.JustWatch) {
+      this.movieToEdit.customProviderModel!.provider_name =
+        this.movie.customProviderModel?.provider_name;
+    } else {
+      this.selectedProvider = this.movieToEdit.providers[0];
+    }
   }
 
   closePopup (): void {
     this.action!();
     this.$emit("closePopup");
+  }
+
+  setProviderSource (value: WatchProviderSource): void {
+    Vue.set(this.movieToEdit, "customProvider", value);
   }
 
   unshiftSelectedProvider (): void {
@@ -122,7 +149,11 @@ export default class PopupEditMovie extends Vue {
   }
 
   submitEdits (): void {
-    this.unshiftSelectedProvider();
+    if (this.selectedProviderSource === WatchProviderSource.JustWatch) {
+      this.movieToEdit.customProviderModel!.provider_name = "";
+      this.unshiftSelectedProvider();
+    }
+
     db.collection(this.$store.getters.getCurrentUserDocumentId)
       .doc(this.movie.documentId)
       .update(this.movieToEditOmitId);
@@ -131,10 +162,13 @@ export default class PopupEditMovie extends Vue {
     this.closePopup();
   }
 
-  mounted () {
+  created () {
     this.movieToEdit = JSON.parse(JSON.stringify(this.movie));
-    if (this.movieToEdit.providers.length) {
-      this.selectedProvider = this.movieToEdit.providers[0];
+  }
+
+  mounted () {
+    if (this.movie.providers.length) {
+      this.selectedProvider = this.movie.providers[0];
     }
   }
 }
