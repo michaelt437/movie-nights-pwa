@@ -62,7 +62,7 @@
         :class="{ disabled: disableButton }"
         class="btn btn-green-400 text-white"
         style="flex-basis: 30%"
-        @click="!disableButton && submitEdits"
+        @click="!disableButton && submitEdits()"
       >
         <i class="fas fa-check mr-1"></i> Save
       </button>
@@ -88,30 +88,28 @@ export default class PopupEditMovie extends Vue {
   selectedProvider: TMDBStreamProvider = {} as TMDBStreamProvider;
   customProvider: Partial<TMDBStreamProvider> = {
     provider_id: 10000,
-    provider_name: "",
+    provider_name: ""
   };
 
-  get disableButton(): boolean {
-    if (this.selectedProviderSource === WatchProviderSource.JustWatch)
-      return isEqual(this.selectedProvider, this.movie.providers[0]);
-    else return this.customProvider.provider_name?.trim() === "";
+  get disableButton (): boolean {
+    if (this.selectedProviderSource === WatchProviderSource.JustWatch) { return isEqual(this.selectedProvider, this.movie.providers[0]); } else return this.customProvider.provider_name?.trim() === "";
   }
 
-  get movieToEditOmitId(): IMovie {
+  get movieToEditOmitId (): IMovie {
     return omit(this.movieToEdit, "documentId");
   }
 
   @Watch("selectedProviderSource")
-  clearCustomProviderName(): void {
+  clearCustomProviderName (): void {
     this.customProvider.provider_name = "";
   }
 
-  closePopup(): void {
+  closePopup (): void {
     this.action!();
     this.$emit("closePopup");
   }
 
-  unshiftSelectedProvider(): void {
+  unshiftSelectedProvider (): void {
     this.movieToEdit.providers.unshift(
       this.movieToEdit.providers.splice(
         this.movieToEdit.providers.findIndex(
@@ -123,7 +121,7 @@ export default class PopupEditMovie extends Vue {
     );
   }
 
-  submitEdits(): void {
+  submitEdits (): void {
     this.unshiftSelectedProvider();
     db.collection(this.$store.getters.getCurrentUserDocumentId)
       .doc(this.movie.documentId)
@@ -133,7 +131,7 @@ export default class PopupEditMovie extends Vue {
     this.closePopup();
   }
 
-  mounted() {
+  mounted () {
     this.movieToEdit = JSON.parse(JSON.stringify(this.movie));
     if (this.movieToEdit.providers.length) {
       this.selectedProvider = this.movieToEdit.providers[0];

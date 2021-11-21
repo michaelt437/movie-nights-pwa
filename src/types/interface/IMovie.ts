@@ -6,6 +6,8 @@ type IMovie = TMDBMovie & {
   exclude: boolean;
   watchDate: number;
   providers: TMDBStreamProvider[];
+  customProvider?: boolean;
+  customProviderModel?: Partial<TMDBStreamProvider>;
   documentId?: string;
   user?: string;
   // TODO remove old members

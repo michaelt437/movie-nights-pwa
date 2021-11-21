@@ -120,6 +120,8 @@ export default class CardSearchResult extends Vue {
       providers: await this.watchProviders(),
       exclude: false,
       hasWatched: false,
+      customProvider: false,
+      customProviderModel: null,
       addedDate: Number(Date.parse(Date()))
     };
     this.$emit("add-movie", movieWithDetailsParam);
