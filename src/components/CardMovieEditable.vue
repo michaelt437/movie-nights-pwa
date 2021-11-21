@@ -42,10 +42,7 @@
           title="provider"
           class="rounded-full w-5 h-5 mr-2"
         />
-        {{
-          (movie.providers[0] && movie.providers[0].provider_name) ||
-          "Unavailable"
-        }}
+        {{ displayProviderText }}
       </div>
       <div class="movie-card__footer flex justify-between items-center mt-2">
         <div class="movie-card__duration text-sm">
@@ -129,6 +126,18 @@ export default class CardMovieEditable extends Vue {
   get providerLogo (): string | undefined {
     if (this.movie.providers.length > 0) {
       return `${this.tmdbConfig.images.secure_base_url}${this.tmdbConfig.images.logo_sizes[0]}${this.movie.providers[0].logo_path}`;
+    }
+  }
+
+  get displayProviderText (): string {
+    if (this.movie.customProvider) {
+      return this.movie.customProviderModel!.provider_name!;
+    }
+
+    if (this.movie.providers.length) {
+      return this.movie.providers[0].provider_name;
+    } else {
+      return "Unavailable";
     }
   }
 
