@@ -1,4 +1,5 @@
 import { TMDBMovie, TMDBStreamProvider } from "@/types/tmdb";
+import { WatchProviderSource } from "../enums";
 
 type IMovie = TMDBMovie & {
   hasWatched: boolean;
@@ -6,7 +7,7 @@ type IMovie = TMDBMovie & {
   exclude: boolean;
   watchDate: number;
   providers: TMDBStreamProvider[];
-  customProvider?: boolean;
+  customProvider?: WatchProviderSource;
   customProviderModel?: Partial<TMDBStreamProvider>;
   documentId?: string;
   user?: string;

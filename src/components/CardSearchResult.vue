@@ -62,6 +62,7 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
 import { TMBDMovieSearch, TMDBConfig, TMDBStreamProvider } from "@/types/tmdb";
+import { WatchProviderSource } from "@/types/enums";
 
 @Component
 export default class CardSearchResult extends Vue {
@@ -120,8 +121,11 @@ export default class CardSearchResult extends Vue {
       providers: await this.watchProviders(),
       exclude: false,
       hasWatched: false,
-      customProvider: false,
-      customProviderModel: null,
+      customProvider: WatchProviderSource.JustWatch,
+      customProviderModel: {
+        provider_id: 10000,
+        provider_name: ""
+      },
       addedDate: Number(Date.parse(Date()))
     };
     this.$emit("add-movie", movieWithDetailsParam);
