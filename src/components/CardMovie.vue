@@ -13,13 +13,13 @@
       :class="movie.providers ? '' : movie.service.value"
     >
       <img
-        v-if="movie.providers"
+        v-if="!movie.customProvider && movie.providers"
         :src="providerLogo"
         title="provider"
         class="rounded-full w-5 h-5 mr-2"
       />
       <template v-if="movie.providers">
-        {{ movie.providers[0].provider_name }}
+        {{ displayProviderText }}
       </template>
       <template v-else>
         {{ movie.service.title }}
@@ -74,6 +74,14 @@ export default class CardMovie extends Vue {
     } else {
       return undefined;
     }
+  }
+
+  get displayProviderText (): string {
+    if (this.movie.customProvider) {
+      return this.movie.customProviderModel!.provider_name!;
+    }
+
+    return this.movie.providers[0].provider_name;
   }
 
   formatDuration (duration: string | number): string {

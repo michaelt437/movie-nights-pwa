@@ -11,11 +11,3 @@ import { Component, Vue } from "vue-property-decorator";
 @Component
 export default class PopupBase extends Vue {}
 </script>
-<style lang="scss" scoped>
-.popup-container {
-  @media (max-width: 767px) {
-    height: 485px;
-    max-height: 485px;
-  }
-}
-</style>
