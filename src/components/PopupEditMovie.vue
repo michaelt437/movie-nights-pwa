@@ -103,7 +103,10 @@ export default class PopupEditMovie extends Vue {
 
   get disableButton (): boolean {
     if (this.selectedProviderSource === WatchProviderSource.JustWatch) {
-      return isEqual(this.selectedProvider, this.movie.providers[0]);
+      return (
+        this.selectedProviderSource === this.movie.customProvider &&
+        isEqual(this.selectedProvider, this.movie.providers[0])
+      );
     } else {
       return (
         this.movieToEdit.customProviderModel!.provider_name?.trim() === "" ||
