@@ -14,7 +14,7 @@
       </div>
       <div class="movie-card__service flex items-center text-lg my-2">
         <img
-          v-if="!movie.customProvider && providerLogo"
+          v-if="!randomMovie.customProvider && providerLogo"
           :src="providerLogo"
           title="provider"
           class="rounded-full w-5 h-5 mr-2"
