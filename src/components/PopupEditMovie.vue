@@ -2,13 +2,11 @@
   <div class="flex flex-col rounded-lg bg-gray-200 text-gray-600 px-5 mb-4">
     <p class="text-2xl text-center py-5">Edit Watch Provider</p>
     <div class="popup-content overflow-y-auto">
-      <!-- home video option? -->
       <div class="tabs mb-5">
         <div
           class="tab"
           :class="{
-            active:
-              movieToEdit.customProvider === WatchProviderSource.JustWatch,
+            active: movieToEdit.customProvider === WatchProviderSource.JustWatch
           }"
           @click="setProviderSource(WatchProviderSource.JustWatch)"
         >
@@ -17,7 +15,7 @@
         <div
           class="tab"
           :class="{
-            active: movieToEdit.customProvider === WatchProviderSource.Manual,
+            active: movieToEdit.customProvider === WatchProviderSource.Manual
           }"
           @click="setProviderSource(WatchProviderSource.Manual)"
         >
