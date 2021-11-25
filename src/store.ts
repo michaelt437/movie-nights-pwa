@@ -47,10 +47,18 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       getCurrentUser: (state): IUser => state.currentUser,
       getCurrentUserDocumentId: (state): string => state.currentUserDocumentId,
       getAllMovies: (state): Array<IMovie> => state.moviesList,
-      getMoviesToWatch: (state): Array<IMovie> => {
-        return state.moviesList.filter((movie: IMovie) => {
-          return !movie.hasWatched;
-        });
+      getMoviesToWatch: <MovieType extends { addedDate: number }>(
+        state
+      ): MovieType[] => {
+        return state.moviesList
+          .filter((movie: IMovie) => {
+            return !movie.hasWatched;
+          })
+          .sort((m1: MovieType, m2: MovieType) => {
+            if (m1.addedDate > m2.addedDate) return -1;
+            else if (m1.addedDate < m2.addedDate) return 1;
+            else return 0;
+          });
       },
       getMoviesWatched: (state): Array<IMovie> => {
         return state.moviesList
@@ -94,7 +102,7 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
         const moviesList: Array<IMovie> = state.moviesList;
         const movieToEditIndex = moviesList.indexOf(
           moviesList.find(
-            movie => movie.documentId === movieEdits.documentId
+            (movie) => movie.documentId === movieEdits.documentId
           ) as IMovie
         );
         Vue.set(state.moviesList, movieToEditIndex, movieEdits);
@@ -106,7 +114,7 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
         const moviesList: Array<IMovie> = state.moviesList;
         const movieToDeleteIndex = moviesList.indexOf(
           moviesList.find(
-            movie => movie.documentId === movieToDelete.documentId
+            (movie) => movie.documentId === movieToDelete.documentId
           ) as IMovie
         );
         moviesList.splice(movieToDeleteIndex, 1);
@@ -125,7 +133,9 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       },
       updateMovieExclude (state, { value, targetTitle }): void {
         const indexOfTargetMovie = state.moviesList.indexOf(
-          state.moviesList.find(movie => movie.title === targetTitle) as IMovie
+          state.moviesList.find(
+            (movie) => movie.title === targetTitle
+          ) as IMovie
         );
 
         state.moviesList[indexOfTargetMovie].exclude = value;
