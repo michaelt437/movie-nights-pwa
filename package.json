@@ -15,7 +15,7 @@
     "core-js": "^3.18.2",
     "dotenv": "^8.6.0",
     "es6-promise": "^4.2.8",
-    "firebase": "^7.24.0",
+    "firebase": "^8.10.0",
     "moment": "^2.29.1",
     "postcss": "^7.0.39",
     "reflect-metadata": "^0.1.13",
