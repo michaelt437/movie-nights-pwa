@@ -12,14 +12,17 @@
           title="Rewatch"
         ></i>
       </div>
-      <div
-        class="movie-card__service text-lg my-2"
-        :class="randomMovie.service.value"
-      >
-        {{ randomMovie.service.title }}
+      <div class="movie-card__service flex items-center text-lg my-2">
+        <img
+          v-if="!randomMovie.customProvider && providerLogo"
+          :src="providerLogo"
+          title="provider"
+          class="rounded-full w-5 h-5 mr-2"
+        />
+        {{ displayProviderText }}
       </div>
       <div class="movie-card__duration text-sm mb-5">
-        {{ formatDuration(randomMovie.duration) }}
+        {{ formatDuration(randomMovie.runtime) }}
       </div>
       <div class="movie-card__footer">
         <div class="btn-group flex">
@@ -47,17 +50,22 @@
 
     <div
       v-else
-      class="movie-card rounded-lg btn-indigo-600 text-center text-gray-200 py-8 mb-4 cursor-pointer relative"
+      class="
+        movie-card
+        rounded-lg
+        btn-indigo-600
+        text-center text-gray-200
+        py-8
+        mb-4
+        cursor-pointer
+        relative
+      "
       :class="{ 'pointer-events-none': !moviesToPickList.length }"
       @click="makeRoll"
     >
       <div class="text-2xl">
-        <template v-if="moviesToPickList.length">
-          What's the Pick?
-        </template>
-        <template v-else>
-          No matches
-        </template>
+        <template v-if="moviesToPickList.length"> What's the Pick? </template>
+        <template v-else> No matches </template>
       </div>
     </div>
 
@@ -75,7 +83,8 @@
 import { Component, Vue } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
 import CardMovie from "@/components/CardMovie.vue";
-import { db, fb } from "@/db.ts";
+import { db, fb } from "@/db";
+import { TMDBConfig, TMDBGenre } from "@/types/tmdb";
 
 @Component({
   components: {
@@ -90,33 +99,31 @@ export default class CardMovieRoll extends Vue {
 
   get moviesToPickList (): Array<IMovie> {
     return this.$store.getters.getMoviesToWatch
-      .filter(movie => !movie.exclude)
-      .filter(movie => {
+      .filter((movie: IMovie) => !movie.exclude)
+      .filter((movie: IMovie) => movie.providers?.length)
+      .filter((movie: IMovie) => {
         if (this.$store.getters.getServiceCategories.length) {
           return this.$store.getters.getServiceCategories.includes(
-            movie.service.value
+            movie.providers[0].provider_name
           );
         } else {
           return true;
         }
       })
-      .filter(movie => {
+      .filter((movie: IMovie) => {
         if (this.$store.getters.getDurationCategories.length) {
           if (this.$store.getters.getDurationCategories.includes("short")) {
-            if (Number(movie.duration) < 107) {
+            if (Number(movie.runtime) < 107) {
               return movie;
             }
           }
           if (this.$store.getters.getDurationCategories.includes("long")) {
-            if (
-              Number(movie.duration) >= 107 &&
-              Number(movie.duration) <= 134
-            ) {
+            if (Number(movie.runtime) >= 107 && Number(movie.runtime) <= 134) {
               return movie;
             }
           }
           if (this.$store.getters.getDurationCategories.includes("realLong")) {
-            if (Number(movie.duration) > 134) {
+            if (Number(movie.runtime) > 134) {
               return movie;
             }
           }
@@ -124,10 +131,10 @@ export default class CardMovieRoll extends Vue {
           return true;
         }
       })
-      .filter(movie => {
+      .filter((movie: IMovie) => {
         if (this.$store.getters.getGenreCategories.length) {
-          return movie.genres.some(genre => {
-            return this.$store.getters.getGenreCategories.includes(genre.value);
+          return movie.genres.some((genre: TMDBGenre) => {
+            return this.$store.getters.getGenreCategories.includes(genre.name);
           });
         } else {
           return true;
@@ -169,13 +176,33 @@ export default class CardMovieRoll extends Vue {
   get isRewatch (): boolean {
     return Boolean(
       this.$store.getters.getMoviesWatched.find((paramMovie: IMovie) => {
-        return (
-          paramMovie.title.toLowerCase() ===
-            this.randomMovie.title.toLowerCase() &&
-          paramMovie.hasWatched === true
-        );
+        if (paramMovie.service) {
+          return (
+            paramMovie.title.toLowerCase() ===
+              this.randomMovie.title.toLowerCase() && paramMovie.hasWatched
+          );
+        }
+        if (paramMovie.id) {
+          return paramMovie.id === this.randomMovie.id && paramMovie.hasWatched;
+        }
       })
     );
+  }
+
+  get tmdbConfig (): TMDBConfig {
+    return this.$store.state.config;
+  }
+
+  get providerLogo (): string {
+    return `${this.tmdbConfig.images.secure_base_url}${this.tmdbConfig.images.logo_sizes[0]}${this.randomMovie.providers[0].logo_path}`;
+  }
+
+  get displayProviderText (): string {
+    if (this.randomMovie.customProvider) {
+      return this.randomMovie.customProviderModel!.provider_name!;
+    }
+
+    return this.randomMovie.providers[0].provider_name;
   }
 
   invokeDrawer (): void {
@@ -235,9 +262,7 @@ export default class CardMovieRoll extends Vue {
     this.randomMovie.user = this.$store.getters.getCurrentUser.name;
     this.$store.commit("updateRollPermission", false);
     this.$store.commit("setTonightsPick", this.randomMovie);
-    db.collection("tonightsPick")
-      .doc("movie")
-      .set(this.randomMovie);
+    db.collection("tonightsPick").doc("movie").set(this.randomMovie);
 
     db.collection(this.$store.getters.getCurrentUserDocumentId)
       .doc(this.randomMovie.documentId)
@@ -261,11 +286,11 @@ export default class CardMovieRoll extends Vue {
         icon_emoji: ":niccage:",
         attachments: [
           {
-            fallback: `${this.randomMovie.title} - ${this.randomMovie.service.title} - ${this.randomMovie.duration}`,
+            fallback: `${this.randomMovie.title} - ${this.randomMovie.providers[0].provider_name} - ${this.randomMovie.runtime}`,
             // eslint-disable-next-line
             author_name: `${this.$store.getters.getCurrentUser.name}`,
             title: `${this.randomMovie.title.toUpperCase()}`,
-            text: `${this.randomMovie.service.title}\n_${this.randomMovie.duration} mins_`
+            text: `${this.randomMovie.providers[0].provider_name}\n_${this.randomMovie.runtime} mins_`
           }
         ]
       })

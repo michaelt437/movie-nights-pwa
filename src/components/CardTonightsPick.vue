@@ -1,17 +1,42 @@
 <template>
   <div
-    class="movie-card rounded-lg bg-indigo-600 text-gray-200 px-5 pt-6 pb-3 mb-4 border border-yellow-500 relative"
+    class="
+      movie-card
+      rounded-lg
+      bg-indigo-600
+      text-gray-200
+      px-5
+      pt-6
+      pb-3
+      mb-4
+      border border-yellow-500
+      relative
+    "
   >
     <div
-      class="absolute text-black btn btn-yellow-500 capitalize whitespace-nowrap pointer-events-none"
-      style="top: -20px; right: 50%; transform: translateX(50%);"
+      class="
+        absolute
+        text-black
+        btn btn-yellow-500
+        capitalize
+        whitespace-nowrap
+        pointer-events-none
+      "
+      style="top: -20px; right: 50%; transform: translateX(50%)"
     >
       <i class="fas fa-star text-white text-sm mr-3"></i>
       {{ movie.user }}'s Pick
       <i class="fas fa-star text-white text-sm ml-3"></i>
     </div>
     <div
-      class="movie-card__title text-2xl flex items-center justify-between capitalize"
+      class="
+        movie-card__title
+        text-2xl
+        flex
+        items-center
+        justify-between
+        capitalize
+      "
     >
       {{ movie.title }}
       <i
@@ -20,12 +45,26 @@
         title="Rewatch"
       ></i>
     </div>
-    <div class="movie-card__service text-md my-2" :class="movie.service.value">
-      {{ movie.service.title }}
+    <div
+      class="movie-card__service flex items-center text-md my-2"
+      :class="movie.providers ? '' : movie.service.value"
+    >
+      <img
+        v-if="!movie.customProvider && movie.providers"
+        :src="providerLogo"
+        title="provider"
+        class="rounded-full w-5 h-5 mr-2"
+      />
+      <template v-if="movie.providers">
+        {{ displayProviderText }}
+      </template>
+      <template v-else>
+        {{ movie.service.title }}
+      </template>
     </div>
     <div class="movie-card__footer flex justify-between">
       <div class="movie-card__duration text-sm">
-        {{ formatDuration(movie.duration) }}
+        {{ formatDuration(movie.runtime) }}
       </div>
       <div class="movie-card__watch-date text-sm">
         {{ $moment(movie.watchDate).format("M.D.YYYY") }}
@@ -36,6 +75,8 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
+import { TMDBConfig } from "@/types/tmdb";
+
 @Component
 export default class CardTonightsPick extends Vue {
   get movie (): IMovie {
@@ -45,12 +86,36 @@ export default class CardTonightsPick extends Vue {
   get isRewatch (): boolean {
     return Boolean(
       this.$store.getters.getMoviesWatched.find((paramMovie: IMovie) => {
-        return (
-          paramMovie.title.toLowerCase() === this.movie.title.toLowerCase() &&
-          paramMovie.hasWatched === true
-        );
+        if (paramMovie.service) {
+          return (
+            paramMovie.title.toLowerCase() === this.movie.title.toLowerCase() &&
+            paramMovie.hasWatched
+          );
+        }
+        if (paramMovie.id) {
+          return paramMovie.id === this.movie.id && paramMovie.hasWatched;
+        }
       })
     );
+  }
+
+  get tmdbConfig (): TMDBConfig {
+    return this.$store.state.config;
+  }
+
+  get providerLogo (): string | undefined {
+    if (this.movie.providers) {
+      return `${this.tmdbConfig.images.secure_base_url}${this.tmdbConfig.images.logo_sizes[0]}${this.movie.providers[0].logo_path}`;
+    } else {
+      return undefined;
+    }
+  }
+
+  get displayProviderText (): string {
+    if (this.movie.customProvider) {
+      return this.movie.customProviderModel!.provider_name!;
+    }
+    return this.movie.providers[0].provider_name;
   }
 
   formatDuration (duration: string | number): string {

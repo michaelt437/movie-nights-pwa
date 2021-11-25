@@ -1,7 +1,12 @@
 <template>
   <div class="px-5 py-3">
     <div class="flex text-gray-500 justify-between items-center mb-6">
-      <h2 class="text-4xl"><span v-show="activeFilters">{{ activeFilters }}</span> Filter<span v-show="activeFilters > 1">s</span></h2>
+      <h2 class="text-4xl">
+        <span v-show="activeFilters">{{ activeFilters }}</span> Filter<span
+          v-show="activeFilters > 1"
+          >s</span
+        >
+      </h2>
       <i class="fas fa-times" @click="closeDrawer"></i>
     </div>
     <p class="text-xl text-gray-800 mb-2"><strong>Order</strong></p>
@@ -10,30 +15,53 @@
         <label
           :key="option.value"
           :for="option.value"
-          :class="{ 'active' : orderFilter.includes(option.value)}"
+          :class="{ active: orderFilter.includes(option.value) }"
           class="chip rounded-full"
           @click.stop="uncheckRadio($event, 'order')"
-          >
-            <input type="radio" :name="option.value" :id="option.value" :value="option.value" v-model="orderFilter" hidden>
-            {{ option.label }}
+        >
+          <input
+            type="radio"
+            :name="option.value"
+            :id="option.value"
+            :value="option.value"
+            v-model="orderFilter"
+            hidden
+          />
+          {{ option.label }}
         </label>
       </template>
     </div>
     <div class="chip-group flex-wrap mb-5">
       <label
         for="availFirst"
-        :class="{ 'active' : excludeFilter === 'available'}"
+        :class="{ active: excludeFilter === 'available' }"
         class="chip rounded-full"
-        @click.stop="uncheckRadio($event, 'exclude')">
-        <input type="radio" name="availFirst" id="availFirst" value="available" v-model="excludeFilter" hidden>
+        @click.stop="uncheckRadio($event, 'exclude')"
+      >
+        <input
+          type="radio"
+          name="availFirst"
+          id="availFirst"
+          value="available"
+          v-model="excludeFilter"
+          hidden
+        />
         Available First
       </label>
       <label
         for="excludeFirst"
-        :class="{ 'active' : excludeFilter === 'exclude'}"
+        :class="{ active: excludeFilter === 'exclude' }"
         class="chip rounded-full"
-        @click.stop="uncheckRadio($event, 'exclude')">
-        <input type="radio" name="excludeFirst" id="excludeFirst" value="exclude" v-model="excludeFilter" hidden>
+        @click.stop="uncheckRadio($event, 'exclude')"
+      >
+        <input
+          type="radio"
+          name="excludeFirst"
+          id="excludeFirst"
+          value="exclude"
+          v-model="excludeFilter"
+          hidden
+        />
         Excluded First
       </label>
     </div>
@@ -43,39 +71,60 @@
         <label
           :key="option.value"
           :for="option.value"
-          :class="{ 'active' : durationFilters.includes(option.value)}"
+          :class="{ active: durationFilters.includes(option.value) }"
           class="chip"
-          >
-            <input type="checkbox" :name="option.value" :id="option.value" :value="option.value" v-model="durationFilters" hidden>
-            {{ option.label }}
+        >
+          <input
+            type="checkbox"
+            :name="option.value"
+            :id="option.value"
+            :value="option.value"
+            v-model="durationFilters"
+            hidden
+          />
+          {{ option.label }}
         </label>
       </template>
     </div>
-    <p class="text-xl text-gray-800 mb-2"><strong>Service</strong></p>
+    <p class="text-xl text-gray-800 mb-2"><strong>Provider</strong></p>
     <div class="chip-group flex-wrap mb-5">
-      <template v-for="service in streamingService">
+      <template v-for="provider in collectiveProviders">
         <label
-          :key="service.value"
-          :for="service.value"
-          :class="{ 'active' : serviceFilters.includes(service.value)}"
+          :key="provider.provider_id"
+          :for="provider.provider_name"
+          :class="{ active: serviceFilters.includes(provider.provider_name) }"
           class="chip"
-          >
-            <input type="checkbox" :name="service.value" :id="service.value" :value="service.value" v-model="serviceFilters" hidden>
-            {{ service.title }}
+        >
+          <input
+            type="checkbox"
+            :name="provider.provider_name"
+            :id="provider.provider_name"
+            :value="provider.provider_name"
+            v-model="serviceFilters"
+            hidden
+          />
+          {{ provider.provider_name }}
         </label>
       </template>
     </div>
     <p class="text-xl text-gray-800 mb-2"><strong>Genres</strong></p>
     <div class="chip-group flex-wrap mb-5">
-      <template v-for="genre in placeholders.genres">
+      <template v-for="genre in collectiveGenres">
         <label
-          :key="genre.value"
-          :for="genre.value"
-          :class="{ 'active' : genreFilters.includes(genre.value) }"
+          :key="genre.id"
+          :for="genre.id"
+          :class="{ active: genreFilters.includes(genre.name) }"
           class="chip"
-          >
-            <input type="checkbox" :name="genre.value" :id="genre.value" :value="genre.value" v-model="genreFilters" hidden>
-            {{ genre.title }}
+        >
+          <input
+            type="checkbox"
+            :name="genre.id"
+            :id="genre.id"
+            :value="genre.name"
+            v-model="genreFilters"
+            hidden
+          />
+          {{ genre.name }}
         </label>
       </template>
     </div>
@@ -84,6 +133,8 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import placeholders from "@/placeholders";
+import { TMDBGenre, TMDBStreamProvider } from "@/types/tmdb";
+import IMovie from "@/types/interface/IMovie";
 
 @Component
 export default class DrawerFilter extends Vue {
@@ -102,8 +153,33 @@ export default class DrawerFilter extends Vue {
 
   placeholders = placeholders;
 
-  get streamingService (): Array<object> {
-    return placeholders.streamingService;
+  get collectiveProviders (): TMDBStreamProvider[] {
+    const _presentProviders: TMDBStreamProvider[] = [];
+    this.$store.getters.getMoviesToWatch.forEach((movie: IMovie) => {
+      if (movie.providers.length) {
+        if (
+          !_presentProviders.find(
+            (provider) =>
+              provider.provider_id === movie.providers[0].provider_id
+          )
+        ) {
+          _presentProviders.push(movie.providers[0]);
+        }
+      }
+    });
+    return _presentProviders;
+  }
+
+  get collectiveGenres (): TMDBGenre[] {
+    const _presentGenres: TMDBGenre[] = [];
+    this.$store.getters.getMoviesToWatch.forEach((movie) => {
+      movie.genres.forEach((genre) => {
+        if (!_presentGenres.find((pGenre) => pGenre.id === genre.id)) {
+          _presentGenres.push(genre);
+        }
+      });
+    });
+    return _presentGenres.sort(this.sortGenres);
   }
 
   get orderFilter (): string {
@@ -166,6 +242,12 @@ export default class DrawerFilter extends Vue {
 
   closeDrawer (): void {
     this.$emit("closeDrawer");
+  }
+
+  sortGenres (genre1: TMDBGenre, genre2: TMDBGenre): number {
+    if (genre1.name > genre2.name) return 1;
+    else if (genre1.name < genre2.name) return -1;
+    else return 0;
   }
 }
 </script>

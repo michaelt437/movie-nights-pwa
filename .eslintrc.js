@@ -16,12 +16,14 @@ module.exports = {
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     quotes: ["error", "double"],
     semi: ["error", "always"],
+    "space-before-function-paren": ["error", "always"],
     "@typescript-eslint/interface-name-prefix": [
       "error",
       {
         prefixWithI: "always"
       }
     ],
-    "@typescript-eslint/no-non-null-assertion": "off"
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/camelcase": "off"
   }
 };

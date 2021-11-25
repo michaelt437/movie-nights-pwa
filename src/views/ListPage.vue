@@ -1,7 +1,15 @@
 <template>
   <div id="list-page" class="relative flex-grow md:flex-grow-0">
     <div
-      class="flex items-center mb-12 border border-gray-700 rounded-md px-3 py-1"
+      class="
+        flex
+        items-center
+        mb-12
+        border border-gray-700
+        rounded-md
+        px-3
+        py-1
+      "
     >
       <i class="fas fa-search text-gray-500 absolute"></i>
       <div class="input search w-full relative">
@@ -15,7 +23,7 @@
         />
         <span
           v-show="searchInput !== ''"
-          id="search-clear"
+          id="input-clear"
           class="cursor-pointer"
           @click="clearSearch()"
         >
@@ -48,11 +56,14 @@
     <template v-for="movie in filteredMovies">
       <card-movie-editable
         v-on="$listeners"
-        :key="movie.title"
+        :key="movie.documentId"
         :movie="movie"
       />
     </template>
     <div class="pt-4 py-16 text-gray-600 text-center">Your beginning...</div>
+    <div class="pt-4 py-16 text-gray-600 text-center">
+      Streaming provider data via JustWatch
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -74,7 +85,7 @@ export default class ListPage extends Vue {
 
   get filteredMovies (): Array<IMovie> {
     return this.$store.getters.getMoviesToWatch
-      .filter(movie => {
+      .filter((movie) => {
         return (
           movie.title.toLowerCase().includes(this.searchInput.toLowerCase()) ||
           movie.service.title
@@ -82,32 +93,29 @@ export default class ListPage extends Vue {
             .includes(this.searchInput.toLowerCase())
         );
       })
-      .filter(movie => {
+      .filter((movie) => {
         if (this.$store.getters.getServiceFilters.length) {
           return this.$store.getters.getServiceFilters.includes(
-            movie.service.value
+            movie.providers[0]?.provider_name
           );
         } else {
           return true;
         }
       })
-      .filter(movie => {
+      .filter((movie) => {
         if (this.$store.getters.getDurationFilters.length) {
           if (this.$store.getters.getDurationFilters.includes("short")) {
-            if (Number(movie.duration) < 107) {
+            if (Number(movie.runtime) < 107) {
               return movie;
             }
           }
           if (this.$store.getters.getDurationFilters.includes("long")) {
-            if (
-              Number(movie.duration) >= 107 &&
-              Number(movie.duration) <= 134
-            ) {
+            if (Number(movie.runtime) >= 107 && Number(movie.runtime) <= 134) {
               return movie;
             }
           }
           if (this.$store.getters.getDurationFilters.includes("realLong")) {
-            if (Number(movie.duration) > 134) {
+            if (Number(movie.runtime) > 134) {
               return movie;
             }
           }
@@ -115,10 +123,10 @@ export default class ListPage extends Vue {
           return true;
         }
       })
-      .filter(movie => {
+      .filter((movie) => {
         if (this.$store.getters.getGenreFilters.length) {
-          return movie.genres.some(genre => {
-            return this.$store.getters.getGenreFilters.includes(genre.value);
+          return movie.genres.some((genre) => {
+            return this.$store.getters.getGenreFilters.includes(genre.name);
           });
         } else {
           return true;
@@ -137,32 +145,40 @@ export default class ListPage extends Vue {
               return 0;
             }
           case "duration_asc":
-            if (Number(movie1.duration) > Number(movie2.duration)) {
+            if (Number(movie1.runtime) > Number(movie2.runtime)) {
               return 1;
-            } else if (Number(movie1.duration) < Number(movie2.duration)) {
+            } else if (Number(movie1.runtime) < Number(movie2.runtime)) {
               return -1;
             } else {
               return 0;
             }
           case "duration_desc":
-            if (Number(movie2.duration) > Number(movie1.duration)) {
+            if (Number(movie2.runtime) > Number(movie1.runtime)) {
               return 1;
-            } else if (Number(movie2.duration) < Number(movie1.duration)) {
+            } else if (Number(movie2.runtime) < Number(movie1.runtime)) {
               return -1;
             } else {
               return 0;
             }
           case "service_abc":
-            if (
-              movie1.service.value.toLowerCase() >
-              movie2.service.value.toLowerCase()
-            ) {
-              return 1;
-            } else if (
-              movie1.service.value.toLowerCase() <
-              movie2.service.value.toLowerCase()
-            ) {
+            if (movie1.providers.length && movie2.providers.length) {
+              if (
+                movie1.providers[0].provider_name.toLowerCase() >
+                movie2.providers[0].provider_name.toLowerCase()
+              ) {
+                return 1;
+              } else if (
+                movie1.providers[0].provider_name.toLowerCase() <
+                movie2.providers[0].provider_name.toLowerCase()
+              ) {
+                return -1;
+              } else {
+                return 0;
+              }
+            } else if (movie1.providers.length && !movie2.providers.length) {
               return -1;
+            } else if (!movie1.providers.length && movie2.providers.length) {
+              return 1;
             } else {
               return 0;
             }

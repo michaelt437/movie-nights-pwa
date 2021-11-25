@@ -3,12 +3,13 @@ import Vue from "vue";
 import Vuex from "vuex";
 import IMovie from "@/types/interface/IMovie";
 import IUser from "@/types/interface/IUser";
+import { TMBDMovieSearch } from "@/types/tmdb";
 import IMovieDatabaseService from "@/types/interface/IMovieDatabaseService";
 
 Vue.use(Vuex);
 
 @injectable()
-class AppStore<MovieType, StreamProviderType> {
+class AppStore<MovieSearchType, StreamProviderType, MovieType> {
   public state;
   public getters;
   public mutations;
@@ -17,7 +18,11 @@ class AppStore<MovieType, StreamProviderType> {
   public store;
   constructor (
     @inject("IMovieDatabaseService")
-      apiService: IMovieDatabaseService<MovieType, StreamProviderType>
+      apiService: IMovieDatabaseService<
+      MovieSearchType,
+      StreamProviderType,
+      MovieType
+    >
   ) {
     this.apiService = apiService;
     this.state = {
@@ -33,7 +38,9 @@ class AppStore<MovieType, StreamProviderType> {
       genreFilters: [] as Array<string>,
       durationCategories: [] as Array<string>,
       serviceCategories: [] as Array<string>,
-      genreCategories: [] as Array<string>
+      genreCategories: [] as Array<string>,
+      searchResults: [] as MovieSearchType[],
+      config: {} as object // TODO type as config?
     };
 
     this.getters = {
@@ -161,20 +168,39 @@ class AppStore<MovieType, StreamProviderType> {
         state.durationCategories = [];
         state.serviceCategories = [];
         state.genreCategories = [];
+      },
+      setSearchResults (state, data: TMBDMovieSearch[]): void {
+        state.searchResults = data;
+      },
+      setConfiguration (state, config): void {
+        state.config = config;
       }
     };
     this.actions = {
-      searchMovie (
-        context,
+      async searchMovie (
+        { commit },
         payload: { searchText: string }
-      ): Promise<MovieType[]> {
-        return apiService.searchMovie(payload.searchText);
+      ): Promise<void> {
+        const data = await apiService.searchMovie(payload.searchText);
+        commit("setSearchResults", data);
       },
-      fetchWatchProviders (
+      async fetchWatchProviders (
         context,
         payload: { movieId: number }
       ): Promise<StreamProviderType[]> {
-        return apiService.getWatchProviders(payload.movieId);
+        const data = await apiService.getWatchProviders(payload.movieId);
+        return data;
+      },
+      async fetchMovieDetails (
+        context,
+        payload: { movieId: number }
+      ): Promise<MovieType> {
+        const data = await apiService.getMovieDetails(payload.movieId);
+        return data;
+      },
+      async fetchConfiguration (context): Promise<void> {
+        const data = await apiService.getConfiguration();
+        context.commit("setConfiguration", data);
       }
     };
     this.store = new Vuex.Store({

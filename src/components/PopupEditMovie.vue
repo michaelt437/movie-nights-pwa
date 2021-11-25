@@ -1,86 +1,69 @@
 <template>
-  <div
-    class="flex flex-col rounded-lg bg-indigo-600 text-gray-200 px-5 mb-4 h-full"
-  >
-    <p class="text-2xl text-center py-5">Edit Details</p>
+  <div class="flex flex-col rounded-lg bg-gray-200 text-gray-600 px-5 mb-4">
+    <p class="text-2xl text-center py-5">Edit Watch Provider</p>
     <div class="popup-content overflow-y-auto">
-      <label for="movie-title" class="text-sm">
-        Movie Title
-        <span v-show="checkForPendingDuplicate" class="text-red-500 italic">
-          - Duplicate title not yet picked</span
+      <div class="tabs mb-5">
+        <div
+          class="tab"
+          :class="{
+            active: movieToEdit.customProvider === WatchProviderSource.JustWatch
+          }"
+          @click="setProviderSource(WatchProviderSource.JustWatch)"
         >
-      </label>
-      <div class="input">
-        <input
-          type="text"
-          name="movie-title"
-          id="movie-title"
-          autocomplete="off"
-          v-model="movieToEdit.title"
-          :placeholder="randomMovieTitle"
-        />
+          Streaming
+        </div>
+        <div
+          class="tab"
+          :class="{
+            active: movieToEdit.customProvider === WatchProviderSource.Manual
+          }"
+          @click="setProviderSource(WatchProviderSource.Manual)"
+        >
+          Custom
+        </div>
       </div>
-      <label for="movie-duration" class="text-sm">Duration</label>
-      <div class="input">
-        <input
-          type="text"
-          name="movie-duration"
-          id="movie-duration"
-          autocomplete="off"
-          v-model="movieToEdit.duration"
-          placeholder="90"
-        />
-      </div>
-      <label for="movie-service" class="text-sm">Streaming Service</label>
-      <select
-        name="movie-service"
-        id="movie-service"
-        v-model="movieToEdit.service"
+      <template
+        v-if="movieToEdit.customProvider === WatchProviderSource.JustWatch"
       >
-        <option value="" selected disabled hidden>1channel.rus</option>
-        <option
-          v-for="service in services"
-          :key="service.title"
-          :value="service"
-          >{{ service.title }}</option
-        >
-      </select>
-      <label for="movie-service" class="text-sm">Genres</label>
-      <div class="chip-group flex-wrap mb-5">
-        <template v-for="genre in placeholders.genres">
-          <label
-            :key="genre.value"
-            :for="genre.value"
-            :class="hasGenre(genre.value)"
-            class="chip"
-          >
-            <input
-              type="checkbox"
-              :name="genre.value"
-              :id="genre.value"
-              :value="genre"
-              v-model="movieToEdit.genres"
-              hidden
-            />
-            {{ genre.title }}
-          </label>
+        <template v-if="movie.providers.length">
+          <div class="select">
+            <select v-model="selectedProvider">
+              <option
+                v-for="provider in movie.providers"
+                :key="provider.provider_id"
+                :value="provider"
+              >
+                {{ provider.provider_name }}
+              </option>
+            </select>
+            <i class="fas fa-caret-down absolute top-5 right-5" />
+          </div>
         </template>
-      </div>
+      </template>
+      <template v-else>
+        <div class="input">
+          <input
+            type="text"
+            placeholder="Where can you watch this movie?"
+            v-model="movieToEdit.customProviderModel.provider_name"
+          />
+        </div>
+      </template>
     </div>
-    <div class="btn-group flex py-3">
+    <div class="btn-group flex py-5">
       <span class="ml-auto"></span>
       <button
         class="btn btn-gray-400 outline"
-        style="flex-basis: 30%;"
+        style="flex-basis: 30%"
         @click="closePopup"
       >
         <i class="fas fa-times mr-1"></i> Cancel
       </button>
       <button
         :class="{ disabled: disableButton }"
-        class="btn btn-green-400"
-        style="flex-basis: 30%;"
-        @click="submitEdits"
+        class="btn btn-green-400 text-white"
+        style="flex-basis: 30%"
+        @click="!disableButton && submitEdits()"
       >
         <i class="fas fa-check mr-1"></i> Save
       </button>
@@ -88,70 +71,61 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
-import placeholders from "@/placeholders";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
-import IService from "@/types/interface/IService";
-import IGenre from "@/types/interface/IGenre";
-import { db } from "@/db.ts";
+import { db } from "@/db";
 import { omit, isEqual } from "lodash";
+import { TMDBStreamProvider } from "@/types/tmdb";
+import { WatchProviderSource } from "@/types/enums";
 
 @Component
 export default class PopupEditMovie extends Vue {
   @Prop(Object) readonly movie!: IMovie;
   @Prop() readonly action?: Function;
 
-  movieToEdit: IMovie = {
-    documentId: "",
-    title: "",
-    service: {
-      title: "",
-      value: ""
-    },
-    duration: 0,
-    genres: []
-  };
+  movieToEdit: IMovie = {} as IMovie;
+  WatchProviderSource: typeof WatchProviderSource = WatchProviderSource;
+  selectedProvider: TMDBStreamProvider = {} as TMDBStreamProvider;
 
-  placeholders = placeholders;
-
-  get randomMovieTitle (): string {
-    const placeholderMoviesArrayLength = placeholders.movies.length;
-    const randomPlaceholderIndex = Math.floor(
-      Math.random() * placeholderMoviesArrayLength
-    );
-    return placeholders.movies[randomPlaceholderIndex];
+  get customProviderValue (): WatchProviderSource {
+    return this.movieToEdit.customProvider!;
   }
 
-  get services (): Array<IService> {
-    return placeholders.streamingService;
+  get selectedProviderSource (): WatchProviderSource {
+    return this.movieToEdit.customProvider!;
+  }
+
+  set selectedProviderSource (val: WatchProviderSource) {
+    this.movieToEdit.customProvider = val;
   }
 
   get disableButton (): boolean {
-    return (
-      isEqual(this.movie, this.movieToEdit) || this.checkForPendingDuplicate
-    );
-  }
-
-  get checkForPendingDuplicate (): boolean {
-    return (
-      this.$store.getters.getMoviesToWatch.find(movie => {
-        return (
-          movie.title.toLowerCase() === this.movieToEdit.title.toLowerCase()
-        );
-      }) && this.movieToEdit.title !== this.movie.title
-    );
+    if (this.selectedProviderSource === WatchProviderSource.JustWatch) {
+      return (
+        this.selectedProviderSource === this.movie.customProvider &&
+        isEqual(this.selectedProvider, this.movie.providers[0])
+      );
+    } else {
+      return (
+        this.movieToEdit.customProviderModel!.provider_name?.trim() === "" ||
+        this.movieToEdit.customProviderModel?.provider_name ===
+          this.movie.customProviderModel?.provider_name
+      );
+    }
   }
 
   get movieToEditOmitId (): IMovie {
     return omit(this.movieToEdit, "documentId");
   }
 
-  hasGenre (genre: string): object {
-    return {
-      active: this.movieToEdit.genres.find(
-        (genreObj: IGenre) => genreObj.value === genre
-      )
-    };
+  @Watch("selectedProviderSource")
+  resetCustomProviderName (value: WatchProviderSource): void {
+    if (value === WatchProviderSource.JustWatch) {
+      this.movieToEdit.customProviderModel!.provider_name =
+        this.movie.customProviderModel?.provider_name;
+    } else {
+      this.selectedProvider = this.movieToEdit.providers[0];
+    }
   }
 
   closePopup (): void {
@@ -159,7 +133,28 @@ export default class PopupEditMovie extends Vue {
     this.$emit("closePopup");
   }
 
+  setProviderSource (value: WatchProviderSource): void {
+    Vue.set(this.movieToEdit, "customProvider", value);
+  }
+
+  unshiftSelectedProvider (): void {
+    this.movieToEdit.providers.unshift(
+      this.movieToEdit.providers.splice(
+        this.movieToEdit.providers.findIndex(
+          (provider) =>
+            provider.provider_id === this.selectedProvider.provider_id
+        ),
+        1
+      )[0]
+    );
+  }
+
   submitEdits (): void {
+    if (this.selectedProviderSource === WatchProviderSource.JustWatch) {
+      this.movieToEdit.customProviderModel!.provider_name = "";
+      this.unshiftSelectedProvider();
+    }
+
     db.collection(this.$store.getters.getCurrentUserDocumentId)
       .doc(this.movie.documentId)
       .update(this.movieToEditOmitId);
@@ -168,8 +163,14 @@ export default class PopupEditMovie extends Vue {
     this.closePopup();
   }
 
-  mounted () {
+  created () {
     this.movieToEdit = JSON.parse(JSON.stringify(this.movie));
+  }
+
+  mounted () {
+    if (this.movie.providers.length) {
+      this.selectedProvider = this.movie.providers[0];
+    }
   }
 }
 </script>

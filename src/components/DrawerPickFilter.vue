@@ -27,22 +27,24 @@
     </div>
     <p class="text-xl text-gray-800 mb-2"><strong>Service</strong></p>
     <div class="chip-group flex-wrap mb-5">
-      <template v-for="service in streamingService">
+      <template v-for="provider in availableProviders">
         <label
-          :key="service.value"
-          :for="service.value"
-          :class="{ active: serviceCategories.includes(service.value) }"
+          :key="provider.provider_id"
+          :for="provider.provider_id"
+          :class="{
+            active: serviceCategories.includes(provider.provider_name),
+          }"
           class="chip"
         >
           <input
             type="checkbox"
-            :name="service.value"
-            :id="service.value"
-            :value="service.value"
+            :name="provider.provider_id"
+            :id="provider.provider_id"
+            :value="provider.provider_name"
             v-model="serviceCategories"
             hidden
           />
-          {{ service.title }}
+          {{ provider.provider_name }}
         </label>
       </template>
     </div>
@@ -50,20 +52,20 @@
     <div class="chip-group flex-wrap mb-5">
       <template v-for="genre in availableGenres">
         <label
-          :key="genre.value"
-          :for="genre.value"
-          :class="{ active: genreCategories.includes(genre.value) }"
+          :key="genre.id"
+          :for="genre.id"
+          :class="{ active: genreCategories.includes(genre.name) }"
           class="chip"
         >
           <input
             type="checkbox"
-            :name="genre.value"
-            :id="genre.value"
-            :value="genre.value"
+            :name="genre.id"
+            :id="genre.id"
+            :value="genre.name"
             v-model="genreCategories"
             hidden
           />
-          {{ genre.title }}
+          {{ genre.name }}
         </label>
       </template>
     </div>
@@ -71,8 +73,8 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import IService from "@/types/interface/IService";
-import IGenre from "@/types/interface/IGenre";
+import { TMDBGenre, TMDBStreamProvider } from "@/types/tmdb";
+import IMovie from "@/types/interface/IMovie";
 
 @Component
 export default class DrawerPickFilter extends Vue {
@@ -82,30 +84,32 @@ export default class DrawerPickFilter extends Vue {
     { label: "Real Long", value: "realLong" }
   ];
 
-  get streamingService (): Array<object> {
-    const availableServices: Array<IService> = [];
-    this.$store.getters.getMoviesToWatch.forEach(movie => {
-      if (!movie.exclude) {
+  get availableProviders (): TMDBStreamProvider[] {
+    const availableProviders: TMDBStreamProvider[] = [];
+    this.$store.getters.getMoviesToWatch.forEach((movie: IMovie) => {
+      if (!movie.exclude && movie.providers.length) {
         if (
-          !availableServices.find(
-            service => service.title === movie.service.title
+          !availableProviders.find(
+            (provider) =>
+              provider.provider_name === movie.providers[0].provider_name
           )
         ) {
-          availableServices.push(movie.service);
+          availableProviders.push(movie.providers[0]);
         }
       }
     });
-    return availableServices;
+    return availableProviders;
   }
 
-  get availableGenres (): Array<IGenre> {
-    const availableGenres: Array<IGenre> = [];
-    this.$store.getters.getMoviesToWatch.forEach(movie => {
-      if (!movie.exclude) {
-        movie.genres.forEach(genre => {
+  get availableGenres (): TMDBGenre[] {
+    const availableGenres: TMDBGenre[] = [];
+    this.$store.getters.getMoviesToWatch.forEach((movie: IMovie) => {
+      // TODO remove check for providers.length, after excluding unavailable films with issue #63
+      if (!movie.exclude && movie.providers.length) {
+        movie.genres.forEach((genre: TMDBGenre) => {
           if (
             !availableGenres.find(
-              genreValue => genreValue.value === genre.value
+              (genreValue: TMDBGenre) => genreValue.id === genre.id
             )
           ) {
             availableGenres.push(genre);
