@@ -46,7 +46,7 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
     this.getters = {
       getCurrentUser: (state): IUser => state.currentUser,
       getCurrentUserDocumentId: (state): string => state.currentUserDocumentId,
-      getAllMovies: (state): Array<IMovie> => state.moviesList,
+      getAllMovies: (state): MovieType[] => state.moviesList,
       getMoviesToWatch: <MovieType extends { addedDate: number }>(
         state
       ): MovieType[] => {
@@ -60,7 +60,7 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
             else return 0;
           });
       },
-      getMoviesWatched: (state): Array<IMovie> => {
+      getMoviesWatched: (state): MovieType[] => {
         return state.moviesList
           .filter(
             (movie: IMovie) =>
@@ -77,15 +77,15 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
             }
           });
       },
-      getTonightsPick: (state): IMovie | null => state.tonightsPick,
+      getTonightsPick: (state): MovieType | null => state.tonightsPick,
       getOrderFilter: (state): string => state.orderFilter,
       getExcludeFilter: (state): string => state.excludeFilter,
-      getDurationFilters: (state): Array<string> => state.durationFilters,
-      getServiceFilters: (state): Array<string> => state.serviceFilters,
-      getGenreFilters: (state): Array<string> => state.genreFilters,
-      getDurationCategories: (state): Array<string> => state.durationCategories,
-      getServiceCategories: (state): Array<string> => state.serviceCategories,
-      getGenreCategories: (state): Array<string> => state.genreCategories
+      getDurationFilters: (state): string[] => state.durationFilters,
+      getServiceFilters: (state): string[] => state.serviceFilters,
+      getGenreFilters: (state): string[] => state.genreFilters,
+      getDurationCategories: (state): string[] => state.durationCategories,
+      getServiceCategories: (state): string[] => state.serviceCategories,
+      getGenreCategories: (state): string[] => state.genreCategories
     };
 
     this.mutations = {
