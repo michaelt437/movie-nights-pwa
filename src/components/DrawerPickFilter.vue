@@ -6,7 +6,7 @@
     </div>
     <p class="text-xl text-gray-800 mb-2"><strong>Duration</strong></p>
     <div class="chip-group flex-wrap mb-5">
-      <template v-for="option in durationOptions">
+      <template v-for="option in availableRuntimeOptions">
         <label
           :key="option.value"
           :for="option.value"
@@ -32,7 +32,7 @@
           :key="provider.provider_id"
           :for="provider.provider_id"
           :class="{
-            active: serviceCategories.includes(provider.provider_name),
+            active: serviceCategories.includes(provider.provider_name)
           }"
           class="chip"
         >
@@ -78,11 +78,32 @@ import IMovie from "@/types/interface/IMovie";
 
 @Component
 export default class DrawerPickFilter extends Vue {
-  durationOptions = [
-    { label: "Short", value: "short" },
-    { label: "Long", value: "long" },
-    { label: "Real Long", value: "realLong" }
-  ];
+  get availableRuntimeOptions (): { label: string; value: string }[] {
+    const availableRuntimes: { label: string; value: string }[] = [];
+    this.$store.getters.getMoviesToWatch.forEach((movie: IMovie) => {
+      if (!movie.exclude && movie.providers.length) {
+        if (movie.runtime < 107) {
+          if (!availableRuntimes.find((r) => r.value === "short")) {
+            console.log("adding short option", movie.title);
+            availableRuntimes.push({ label: "Short", value: "short" });
+          }
+        }
+        if (movie.runtime >= 107 && movie.runtime <= 134) {
+          if (!availableRuntimes.find((r) => r.value === "long")) {
+            console.log("adding long option", movie.title);
+            availableRuntimes.push({ label: "Long", value: "long" });
+          }
+        }
+        if (movie.runtime > 134) {
+          if (!availableRuntimes.find((r) => r.value === "realLong")) {
+            console.log("adding real long", movie.title);
+            availableRuntimes.push({ label: "Real Long", value: "realLong" });
+          }
+        }
+      }
+    });
+    return availableRuntimes;
+  }
 
   get availableProviders (): TMDBStreamProvider[] {
     const availableProviders: TMDBStreamProvider[] = [];
