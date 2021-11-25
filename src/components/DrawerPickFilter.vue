@@ -78,12 +78,6 @@ import IMovie from "@/types/interface/IMovie";
 
 @Component
 export default class DrawerPickFilter extends Vue {
-  durationOptions = [
-    { label: "Short", value: "short" },
-    { label: "Long", value: "long" },
-    { label: "Real Long", value: "realLong" }
-  ];
-
   get availableRuntimeOptions (): { label: string; value: string }[] {
     const availableRuntimes: { label: string; value: string }[] = [];
     this.$store.getters.getMoviesToWatch.forEach((movie: IMovie) => {
