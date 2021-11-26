@@ -39,6 +39,11 @@
             <i class="fas fa-caret-down absolute top-5 right-5" />
           </div>
         </template>
+        <template v-else>
+          <div class="rounded-lg border border-dashed border-gray-400 p-2">
+            No providers available
+          </div>
+        </template>
       </template>
       <template v-else>
         <div class="input">
