@@ -16,10 +16,11 @@
         <input
           type="text"
           id="search-input"
-          v-model="searchInput"
           placeholder="Search..."
           autocomplete="off"
           class="pl-6 w-full outline-none"
+          :value="searchInput"
+          @input="updateSearchInput($event)"
         />
         <span
           v-show="searchInput !== ''"
@@ -88,7 +89,7 @@ export default class ListPage extends Vue {
       .filter((movie) => {
         return (
           movie.title.toLowerCase().includes(this.searchInput.toLowerCase()) ||
-          movie.service.title
+          movie.providers[0]?.provider_name
             .toLowerCase()
             .includes(this.searchInput.toLowerCase())
         );
@@ -226,6 +227,10 @@ export default class ListPage extends Vue {
 
   clearSearch (): void {
     this.searchInput = "";
+  }
+
+  updateSearchInput (inputEvent: InputEvent): void {
+    this.searchInput = (inputEvent.target as HTMLInputElement).value.trim();
   }
 
   beforeDestroy (): void {
