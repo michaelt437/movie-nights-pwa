@@ -13,9 +13,10 @@
         name="movie-title"
         id="movie-title"
         autocomplete="off"
-        v-model="searchText"
         ref="searchInput"
         :placeholder="`Search for ${randomMovieTitle}...`"
+        :value="searchText"
+        @input="updateSearchText($event)"
       /><span
         v-show="searchText !== ''"
         id="input-clear"
@@ -106,6 +107,10 @@ export default class PopupAddMovie extends Vue {
 
   clearSearchResults (): void {
     this.$store.commit("setSearchResults", []);
+  }
+
+  updateSearchText (inputEvent: InputEvent): void {
+    this.searchText = (inputEvent.target as HTMLInputElement).value;
   }
 
   executeSearchMovie = debounce((searchText: string) => {
