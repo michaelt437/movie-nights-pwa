@@ -46,12 +46,21 @@
         </template>
       </template>
       <template v-else>
-        <div class="input">
-          <input
-            type="text"
-            placeholder="Where can you watch this movie?"
-            v-model="movieToEdit.customProviderModel.provider_name"
-          />
+        <div class="select">
+          <select
+            id="movie-provider"
+            name="movie-provider"
+            v-model="selectedCustomProvider"
+          >
+            <option
+              v-for="custProvider in customProvidersList"
+              :key="custProvider.provider_id"
+              :value="custProvider"
+            >
+              {{ custProvider.provider_name }}
+            </option>
+          </select>
+          <i class="fas fa-caret-down absolute top-5 right-5" />
         </div>
       </template>
     </div>
@@ -91,10 +100,21 @@ export default class PopupEditMovie extends Vue {
   movieToEdit: IMovie = {} as IMovie;
   WatchProviderSource: typeof WatchProviderSource = WatchProviderSource;
   selectedProvider: TMDBStreamProvider = {} as TMDBStreamProvider;
+  selectedCustomProvider: Partial<TMDBStreamProvider> = {
+    provider_id: 10000,
+    provider_name: "DVD/Bluray"
+  };
 
-  get customProviderValue (): WatchProviderSource {
-    return this.movieToEdit.customProvider!;
-  }
+  customProvidersList: Partial<TMDBStreamProvider>[] = [
+    {
+      provider_id: 10000,
+      provider_name: "DVD/Bluray"
+    },
+    {
+      provider_id: 10001,
+      provider_name: "Youtube"
+    }
+  ];
 
   get selectedProviderSource (): WatchProviderSource {
     return this.movieToEdit.customProvider!;
