@@ -53,7 +53,7 @@ import CardSearchResult from "@/components/CardSearchResult.vue";
     CardSearchResult
   }
 })
-export default class PopupAddMovie extends Vue {
+export default class DrawerAddMovie extends Vue {
   searchText = "";
   placeholders = placeholders;
   success = false;
