@@ -108,14 +108,29 @@ export default class DrawerPickFilter extends Vue {
   get availableProviders (): TMDBStreamProvider[] {
     const availableProviders: TMDBStreamProvider[] = [];
     this.$store.getters.getMoviesToWatch.forEach((movie: IMovie) => {
-      if (!movie.exclude && movie.providers.length) {
-        if (
-          !availableProviders.find(
-            (provider) =>
-              provider.provider_name === movie.providers[0].provider_name
-          )
-        ) {
-          availableProviders.push(movie.providers[0]);
+      if (!movie.exclude) {
+        if (movie.customProvider) {
+          if (
+            !availableProviders.find(
+              (provider) =>
+                provider.provider_name ===
+                movie.customProviderModel!.provider_name
+            )
+          ) {
+            availableProviders.push(
+              movie.customProviderModel! as TMDBStreamProvider
+            );
+          }
+        }
+        if (!movie.customProvider && movie.providers.length) {
+          if (
+            !availableProviders.find(
+              (provider) =>
+                provider.provider_name === movie.providers[0].provider_name
+            )
+          ) {
+            availableProviders.push(movie.providers[0]);
+          }
         }
       }
     });

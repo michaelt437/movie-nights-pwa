@@ -156,7 +156,7 @@ export default class DrawerFilter extends Vue {
   get collectiveProviders (): TMDBStreamProvider[] {
     const _presentProviders: TMDBStreamProvider[] = [];
     this.$store.getters.getMoviesToWatch.forEach((movie: IMovie) => {
-      if (movie.providers.length) {
+      if (!movie.customProvider && movie.providers.length) {
         if (
           !_presentProviders.find(
             (provider) =>
