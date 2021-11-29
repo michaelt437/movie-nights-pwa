@@ -50,7 +50,7 @@
           <select
             id="movie-provider"
             name="movie-provider"
-            v-model="selectedCustomProvider"
+            v-model="movieToEdit.customProviderModel"
           >
             <option
               v-for="custProvider in customProvidersList"
@@ -132,25 +132,17 @@ export default class PopupEditMovie extends Vue {
       );
     } else {
       return (
-        this.movieToEdit.customProviderModel!.provider_name?.trim() === "" ||
-        this.movieToEdit.customProviderModel?.provider_name ===
-          this.movie.customProviderModel?.provider_name
+        Boolean(this.movie.customProvider) &&
+        isEqual(
+          this.movieToEdit.customProviderModel,
+          this.movie.customProviderModel
+        )
       );
     }
   }
 
   get movieToEditOmitId (): IMovie {
     return omit(this.movieToEdit, "documentId");
-  }
-
-  @Watch("selectedProviderSource")
-  resetCustomProviderName (value: WatchProviderSource): void {
-    if (value === WatchProviderSource.JustWatch) {
-      this.movieToEdit.customProviderModel!.provider_name =
-        this.movie.customProviderModel?.provider_name;
-    } else {
-      this.selectedProvider = this.movieToEdit.providers[0];
-    }
   }
 
   closePopup (): void {
@@ -176,7 +168,6 @@ export default class PopupEditMovie extends Vue {
 
   submitEdits (): void {
     if (this.selectedProviderSource === WatchProviderSource.JustWatch) {
-      this.movieToEdit.customProviderModel!.provider_name = "";
       this.unshiftSelectedProvider();
     }
 
