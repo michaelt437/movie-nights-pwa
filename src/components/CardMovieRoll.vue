@@ -100,7 +100,9 @@ export default class CardMovieRoll extends Vue {
   get moviesToPickList (): Array<IMovie> {
     return this.$store.getters.getMoviesToWatch
       .filter((movie: IMovie) => !movie.exclude)
-      .filter((movie: IMovie) => movie.providers?.length)
+      .filter(
+        (movie: IMovie) => movie.customProvider || movie.providers?.length
+      )
       .filter((movie: IMovie) => {
         if (this.$store.getters.getServiceCategories.length) {
           return this.$store.getters.getServiceCategories.includes(
