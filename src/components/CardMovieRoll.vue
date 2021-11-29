@@ -105,9 +105,15 @@ export default class CardMovieRoll extends Vue {
       )
       .filter((movie: IMovie) => {
         if (this.$store.getters.getServiceCategories.length) {
-          return this.$store.getters.getServiceCategories.includes(
-            movie.providers[0].provider_name
-          );
+          if (movie.customProvider) {
+            return this.$store.getters.getServiceCategories.includes(
+              movie.customProviderModel!.provider_name
+            );
+          } else {
+            return this.$store.getters.getServiceCategories.includes(
+              movie.providers[0].provider_name
+            );
+          }
         } else {
           return true;
         }
