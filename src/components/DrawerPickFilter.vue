@@ -80,8 +80,10 @@ import IMovie from "@/types/interface/IMovie";
 export default class DrawerPickFilter extends Vue {
   get availableRuntimeOptions (): { label: string; value: string }[] {
     const availableRuntimes: { label: string; value: string }[] = [];
-    this.$store.getters.getMoviesToWatch.forEach((movie: IMovie) => {
-      if (!movie.exclude && movie.providers.length) {
+    this.$store.getters.getMoviesToWatch
+      .filter((movie: IMovie) => !movie.exclude)
+      .filter((movie: IMovie) => movie.customProvider || movie.providers.length)
+      .forEach((movie: IMovie) => {
         if (movie.runtime < 107) {
           if (!availableRuntimes.find((r) => r.value === "short")) {
             console.log("adding short option", movie.title);
@@ -100,8 +102,7 @@ export default class DrawerPickFilter extends Vue {
             availableRuntimes.push({ label: "Real Long", value: "realLong" });
           }
         }
-      }
-    });
+      });
     return availableRuntimes;
   }
 
