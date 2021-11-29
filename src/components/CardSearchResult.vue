@@ -124,7 +124,7 @@ export default class CardSearchResult extends Vue {
       customProvider: WatchProviderSource.JustWatch,
       customProviderModel: {
         provider_id: 10000,
-        provider_name: ""
+        provider_name: "DVD/Bluray"
       },
       addedDate: Number(Date.parse(Date()))
     };

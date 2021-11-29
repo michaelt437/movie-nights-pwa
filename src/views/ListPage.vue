@@ -86,24 +86,33 @@ export default class ListPage extends Vue {
 
   get filteredMovies (): Array<IMovie> {
     return this.$store.getters.getMoviesToWatch
-      .filter((movie) => {
+      .filter((movie: IMovie) => {
         return (
           movie.title.toLowerCase().includes(this.searchInput.toLowerCase()) ||
           movie.providers[0]?.provider_name
             .toLowerCase()
+            .includes(this.searchInput.toLowerCase()) ||
+          movie
+            .customProviderModel!.provider_name!.toLowerCase()
             .includes(this.searchInput.toLowerCase())
         );
       })
-      .filter((movie) => {
+      .filter((movie: IMovie) => {
         if (this.$store.getters.getServiceFilters.length) {
-          return this.$store.getters.getServiceFilters.includes(
-            movie.providers[0]?.provider_name
-          );
+          if (movie.customProvider) {
+            return this.$store.getters.getServiceFilters.includes(
+              movie.customProviderModel!.provider_name
+            );
+          } else {
+            return this.$store.getters.getServiceFilters.includes(
+              movie.providers[0]?.provider_name
+            );
+          }
         } else {
           return true;
         }
       })
-      .filter((movie) => {
+      .filter((movie: IMovie) => {
         if (this.$store.getters.getDurationFilters.length) {
           if (this.$store.getters.getDurationFilters.includes("short")) {
             if (Number(movie.runtime) < 107) {
@@ -124,7 +133,7 @@ export default class ListPage extends Vue {
           return true;
         }
       })
-      .filter((movie) => {
+      .filter((movie: IMovie) => {
         if (this.$store.getters.getGenreFilters.length) {
           return movie.genres.some((genre) => {
             return this.$store.getters.getGenreFilters.includes(genre.name);
@@ -133,7 +142,7 @@ export default class ListPage extends Vue {
           return true;
         }
       })
-      .sort((movie1, movie2): number => {
+      .sort((movie1: IMovie, movie2: IMovie): number => {
         switch (this.$store.getters.getOrderFilter) {
           case "alpha":
             if (movie1.title.toLowerCase() > movie2.title.toLowerCase()) {
@@ -187,7 +196,7 @@ export default class ListPage extends Vue {
             return 0;
         }
       })
-      .sort((movie1, movie2): number => {
+      .sort((movie1: IMovie, movie2: IMovie): number => {
         switch (this.$store.getters.getExcludeFilter) {
           case "exclude":
             if (!movie1.exclude && movie2.exclude) {

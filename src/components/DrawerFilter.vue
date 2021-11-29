@@ -156,7 +156,7 @@ export default class DrawerFilter extends Vue {
   get collectiveProviders (): TMDBStreamProvider[] {
     const _presentProviders: TMDBStreamProvider[] = [];
     this.$store.getters.getMoviesToWatch.forEach((movie: IMovie) => {
-      if (movie.providers.length) {
+      if (!movie.customProvider && movie.providers.length) {
         if (
           !_presentProviders.find(
             (provider) =>
@@ -164,6 +164,18 @@ export default class DrawerFilter extends Vue {
           )
         ) {
           _presentProviders.push(movie.providers[0]);
+        }
+      }
+      if (movie.customProvider) {
+        if (
+          !_presentProviders.find(
+            (provider) =>
+              provider.provider_id === movie.customProviderModel!.provider_id
+          )
+        ) {
+          _presentProviders.push(
+            movie.customProviderModel as TMDBStreamProvider
+          );
         }
       }
     });
