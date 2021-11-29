@@ -112,7 +112,7 @@ export default class PopupEditMovie extends Vue {
     },
     {
       provider_id: 10001,
-      provider_name: "Youtube"
+      provider_name: "Online - Youtube"
     }
   ];
 

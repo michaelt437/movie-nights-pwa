@@ -166,6 +166,18 @@ export default class DrawerFilter extends Vue {
           _presentProviders.push(movie.providers[0]);
         }
       }
+      if (movie.customProvider) {
+        if (
+          !_presentProviders.find(
+            (provider) =>
+              provider.provider_id === movie.customProviderModel!.provider_id
+          )
+        ) {
+          _presentProviders.push(
+            movie.customProviderModel as TMDBStreamProvider
+          );
+        }
+      }
     });
     return _presentProviders;
   }
