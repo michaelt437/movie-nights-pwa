@@ -171,23 +171,31 @@ export default class ListPage extends Vue {
               return 0;
             }
           case "service_abc":
-            if (movie1.providers.length && movie2.providers.length) {
-              if (
-                movie1.providers[0].provider_name.toLowerCase() >
-                movie2.providers[0].provider_name.toLowerCase()
-              ) {
-                return 1;
-              } else if (
-                movie1.providers[0].provider_name.toLowerCase() <
-                movie2.providers[0].provider_name.toLowerCase()
-              ) {
+            if (!movie1.customProvider && !movie2.customProvider) {
+              if (movie1.providers.length && movie2.providers.length) {
+                if (
+                  movie1.providers[0].provider_name.toLowerCase() >
+                  movie2.providers[0].provider_name.toLowerCase()
+                ) {
+                  return 1;
+                } else if (
+                  movie1.providers[0].provider_name.toLowerCase() <
+                  movie2.providers[0].provider_name.toLowerCase()
+                ) {
+                  return -1;
+                } else {
+                  return 0;
+                }
+              } else if (movie1.providers.length && !movie2.providers.length) {
                 return -1;
+              } else if (!movie1.providers.length && movie2.providers.length) {
+                return 1;
               } else {
                 return 0;
               }
-            } else if (movie1.providers.length && !movie2.providers.length) {
+            } else if (!movie1.customProvider && movie2.customProvider) {
               return -1;
-            } else if (!movie1.providers.length && movie2.providers.length) {
+            } else if (movie1.customProvider && !movie2.customProvider) {
               return 1;
             } else {
               return 0;
