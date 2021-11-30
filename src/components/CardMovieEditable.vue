@@ -49,12 +49,20 @@
           {{ formatDuration(movie.runtime) }}
         </div>
         <div class="movie-card__genres text-sm">
+          <template v-for="(genre, index) in movie.genres">
+            <span
+              v-if="index < 3"
+              :key="genre.id"
+              class="border border-gray-600 mr-1 px-2 rounded-sm"
+            >
+              {{ genre.name }}
+            </span>
+          </template>
           <span
-            v-for="genre in movie.genres"
-            :key="genre.id"
-            class="border border-gray-600 mr-1 px-2 rounded-sm"
+            v-if="movie.genres.length > 3"
+            class="border border-gray-600 mr-1 px-2 rounde-sm"
           >
-            {{ genre.name }}
+            {{ `+${movie.genres.length - 3}` }}
           </span>
         </div>
       </div>
