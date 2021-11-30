@@ -143,6 +143,13 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       updateUserHasRolled (state, value: boolean): void {
         state.currentUser.hasRolled = value;
       },
+      updateProviders (state, { documentId, newProviders }): void {
+        const moviesList: Array<IMovie> = state.moviesList;
+        const movieToEditIndex = moviesList.indexOf(
+          moviesList.find((movie) => movie.documentId === documentId) as IMovie
+        );
+        Vue.set(state.moviesList[movieToEditIndex], "providers", newProviders);
+      },
       setOrderFilter (state, value: string): void {
         state.orderFilter = value;
       },
