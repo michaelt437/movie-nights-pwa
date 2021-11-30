@@ -24,14 +24,21 @@
         @click="clearSearch()"
       >
         <i
-          class="fas fa-times text-gray-500"
           aria-label="Clear search"
           title="Clear search"
+          class="fas text-gray-500"
+          :class="isSearching ? 'fa-sync-alt fa-spin' : 'fa-times'"
         ></i>
       </span>
     </div>
     <div class="popup-content overflow-y-auto px-5">
+      <template v-if="!searchResults.length">
+        <div class="rounded-lg px-5 py-16 text-center">
+          <i class="fas fa-search fa-5x text-gray-300"></i>
+        </div>
+      </template>
       <card-search-result
+        v-else
         v-for="result in searchResults"
         :key="result.id"
         :movie="result"
@@ -53,10 +60,11 @@ import CardSearchResult from "@/components/CardSearchResult.vue";
     CardSearchResult
   }
 })
-export default class PopupAddMovie extends Vue {
+export default class DrawerAddMovie extends Vue {
   searchText = "";
   placeholders = placeholders;
   success = false;
+  isSearching = false;
 
   get randomMovieTitle (): string {
     const placeholderMoviesArrayLength = placeholders.movies.length;
@@ -80,6 +88,7 @@ export default class PopupAddMovie extends Vue {
 
   @Watch("searchText")
   searchMovie (searchText: string) {
+    this.isSearching = true;
     if (searchText.trim() !== "") this.executeSearchMovie(searchText);
   }
 
@@ -113,8 +122,13 @@ export default class PopupAddMovie extends Vue {
     this.searchText = (inputEvent.target as HTMLInputElement).value;
   }
 
-  executeSearchMovie = debounce((searchText: string) => {
-    this.$store.dispatch("searchMovie", { searchText });
+  setFalse (): void {
+    this.isSearching = false;
+  }
+
+  executeSearchMovie = debounce(async (searchText: string) => {
+    await this.$store.dispatch("searchMovie", { searchText });
+    this.setFalse();
   }, 1000);
 }
 </script>

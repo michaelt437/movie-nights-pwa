@@ -1,6 +1,16 @@
 <template>
   <div
-    class="footer flex fixed bottom-0 left-0 w-full items-center bg-gray-900 z-10"
+    class="
+      footer
+      flex
+      fixed
+      bottom-0
+      left-0
+      w-full
+      items-center
+      bg-gray-900
+      z-10
+    "
   >
     <router-link
       v-for="link in links"
@@ -44,7 +54,7 @@ export default class AppFooter extends Vue {
   }
 
   addMovie (): void {
-    this.$emit("drawer", "PopupAddMovie");
+    this.$emit("drawer", "DrawerAddMovie");
   }
 
   create () {

@@ -34,7 +34,7 @@
           movie: propMovie,
           message: propMessage,
           action: propAction,
-          postAction: propPostAction,
+          postAction: propPostAction
         }"
         @closePopup="closePopup"
         @toaster="invokeToaster"
@@ -75,10 +75,10 @@ import AppParalaxBackground from "@/components/AppParalaxBackground.vue";
 import AppTitle from "@/components/AppTitle.vue";
 import AppFooter from "@/components/AppFooter.vue";
 import PopupBase from "@/components/PopupBase.vue";
-import PopupAddMovie from "@/components/PopupAddMovie.vue";
 import PopupEditMovie from "@/components/PopupEditMovie.vue";
 import PopupConfirm from "@/components/PopupConfirm.vue";
 import DrawerBase from "@/components/DrawerBase.vue";
+import DrawerAddMovie from "@/components/DrawerAddMovie.vue";
 import DrawerFilter from "@/components/DrawerFilter.vue";
 import DrawerPickFilter from "@/components/DrawerPickFilter.vue";
 import IUser from "@/types/interface/IUser";
@@ -92,10 +92,10 @@ import { db, fb, auth } from "@/db";
     AppTitle,
     AppFooter,
     PopupBase,
-    PopupAddMovie,
     PopupEditMovie,
     PopupConfirm,
     DrawerBase,
+    DrawerAddMovie,
     DrawerFilter,
     DrawerPickFilter
   }
