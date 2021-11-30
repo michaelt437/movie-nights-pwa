@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col rounded-lg bg-gray-200 text-gray-600 px-5 mb-4">
-    <p class="text-2xl text-center py-5">Edit Watch Provider</p>
+    <p class="text-2xl text-center py-5">{{ movie.title }}</p>
     <div class="popup-content overflow-y-auto">
       <div class="tabs mb-5">
         <div
