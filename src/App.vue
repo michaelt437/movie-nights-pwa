@@ -59,7 +59,7 @@
         py-3
         w-11/12
         fixed
-        bottom-0
+        bottom-10
         z-20
       "
       :class="{ active: toaster }"
