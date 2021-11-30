@@ -60,7 +60,7 @@
           </template>
           <span
             v-if="movie.genres.length > 3"
-            class="border border-gray-600 mr-1 px-2 rounde-sm"
+            class="border border-gray-600 mr-1 px-2 rounded-sm"
           >
             {{ `+${movie.genres.length - 3}` }}
           </span>
