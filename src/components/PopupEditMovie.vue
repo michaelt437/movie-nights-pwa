@@ -22,12 +22,16 @@
           Custom
         </div>
       </div>
-      <template
+      <div
         v-if="movieToEdit.customProvider === WatchProviderSource.JustWatch"
+        class="flex items-center mb-2"
       >
         <template v-if="movie.providers.length">
-          <div class="select">
-            <select v-model="selectedProvider">
+          <div class="select flex-grow">
+            <select
+              v-model="selectedProvider"
+              style="margin-bottom: 0 !important"
+            >
               <option
                 v-for="provider in movie.providers"
                 :key="provider.provider_id"
@@ -40,11 +44,19 @@
           </div>
         </template>
         <template v-else>
-          <div class="rounded-lg border border-dashed border-gray-400 p-2">
+          <div
+            class="
+              rounded-lg
+              border border-dashed border-gray-400
+              p-2
+              flex-grow
+            "
+          >
             No providers available
           </div>
         </template>
-      </template>
+        <button class="btn btn-indigo-400 text-white ml-2">Refresh</button>
+      </div>
       <template v-else>
         <div class="select">
           <select
