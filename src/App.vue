@@ -62,7 +62,7 @@
         py-3
         w-11/12
         fixed
-        bottom-10
+        bottom-0
         z-20
       "
       :class="{ active: toaster }"
@@ -295,7 +295,7 @@ export default class App extends Vue {
 
   &.active {
     opacity: 1;
-    transform: translateY(-50%);
+    transform: translateY(-150%);
   }
 }
 </style>
