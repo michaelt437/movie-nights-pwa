@@ -55,7 +55,12 @@
             No providers available
           </div>
         </template>
-        <button class="btn btn-indigo-400 text-white ml-2">Refresh</button>
+        <button
+          class="btn btn-indigo-400 text-white ml-2"
+          @click="refreshProviders"
+        >
+          Refresh
+        </button>
       </div>
       <template v-else>
         <div class="select">
@@ -139,8 +144,9 @@ export default class PopupEditMovie extends Vue {
   get disableButton (): boolean {
     if (this.selectedProviderSource === WatchProviderSource.JustWatch) {
       return (
-        this.selectedProviderSource === this.movie.customProvider &&
-        isEqual(this.selectedProvider, this.movie.providers[0])
+        (this.selectedProviderSource === this.movie.customProvider &&
+          isEqual(this.selectedProvider, this.movie.providers[0])) ||
+        isEqual(this.selectedProvider, {})
       );
     } else {
       return (
@@ -189,6 +195,20 @@ export default class PopupEditMovie extends Vue {
     this.$store.commit("submitEditsToMovie", this.movieToEdit);
     this.action!();
     this.closePopup();
+  }
+
+  async refreshProviders (): Promise<void> {
+    const _providers = await this.$store.dispatch("fetchWatchProviders", {
+      movieId: this.movie.id
+    });
+    if (!isEqual(this.movie.providers, _providers)) {
+      this.$store.commit("updateProviders", {
+        documentId: this.movie.documentId,
+        newProviders: _providers
+      });
+      if (_providers.length) this.selectedProvider = this.movie.providers[0];
+      else this.selectedProvider = {} as TMDBStreamProvider;
+    }
   }
 
   created () {
