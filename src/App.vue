@@ -51,6 +51,9 @@
     </drawer-base>
     <div
       class="
+        flex
+        justify-between
+        items-center
         toaster
         bg-green-500
         text-gray-200
@@ -65,6 +68,7 @@
       :class="{ active: toaster }"
     >
       {{ toasterText }}
+      <i class="fas fa-times" @click="toaster = false"></i>
     </div>
   </div>
 </template>
