@@ -1,13 +1,6 @@
 <template>
   <div
-    class="
-					movie-card
-      rounded-lg
-      text-gray-200
-      mb-4
-      flex flex-col
-      overflow-hidden
-    "
+    class="movie-card rounded-lg text-gray-200 mb-4 flex flex-col overflow-hidden"
     :class="excludeMovie ? 'bg-gray-900 movie-card--exclude' : 'bg-gray-800'"
     @click="showActions = !showActions"
   >
@@ -83,7 +76,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
-import { TMDBConfig, TMDBStreamProvider } from "@/types/tmdb";
+import { TMDBConfig } from "@/types/tmdb";
 import { db } from "@/db";
 import { isEqual } from "lodash";
 
@@ -180,7 +173,7 @@ export default class CardMovieEditable extends Vue {
     return `${Math.floor(_duration / 60)}hr ${_duration % 60}m`;
   }
 
-	async refreshProviders (): Promise<void> {
+  async refreshProviders (): Promise<void> {
     const _providers = await this.$store.dispatch("fetchWatchProviders", {
       movieId: this.movie.id
     });
