@@ -1,15 +1,8 @@
 <template>
   <div
-    class="
-      movie-card
-      rounded-lg
-      text-gray-200
-      mb-4
-      flex flex-col
-      overflow-hidden
-    "
+    class="movie-card rounded-lg text-gray-200 mb-4 flex flex-col overflow-hidden"
     :class="excludeMovie ? 'bg-gray-900 movie-card--exclude' : 'bg-gray-800'"
-    @click="showActions = !showActions"
+    @click="showDetails = !showDetails"
   >
     <div class="movie-card__content py-3 px-5">
       <div class="movie-card__title text-2xl flex items-center capitalize">
@@ -35,7 +28,7 @@
           </label>
         </span>
       </div>
-      <div class="movie-card__service flex items-center text-md mt-2">
+      <div class="movie-card__service flex items-center text-md py-3">
         <img
           v-if="!movie.customProvider && providerLogo"
           :src="providerLogo"
@@ -66,16 +59,24 @@
           </span>
         </div>
       </div>
-    </div>
-    <div v-show="showActions" class="movie-card__actions px-5 py-3">
-      <div class="btn-group">
-        <button class="btn btn-green-600 flex-grow" @click.stop="editMovie">
-          Edit
-        </button>
-        <button class="btn btn-red-600 flex-grow" @click.stop="deletePrompt">
-          Delete
-        </button>
+      <div v-show="showDetails" class="pt-6 pb-2">
+        <div class="btn-group">
+          <button class="btn btn-green-600 flex-grow" @click.stop="editMovie">
+            Edit
+          </button>
+          <button class="btn btn-red-600 flex-grow" @click.stop="deletePrompt">
+            Delete
+          </button>
+        </div>
       </div>
+    </div>
+    <div
+      class="movie-card__actions text-center border-t border-gray-700 px-5 py-3"
+    >
+      <i
+        class="fas text-md"
+        :class="showDetails ? `fa-caret-up` : `fa-caret-down`"
+      ></i>
     </div>
   </div>
 </template>
@@ -91,7 +92,7 @@ export default class CardMovieEditable extends Vue {
   @Prop(Object) readonly movie!: IMovie;
 
   excludeMovie = false;
-  showActions = false;
+  showDetails = false;
 
   @Watch("excludeMovie", { deep: true })
   onExcludeToggle (value: boolean) {
@@ -151,7 +152,7 @@ export default class CardMovieEditable extends Vue {
 
   editMovie (): void {
     this.$emit("popup", "PopupEditMovie", this.movie, null, () => {
-      this.showActions = false;
+      this.showDetails = false;
     });
   }
 
