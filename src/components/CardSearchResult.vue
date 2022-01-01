@@ -1,17 +1,6 @@
 <template>
   <div
-    class="
-      movie-card
-      flex
-      items-stretch
-      justify-between
-      rounded-lg
-      bg-white
-      text-gray-600
-      px-5
-      py-3
-      mb-4
-    "
+    class="movie-card flex items-stretch justify-between rounded-lg bg-white text-gray-600 px-5 py-3 mb-4"
   >
     <div v-if="posterUrl" class="movie-card__poster w-1/3 mr-4">
       <img :src="posterUrl" />
@@ -20,16 +9,7 @@
       class="movie-card__details flex flex-wrap flex-grow items-stretch w-2/3"
     >
       <div
-        class="
-          movie-card__title
-          flex
-          w-full
-          self-start
-          items-center
-          font-bold
-          text-lg
-          capitalize
-        "
+        class="movie-card__title flex w-full self-start items-center font-bold text-lg capitalize"
       >
         {{ movie.title }} ({{ $moment(movie.release_date).format("YYYY") }})
         <i
