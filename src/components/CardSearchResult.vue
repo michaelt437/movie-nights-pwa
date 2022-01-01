@@ -1,35 +1,14 @@
 <template>
   <div
-    class="
-      movie-card
-      flex
-      items-stretch
-      justify-between
-      rounded-lg
-      bg-white
-      text-gray-600
-      px-5
-      py-3
-      mb-4
-    "
+    class="movie-card flex items-stretch justify-between rounded-lg bg-white text-gray-600 px-5 py-3 mb-4"
+    @click="expandDescription = !expandDescription"
   >
     <div v-if="posterUrl" class="movie-card__poster w-1/3 mr-4">
       <img :src="posterUrl" />
     </div>
-    <div
-      class="movie-card__details flex flex-wrap flex-grow items-stretch w-2/3"
-    >
+    <div class="movie-card__details flex flex-col flex-grow w-2/3">
       <div
-        class="
-          movie-card__title
-          flex
-          w-full
-          self-start
-          items-center
-          font-bold
-          text-lg
-          capitalize
-        "
+        class="movie-card__title flex w-full items-center font-bold text-lg capitalize"
       >
         {{ movie.title }} ({{ $moment(movie.release_date).format("YYYY") }})
         <i
@@ -38,10 +17,17 @@
           title="Rewatch"
         ></i>
       </div>
-      <div class="movie-card__desc-wrapper w-full self-start">
-        <div class="movie-card__desc overflow-hidden my-2">
+      <div class="movie-card__desc-wrapper w-full flex-grow mb-auto">
+        <div
+          ref="descriptionBox"
+          class="movie-card__desc my-2"
+          :class="{ 'overflow-hidden box-clamp': !expandDescription }"
+        >
           {{ movie.overview }}
         </div>
+        <p v-show="hasLongDescription" class="text-blue-500 mb-6">
+          ...Show {{ expandDescription ? "less" : "more" }}
+        </p>
       </div>
       <div class="movie-card__actions w-full self-end">
         <div class="btn-group">
@@ -49,7 +35,7 @@
             class="btn text-white flex-grow"
             :class="isDuplicate ? 'btn-gray-400' : 'btn-green-400'"
             :disabled="isDuplicate"
-            @click="addMovie"
+            @click.stop="addMovie"
           >
             {{ isDuplicate ? "Added" : "Add Movie" }}
           </button>
@@ -67,6 +53,9 @@ import { WatchProviderSource } from "@/types/enums";
 @Component
 export default class CardSearchResult extends Vue {
   @Prop(Object) readonly movie!: TMBDMovieSearch;
+
+  hasLongDescription = false;
+  expandDescription = false;
 
   get isDuplicate (): boolean {
     return (
@@ -130,10 +119,19 @@ export default class CardSearchResult extends Vue {
     };
     this.$emit("add-movie", movieWithDetailsParam);
   }
+
+  mounted () {
+    if (
+      (this.$refs.descriptionBox as HTMLElement).clientHeight <
+      (this.$refs.descriptionBox as HTMLElement).scrollHeight
+    ) {
+      this.hasLongDescription = true;
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
-.movie-card__desc {
+.box-clamp {
   display: -webkit-box;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
