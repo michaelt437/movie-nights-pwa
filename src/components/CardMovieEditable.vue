@@ -28,7 +28,7 @@
           </label>
         </span>
       </div>
-      <div class="movie-card__service flex items-center text-md mt-2">
+      <div class="movie-card__service flex items-center text-md py-3">
         <img
           v-if="!movie.customProvider && providerLogo"
           :src="providerLogo"
@@ -59,16 +59,24 @@
           </span>
         </div>
       </div>
-    </div>
-    <div v-show="showActions" class="movie-card__actions px-5 py-3">
-      <div class="btn-group">
-        <button class="btn btn-green-600 flex-grow" @click.stop="editMovie">
-          Edit
-        </button>
-        <button class="btn btn-red-600 flex-grow" @click.stop="deletePrompt">
-          Delete
-        </button>
+      <div v-show="showActions" class="pt-6 pb-2">
+        <div class="btn-group">
+          <button class="btn btn-green-600 flex-grow" @click.stop="editMovie">
+            Edit
+          </button>
+          <button class="btn btn-red-600 flex-grow" @click.stop="deletePrompt">
+            Delete
+          </button>
+        </div>
       </div>
+    </div>
+    <div
+      class="movie-card__actions text-center border-t border-gray-700 px-5 py-3"
+    >
+      <i
+        class="fas text-md"
+        :class="showActions ? `fa-caret-up` : `fa-caret-down`"
+      ></i>
     </div>
   </div>
 </template>
