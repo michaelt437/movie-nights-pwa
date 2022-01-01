@@ -2,7 +2,7 @@
   <div
     class="movie-card rounded-lg text-gray-200 mb-4 flex flex-col overflow-hidden"
     :class="excludeMovie ? 'bg-gray-900 movie-card--exclude' : 'bg-gray-800'"
-    @click="showActions = !showActions"
+    @click="showDetails = !showDetails"
   >
     <div class="movie-card__content py-3 px-5">
       <div class="movie-card__title text-2xl flex items-center capitalize">
@@ -59,7 +59,7 @@
           </span>
         </div>
       </div>
-      <div v-show="showActions" class="pt-6 pb-2">
+      <div v-show="showDetails" class="pt-6 pb-2">
         <div class="btn-group">
           <button class="btn btn-green-600 flex-grow" @click.stop="editMovie">
             Edit
@@ -75,7 +75,7 @@
     >
       <i
         class="fas text-md"
-        :class="showActions ? `fa-caret-up` : `fa-caret-down`"
+        :class="showDetails ? `fa-caret-up` : `fa-caret-down`"
       ></i>
     </div>
   </div>
@@ -93,7 +93,7 @@ export default class CardMovieEditable extends Vue {
   @Prop(Object) readonly movie!: IMovie;
 
   excludeMovie = false;
-  showActions = false;
+  showDetails = false;
 
   @Watch("excludeMovie", { deep: true })
   onExcludeToggle (value: boolean) {
@@ -153,7 +153,7 @@ export default class CardMovieEditable extends Vue {
 
   editMovie (): void {
     this.$emit("popup", "PopupEditMovie", this.movie, null, () => {
-      this.showActions = false;
+      this.showDetails = false;
     });
   }
 
