@@ -86,7 +86,6 @@ import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
 import { TMDBConfig } from "@/types/tmdb";
 import { db } from "@/db";
-import { isEqual } from "lodash";
 
 @Component
 export default class CardMovieEditable extends Vue {
@@ -179,18 +178,6 @@ export default class CardMovieEditable extends Vue {
     const _duration: number =
       typeof duration === "string" ? parseInt(duration) : duration;
     return `${Math.floor(_duration / 60)}hr ${_duration % 60}m`;
-  }
-
-  async refreshProviders (): Promise<void> {
-    const _providers = await this.$store.dispatch("fetchWatchProviders", {
-      movieId: this.movie.id
-    });
-    if (!isEqual(this.movie.providers, _providers)) {
-      this.$store.commit("updateProviders", {
-        documentId: this.movie.documentId,
-        newProviders: _providers
-      });
-    }
   }
 
   mounted () {
