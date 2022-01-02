@@ -30,7 +30,7 @@
       </div>
       <div
         class="movie-card__footer flex items-center my-4"
-        :class="showDetails ? 'flex-wrap' : 'justify-between'"
+        :class="showDetails ? 'flex-wrap gap-y-4' : 'justify-between'"
       >
         <div
           class="movie-card__duration text-sm"
@@ -40,7 +40,7 @@
         </div>
         <div
           class="movie-card__genres text-sm"
-          :class="{ 'w-full mt-4': showDetails }"
+          :class="{ 'w-full': showDetails }"
         >
           <template v-for="(genre, index) in movie.genres">
             <span
@@ -59,7 +59,7 @@
           </span>
         </div>
       </div>
-      <div class="movie-card__service flex items-center text-md pt-3">
+      <div class="movie-card__service flex items-center text-md">
         <img
           v-if="!movie.customProvider && providerLogo"
           :src="providerLogo"
@@ -68,16 +68,16 @@
         />
         {{ displayProviderText }}
       </div>
-      <div v-show="showDetails">
-        <div class="movie-card__desc my-6">
+      <div v-show="showDetails" class="flex flex-col gap-y-6 pt-6">
+        <div class="movie-card__desc">
           <p class="mb-0 font-semibold">Overview</p>
           {{ movie.overview }}
         </div>
-        <div class="movie-card__crew my-6">
+        <div class="movie-card__crew">
           <p class="mb-0 font-semibold">Director</p>
           {{ directorCredit }}
         </div>
-        <div class="btn-group pt-6 pb-2">
+        <div class="btn-group">
           <button class="btn btn-green-600 flex-grow" @click.stop="editMovie">
             Edit
           </button>
