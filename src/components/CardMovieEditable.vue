@@ -28,14 +28,23 @@
           </label>
         </span>
       </div>
-      <div class="movie-card__footer flex justify-between items-center my-4">
-        <div class="movie-card__duration text-sm">
+      <div
+        class="movie-card__footer flex items-center my-4"
+        :class="showDetails ? 'flex-wrap' : 'justify-between'"
+      >
+        <div
+          class="movie-card__duration text-sm"
+          :class="{ 'w-full': showDetails }"
+        >
           {{ formatDuration(movie.runtime) }}
         </div>
-        <div class="movie-card__genres text-sm">
+        <div
+          class="movie-card__genres text-sm"
+          :class="{ 'w-full mt-4': showDetails }"
+        >
           <template v-for="(genre, index) in movie.genres">
             <span
-              v-if="index < 3"
+              v-if="showDetails ? true : index < 3"
               :key="genre.id"
               class="border border-gray-600 mr-1 px-2 rounded-sm"
             >
@@ -43,7 +52,7 @@
             </span>
           </template>
           <span
-            v-if="movie.genres.length > 3"
+            v-if="!showDetails && movie.genres.length > 3"
             class="border border-gray-600 mr-1 px-2 rounded-sm"
           >
             {{ `+${movie.genres.length - 3}` }}
