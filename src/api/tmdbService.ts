@@ -36,7 +36,7 @@ implements
 
   async getMovieDetails (movieId: number): Promise<TMDBMovie> {
     const apiResponse = await axios.get<TMDBMovie>(
-      `${uriRoot}movie/${movieId}?api_key=${process.env.VUE_APP_TMDBKEY}`
+      `${uriRoot}movie/${movieId}?api_key=${process.env.VUE_APP_TMDBKEY}&append_to_response=credits`
     );
     const result = apiResponse.data;
     return result ?? {};
