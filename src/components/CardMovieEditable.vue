@@ -28,7 +28,38 @@
           </label>
         </span>
       </div>
-      <div class="movie-card__service flex items-center text-md py-3">
+      <div
+        class="movie-card__footer flex items-center my-4"
+        :class="showDetails ? 'flex-wrap gap-y-4' : 'justify-between'"
+      >
+        <div
+          class="movie-card__duration text-sm"
+          :class="{ 'w-full': showDetails }"
+        >
+          {{ formatDuration(movie.runtime) }}
+        </div>
+        <div
+          class="movie-card__genres text-sm"
+          :class="{ 'w-full': showDetails }"
+        >
+          <template v-for="(genre, index) in movie.genres">
+            <span
+              v-if="showDetails ? true : index < 3"
+              :key="genre.id"
+              class="border border-gray-600 mr-1 px-2 rounded-sm"
+            >
+              {{ genre.name }}
+            </span>
+          </template>
+          <span
+            v-if="!showDetails && movie.genres.length > 3"
+            class="border border-gray-600 mr-1 px-2 rounded-sm"
+          >
+            {{ `+${movie.genres.length - 3}` }}
+          </span>
+        </div>
+      </div>
+      <div class="movie-card__service flex items-center text-md">
         <img
           v-if="!movie.customProvider && providerLogo"
           :src="providerLogo"
@@ -37,29 +68,15 @@
         />
         {{ displayProviderText }}
       </div>
-      <div class="movie-card__footer flex justify-between items-center mt-2">
-        <div class="movie-card__duration text-sm">
-          {{ formatDuration(movie.runtime) }}
+      <div v-show="showDetails" class="flex flex-col gap-y-6 pt-6">
+        <div class="movie-card__desc">
+          <p class="mb-0 font-semibold">Overview</p>
+          {{ movie.overview }}
         </div>
-        <div class="movie-card__genres text-sm">
-          <template v-for="(genre, index) in movie.genres">
-            <span
-              v-if="index < 3"
-              :key="genre.id"
-              class="border border-gray-600 mr-1 px-2 rounded-sm"
-            >
-              {{ genre.name }}
-            </span>
-          </template>
-          <span
-            v-if="movie.genres.length > 3"
-            class="border border-gray-600 mr-1 px-2 rounded-sm"
-          >
-            {{ `+${movie.genres.length - 3}` }}
-          </span>
+        <div class="movie-card__crew">
+          <p class="mb-0 font-semibold">Director</p>
+          {{ directorCredit }}
         </div>
-      </div>
-      <div v-show="showDetails" class="pt-6 pb-2">
         <div class="btn-group">
           <button class="btn btn-green-600 flex-grow" @click.stop="editMovie">
             Edit
@@ -70,9 +87,7 @@
         </div>
       </div>
     </div>
-    <div
-      class="movie-card__actions text-center border-t border-gray-700 px-5 py-3"
-    >
+    <div class="movie-card__actions text-center px-5 py-3 bg-gray-700">
       <i
         class="fas text-md"
         :class="showDetails ? `fa-caret-up` : `fa-caret-down`"
@@ -150,6 +165,11 @@ export default class CardMovieEditable extends Vue {
     }
   }
 
+  get directorCredit (): string | undefined {
+    return this.movie.credits.crew.find((member) => member.job === "Director")
+      ?.name;
+  }
+
   editMovie (): void {
     this.$emit("popup", "PopupEditMovie", this.movie, null, () => {
       this.showDetails = false;
@@ -195,8 +215,10 @@ export default class CardMovieEditable extends Vue {
   .movie-card__title,
   .movie-card__service,
   .movie-card__duration,
+  .movie-card__desc,
+  .movie-card__crew,
   .movie-card__genres {
-    opacity: 0.5;
+    opacity: 0.7;
   }
 }
 </style>
