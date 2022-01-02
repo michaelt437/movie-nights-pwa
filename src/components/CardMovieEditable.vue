@@ -215,8 +215,10 @@ export default class CardMovieEditable extends Vue {
   .movie-card__title,
   .movie-card__service,
   .movie-card__duration,
+  .movie-card__desc,
+  .movie-card__crew,
   .movie-card__genres {
-    opacity: 0.5;
+    opacity: 0.7;
   }
 }
 </style>
