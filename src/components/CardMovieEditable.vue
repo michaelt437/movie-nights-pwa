@@ -28,16 +28,7 @@
           </label>
         </span>
       </div>
-      <div class="movie-card__service flex items-center text-md py-3">
-        <img
-          v-if="!movie.customProvider && providerLogo"
-          :src="providerLogo"
-          title="provider"
-          class="rounded-full w-5 h-5 mr-2"
-        />
-        {{ displayProviderText }}
-      </div>
-      <div class="movie-card__footer flex justify-between items-center mt-2">
+      <div class="movie-card__footer flex justify-between items-center my-4">
         <div class="movie-card__duration text-sm">
           {{ formatDuration(movie.runtime) }}
         </div>
@@ -59,6 +50,15 @@
           </span>
         </div>
       </div>
+      <div class="movie-card__service flex items-center text-md py-3">
+        <img
+          v-if="!movie.customProvider && providerLogo"
+          :src="providerLogo"
+          title="provider"
+          class="rounded-full w-5 h-5 mr-2"
+        />
+        {{ displayProviderText }}
+      </div>
       <div v-show="showDetails" class="pt-6 pb-2">
         <div class="btn-group">
           <button class="btn btn-green-600 flex-grow" @click.stop="editMovie">
@@ -70,9 +70,7 @@
         </div>
       </div>
     </div>
-    <div
-      class="movie-card__actions text-center border-t border-gray-700 px-5 py-3"
-    >
+    <div class="movie-card__actions text-center px-5 py-3 bg-gray-700">
       <i
         class="fas text-md"
         :class="showDetails ? `fa-caret-up` : `fa-caret-down`"
