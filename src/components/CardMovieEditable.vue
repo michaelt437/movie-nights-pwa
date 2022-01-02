@@ -50,7 +50,7 @@
           </span>
         </div>
       </div>
-      <div class="movie-card__service flex items-center text-md py-3">
+      <div class="movie-card__service flex items-center text-md pt-3">
         <img
           v-if="!movie.customProvider && providerLogo"
           :src="providerLogo"
@@ -59,8 +59,16 @@
         />
         {{ displayProviderText }}
       </div>
-      <div v-show="showDetails" class="pt-6 pb-2">
-        <div class="btn-group">
+      <div v-show="showDetails">
+        <div class="movie-card__desc my-6">
+          <p class="mb-0 font-semibold">Overview</p>
+          {{ movie.overview }}
+        </div>
+        <div class="movie-card__crew my-6">
+          <p class="mb-0 font-semibold">Director</p>
+          {{ directorCredit }}
+        </div>
+        <div class="btn-group pt-6 pb-2">
           <button class="btn btn-green-600 flex-grow" @click.stop="editMovie">
             Edit
           </button>
@@ -146,6 +154,11 @@ export default class CardMovieEditable extends Vue {
     } else {
       return "Unavailable";
     }
+  }
+
+  get directorCredit (): string | undefined {
+    return this.movie.credits.crew.find((member) => member.job === "Director")
+      ?.name;
   }
 
   editMovie (): void {
