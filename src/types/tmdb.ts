@@ -48,11 +48,38 @@ type TMDBGenre = {
   name: string;
 };
 
+type TMDBPerson = {
+  adult: boolean;
+  gender: number | null;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string | null;
+  credit_id: string;
+};
+
+type TMDBCast = TMDBPerson & {
+  cast_id: number;
+  character: string;
+  order: number;
+};
+
+type TMDBCrew = TMDBPerson & {
+  department: string;
+  job: string;
+};
+
 type TMDBMovie = {
   adult: boolean;
   backdrop_path: string;
   belongs_to_collection: object;
   budget: number;
+  credits: {
+    cast: TMDBCast[];
+    crew: TMDBCrew[];
+  };
   genres: TMDBGenre[];
   homepage: string;
   id: number;
