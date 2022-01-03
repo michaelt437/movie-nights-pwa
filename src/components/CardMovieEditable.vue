@@ -219,6 +219,10 @@ export default class CardMovieEditable extends Vue {
         newProviders: _providers
       });
     }
+    this.$emit(
+      "toaster",
+      `Providers refreshed for ${this.movie.title.toUpperCase()}.`
+    );
   }
 
   mounted () {
