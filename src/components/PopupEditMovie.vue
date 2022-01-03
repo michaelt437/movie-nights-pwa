@@ -45,12 +45,7 @@
         </template>
         <template v-else>
           <div
-            class="
-              rounded-lg
-              border border-dashed border-gray-400
-              p-2
-              flex-grow
-            "
+            class="rounded-lg border border-dashed border-gray-400 p-2 flex-grow"
           >
             No providers available
           </div>
@@ -112,7 +107,6 @@ import { WatchProviderSource } from "@/types/enums";
 @Component
 export default class PopupEditMovie extends Vue {
   @Prop(Object) readonly movie!: IMovie;
-  @Prop() readonly action?: Function;
 
   movieToEdit: IMovie = {} as IMovie;
   WatchProviderSource: typeof WatchProviderSource = WatchProviderSource;
@@ -164,7 +158,6 @@ export default class PopupEditMovie extends Vue {
   }
 
   closePopup (): void {
-    this.action!();
     this.$emit("closePopup");
   }
 
@@ -193,7 +186,6 @@ export default class PopupEditMovie extends Vue {
       .doc(this.movie.documentId)
       .update(this.movieToEditOmitId);
     this.$store.commit("submitEditsToMovie", this.movieToEdit);
-    this.action!();
     this.closePopup();
   }
 
