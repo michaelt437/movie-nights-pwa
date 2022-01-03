@@ -1,6 +1,6 @@
 <template>
   <div class="movie-card rounded-lg bg-gray-800 text-gray-200 px-5 py-3 mb-4">
-    <div class="movie-card__title flex items-center text-2xl capitalize">
+    <div class="movie-card__title flex items-center text-2xl capitalize mb-3">
       {{ movie.title }}
       <i
         v-show="isRewatch"
@@ -8,26 +8,23 @@
         title="Rewatch"
       ></i>
     </div>
-    <div
-      class="movie-card__service flex items-center text-md my-2"
-      :class="movie.providers ? '' : movie.service.value"
-    >
-      <img
-        v-if="!movie.customProvider && movie.providers"
-        :src="providerLogo"
-        title="provider"
-        class="rounded-full w-5 h-5 mr-2"
-      />
-      <template v-if="movie.providers">
-        {{ displayProviderText }}
-      </template>
-      <template v-else>
-        {{ movie.service.title }}
-      </template>
-    </div>
     <div class="movie-card__footer flex justify-between">
-      <div class="movie-card__duration text-sm">
-        {{ formatDuration(movie.duration || movie.runtime) }}
+      <div
+        class="movie-card__service flex items-center text-md"
+        :class="movie.providers ? '' : movie.service.value"
+      >
+        <img
+          v-if="!movie.customProvider && movie.providers"
+          :src="providerLogo"
+          title="provider"
+          class="rounded-full w-5 h-5 mr-2"
+        />
+        <template v-if="movie.providers">
+          {{ displayProviderText }}
+        </template>
+        <template v-else>
+          {{ movie.service.title }}
+        </template>
       </div>
       <div class="movie-card__watch-date text-sm">
         {{ $moment(movie.watchDate).format("M.D.YYYY") }}
