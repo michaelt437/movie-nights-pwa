@@ -47,12 +47,12 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
-import { TMBDMovieSearch, TMDBConfig, TMDBStreamProvider } from "@/types/tmdb";
+import { TMDBMovieSearch, TMDBConfig, TMDBStreamProvider } from "@/types/tmdb";
 import { WatchProviderSource } from "@/types/enums";
 
 @Component
 export default class CardSearchResult extends Vue {
-  @Prop(Object) readonly movie!: TMBDMovieSearch;
+  @Prop(Object) readonly movie!: TMDBMovieSearch;
 
   hasLongDescription = false;
   expandDescription = false;

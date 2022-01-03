@@ -1,6 +1,6 @@
 type TMDBSearchDTO = {
   page: number;
-  results: TMBDMovieSearch[];
+  results: TMDBMovieSearch[];
   total_results: number;
   total_pages: number;
 };
@@ -19,7 +19,7 @@ type TMDBProviderRegions = {
   buy: TMDBStreamProvider[];
 };
 
-type TMBDMovieSearch = {
+type TMDBMovieSearch = {
   poster_path: string;
   adult: boolean;
   overview: string;
@@ -119,7 +119,7 @@ export {
   TMDBConfig,
   TMDBGenre,
   TMDBMovie,
-  TMBDMovieSearch,
+  TMDBMovieSearch,
   TMDBSearchDTO,
   TMDBStreamProvider,
   TMDBWatchProviderDTO
