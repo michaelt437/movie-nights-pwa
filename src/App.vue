@@ -16,6 +16,7 @@
         @scrolling="handleScroll"
         @popup="invokePopup"
         @drawer="invokeDrawer"
+        @toaster="invokeToaster"
       />
     </div>
     <div v-else class="loading flex justify-center mt-24">
@@ -50,21 +51,7 @@
       </keep-alive>
     </drawer-base>
     <div
-      class="
-        flex
-        justify-between
-        items-center
-        toaster
-        bg-green-500
-        text-gray-200
-        rounded-md
-        px-5
-        py-3
-        w-11/12
-        fixed
-        bottom-0
-        z-20
-      "
+      class="flex justify-between items-center toaster bg-green-500 text-gray-200 rounded-md px-5 py-3 w-11/12 fixed bottom-0 z-20"
       :class="{ active: toaster }"
     >
       {{ toasterText }}
