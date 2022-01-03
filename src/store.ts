@@ -3,7 +3,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import IMovie from "@/types/interface/IMovie";
 import IUser from "@/types/interface/IUser";
-import { TMBDMovieSearch } from "@/types/tmdb";
+import { TMDBMovieSearch } from "@/types/tmdb";
 import IMovieDatabaseService from "@/types/interface/IMovieDatabaseService";
 
 Vue.use(Vuex);
@@ -186,7 +186,7 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
         state.serviceCategories = [];
         state.genreCategories = [];
       },
-      setSearchResults (state, data: TMBDMovieSearch[]): void {
+      setSearchResults (state, data: TMDBMovieSearch[]): void {
         state.searchResults = data;
       },
       setConfiguration (state, config): void {
