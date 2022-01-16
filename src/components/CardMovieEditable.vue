@@ -109,7 +109,7 @@ import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
 import { TMDBConfig } from "@/types/tmdb";
 import { db } from "@/db";
-import { isEqual } from "lodash";
+import { isEqual, omit } from "lodash";
 
 @Component
 export default class CardMovieEditable extends Vue {
@@ -179,6 +179,10 @@ export default class CardMovieEditable extends Vue {
       ?.name;
   }
 
+  get movieToEditOmitId (): IMovie {
+    return omit(this.movie, "documentId");
+  }
+
   editMovie (): void {
     this.$emit("popup", "PopupEditMovie", this.movie, null);
   }
@@ -216,6 +220,9 @@ export default class CardMovieEditable extends Vue {
         documentId: this.movie.documentId,
         newProviders: _providers
       });
+      db.collection(this.$store.getters.getCurrentUserDocumentId)
+        .doc(this.movie.documentId)
+        .update(this.movieToEditOmitId);
     }
     this.$emit(
       "toaster",
