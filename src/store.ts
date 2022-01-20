@@ -30,7 +30,7 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       currentUserDocumentId: "",
       moviesList: [] as IMovie[],
       canRoll: true,
-      tonightsPick: {} as IMovie | null,
+      tonightsPick: null,
       orderFilter: "",
       excludeFilter: "",
       durationFilters: [] as Array<string>,
@@ -102,7 +102,7 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
         const moviesList: Array<IMovie> = state.moviesList;
         const movieToEditIndex = moviesList.indexOf(
           moviesList.find(
-            (movie) => movie.documentId === movieEdits.documentId
+            movie => movie.documentId === movieEdits.documentId
           ) as IMovie
         );
         Vue.set(state.moviesList, movieToEditIndex, movieEdits);
@@ -114,7 +114,7 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
         const moviesList: Array<IMovie> = state.moviesList;
         const movieToDeleteIndex = moviesList.indexOf(
           moviesList.find(
-            (movie) => movie.documentId === movieToDelete.documentId
+            movie => movie.documentId === movieToDelete.documentId
           ) as IMovie
         );
         moviesList.splice(movieToDeleteIndex, 1);
@@ -133,9 +133,7 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       },
       updateMovieExclude (state, { value, targetTitle }): void {
         const indexOfTargetMovie = state.moviesList.indexOf(
-          state.moviesList.find(
-            (movie) => movie.title === targetTitle
-          ) as IMovie
+          state.moviesList.find(movie => movie.title === targetTitle) as IMovie
         );
 
         state.moviesList[indexOfTargetMovie].exclude = value;
@@ -146,7 +144,7 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       updateProviders (state, { documentId, newProviders }): void {
         const moviesList: Array<IMovie> = state.moviesList;
         const movieToEditIndex = moviesList.indexOf(
-          moviesList.find((movie) => movie.documentId === documentId) as IMovie
+          moviesList.find(movie => movie.documentId === documentId) as IMovie
         );
         Vue.set(state.moviesList[movieToEditIndex], "providers", newProviders);
       },
