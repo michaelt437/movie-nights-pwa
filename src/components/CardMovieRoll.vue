@@ -60,12 +60,14 @@
         cursor-pointer
         relative
       "
-      :class="{ 'pointer-events-none': !moviesToPickList.length }"
-      @click="makeRoll"
+      :class="{ 'pointer-events-none': !moviesToPickList.length && isSignedIn }"
+      @click="isSignedIn ? makeRoll() : invokeAddDrawer()"
     >
       <div class="text-2xl">
         <template v-if="moviesToPickList.length"> What's the Pick? </template>
-        <template v-else> No matches </template>
+        <template v-else>
+          {{ isSignedIn ? `No matches` : `Add a Movie` }}
+        </template>
       </div>
     </div>
 
@@ -96,6 +98,10 @@ export default class CardMovieRoll extends Vue {
   prevIndex: number | null = null;
   currIndex: number | null = null;
   rollsLeft = 3;
+
+  get isSignedIn (): boolean {
+    return this.$store.state.signedIn;
+  }
 
   get moviesToPickList (): Array<IMovie> {
     return this.$store.getters.getMoviesToWatch
@@ -215,6 +221,10 @@ export default class CardMovieRoll extends Vue {
 
   invokeDrawer (): void {
     this.$emit("drawer", "DrawerPickFilter");
+  }
+
+  invokeAddDrawer (): void {
+    this.$emit("drawer", "DrawerAddMovie");
   }
 
   randomMovieIndex (): void {
