@@ -40,7 +40,8 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       serviceCategories: [] as Array<string>,
       genreCategories: [] as Array<string>,
       searchResults: [] as MovieSearchType[],
-      config: {} as object // TODO type as config?
+      config: {} as object, // TODO type as config?
+      signedIn: false
     };
 
     this.getters = {
@@ -89,6 +90,9 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
     };
 
     this.mutations = {
+      setLoginStatus (state, status: boolean): void {
+        state.signedIn = status;
+      },
       setCurrentUser (state, user: IUser): void {
         state.currentUser = user;
       },
