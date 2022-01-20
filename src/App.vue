@@ -100,7 +100,6 @@ import { db, fb, auth } from "@/db";
 export default class App extends Vue {
   titleBgSolid = false;
   loggedInUser = { email: "" };
-  isSignedIn = false;
   users: Array<IUser> = [];
   popUpComponent = null;
   drawerComponent = null;
@@ -112,6 +111,10 @@ export default class App extends Vue {
   loading = true;
   toaster = false;
   toasterText = "";
+
+  get isSignedIn (): boolean {
+    return this.$store.state.signedIn;
+  }
 
   handleScroll (bool): void {
     this.titleBgSolid = bool;
@@ -223,10 +226,10 @@ export default class App extends Vue {
             this.loggedInUser,
             user.providerData[0]
           );
-          this.isSignedIn = true;
+          this.$store.commit("setLoginStatus", true);
           resolve(true);
         } else {
-          this.isSignedIn = false;
+          this.$store.commit("setLoginStatus", false);
           resolve(false);
         }
       });
