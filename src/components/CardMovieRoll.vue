@@ -61,7 +61,7 @@
         relative
       "
       :class="{ 'pointer-events-none': !moviesToPickList.length && isSignedIn }"
-      @click="isSignedIn ? makeRoll() : invokeAddDrawer()"
+      @click="moviesToPickList.length ? makeRoll() : invokeAddDrawer()"
     >
       <div class="text-2xl">
         <template v-if="moviesToPickList.length"> What's the Pick? </template>
@@ -87,6 +87,7 @@ import IMovie from "@/types/interface/IMovie";
 import CardMovie from "@/components/CardMovie.vue";
 import { db, fb } from "@/db";
 import { TMDBConfig, TMDBGenre } from "@/types/tmdb";
+import isEmpty from "lodash/isEmpty";
 
 @Component({
   components: {
@@ -261,10 +262,17 @@ export default class CardMovieRoll extends Vue {
   makeRoll (): void {
     this.rollPending = true;
     this.randomMovieIndex();
-    this.decrementRolls();
+    this.isSignedIn
+      ? this.decrementRolls()
+      : this.$store.commit("decrementRollsInMemory");
 
-    if (!this.$store.getters.getCurrentUser.hasRolled) {
+    if (
+      !isEmpty(this.$store.getters.getCurrentUser) &&
+      !this.$store.getters.getCurrentUser.hasRolled
+    ) {
       this.$store.commit("updateUserHasRolled", true);
+    } else {
+      this.$store.commit("updateHasRolledInMemory", true);
     }
   }
 

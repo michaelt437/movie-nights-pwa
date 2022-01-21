@@ -41,7 +41,9 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       genreCategories: [] as Array<string>,
       searchResults: [] as MovieSearchType[],
       config: {} as object, // TODO type as config?
-      signedIn: false
+      signedIn: false,
+      rollsInMemory: 4,
+      hasRolledInMemory: false
     };
 
     this.getters = {
@@ -99,6 +101,9 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       setCurrentUserDocumentId (state, id: string): void {
         state.currentUserDocumentId = id;
       },
+      decrementRollsInMemory (state): void {
+        state.rollsInMemory -= 1;
+      },
       setMoviesList (state, moviesArray: Array<IMovie>): void {
         state.moviesList = moviesArray;
       },
@@ -144,6 +149,9 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       },
       updateUserHasRolled (state, value: boolean): void {
         state.currentUser.hasRolled = value;
+      },
+      updateHasRolledInMemory (state, value: boolean): void {
+        state.hasRolledInMemory = value;
       },
       updateProviders (state, { documentId, newProviders }): void {
         const moviesList: Array<IMovie> = state.moviesList;
