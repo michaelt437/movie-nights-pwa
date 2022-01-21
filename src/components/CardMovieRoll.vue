@@ -34,7 +34,9 @@
           </button>
           <button class="btn flex-grow" :class="reRollColor" @click="reRoll">
             <i class="fas fa-dice"></i> ({{
-              this.$store.getters.getCurrentUser.rolls
+              isSignedIn
+                ? this.$store.getters.getCurrentUser.rolls
+                : this.$store.state.rollsInMemory
             }})
           </button>
           <button
@@ -242,15 +244,22 @@ export default class CardMovieRoll extends Vue {
   }
 
   decrementRolls (): void {
-    db.collection("users")
-      .doc(this.$store.getters.getCurrentUserDocumentId)
-      .update({
-        rolls: fb.firestore.FieldValue.increment(-1)
-      });
-    this.$store.commit("decrementRolls");
+    if (this.isSignedIn) {
+      db.collection("users")
+        .doc(this.$store.getters.getCurrentUserDocumentId)
+        .update({
+          rolls: fb.firestore.FieldValue.increment(-1)
+        });
+      this.$store.commit("decrementRolls");
 
-    if (this.$store.getters.getCurrentUser.rolls === 0) {
-      this.confirmSelection();
+      if (this.$store.getters.getCurrentUser.rolls === 0) {
+        this.confirmSelection();
+      }
+    } else {
+      this.$store.commit("decrementRollsInMemory");
+      if (this.$store.state.rollsInMemory === 0) {
+        this.confirmSelection();
+      }
     }
   }
 
@@ -262,9 +271,7 @@ export default class CardMovieRoll extends Vue {
   makeRoll (): void {
     this.rollPending = true;
     this.randomMovieIndex();
-    this.isSignedIn
-      ? this.decrementRolls()
-      : this.$store.commit("decrementRollsInMemory");
+    this.decrementRolls();
 
     if (
       !isEmpty(this.$store.getters.getCurrentUser) &&
@@ -283,44 +290,50 @@ export default class CardMovieRoll extends Vue {
   }
 
   confirmSelection (): void {
-    const _watchDate = Number(Date.parse(Date()));
-    this.randomMovie.watchDate = _watchDate;
-    this.randomMovie.user = this.$store.getters.getCurrentUser.name;
-    this.$store.commit("updateRollPermission", false);
-    this.$store.commit("setTonightsPick", this.randomMovie);
-    db.collection("tonightsPick").doc("movie").set(this.randomMovie);
+    if (this.isSignedIn) {
+      const _watchDate = Number(Date.parse(Date()));
+      this.randomMovie.watchDate = _watchDate;
+      this.randomMovie.user = this.$store.getters.getCurrentUser.name;
+      this.$store.commit("updateRollPermission", false);
+      this.$store.commit("setTonightsPick", this.randomMovie);
+      db.collection("tonightsPick").doc("movie").set(this.randomMovie);
 
-    db.collection(this.$store.getters.getCurrentUserDocumentId)
-      .doc(this.randomMovie.documentId)
-      .update({
-        hasWatched: true,
-        watchDate: _watchDate
+      db.collection(this.$store.getters.getCurrentUserDocumentId)
+        .doc(this.randomMovie.documentId)
+        .update({
+          hasWatched: true,
+          watchDate: _watchDate
+        });
+
+      db.collection("users")
+        .doc(this.$store.getters.getCurrentUserDocumentId)
+        .update({
+          hasPicked: true,
+          pickedDateTime: _watchDate
+        });
+
+      fetch(process.env.VUE_APP_SLACKHOOK, {
+        method: "POST",
+        body: JSON.stringify({
+          text: ":celebrate: Tonight's Pick! :celebrate:",
+          // eslint-disable-next-line
+          icon_emoji: ":niccage:",
+          attachments: [
+            {
+              fallback: `${this.randomMovie.title} - ${this.randomMovie.providers[0].provider_name} - ${this.randomMovie.runtime}`,
+              // eslint-disable-next-line
+              author_name: `${this.$store.getters.getCurrentUser.name}`,
+              title: `${this.randomMovie.title.toUpperCase()}`,
+              text: `${this.randomMovie.providers[0].provider_name}\n_${this.randomMovie.runtime} mins_`
+            }
+          ]
+        })
       });
-
-    db.collection("users")
-      .doc(this.$store.getters.getCurrentUserDocumentId)
-      .update({
-        hasPicked: true,
-        pickedDateTime: _watchDate
-      });
-
-    fetch(process.env.VUE_APP_SLACKHOOK, {
-      method: "POST",
-      body: JSON.stringify({
-        text: ":celebrate: Tonight's Pick! :celebrate:",
-        // eslint-disable-next-line
-        icon_emoji: ":niccage:",
-        attachments: [
-          {
-            fallback: `${this.randomMovie.title} - ${this.randomMovie.providers[0].provider_name} - ${this.randomMovie.runtime}`,
-            // eslint-disable-next-line
-            author_name: `${this.$store.getters.getCurrentUser.name}`,
-            title: `${this.randomMovie.title.toUpperCase()}`,
-            text: `${this.randomMovie.providers[0].provider_name}\n_${this.randomMovie.runtime} mins_`
-          }
-        ]
-      })
-    });
+    } else {
+      this.randomMovie.user = "Tonight";
+      this.$store.commit("updateRollPermission", false);
+      this.$store.commit("setTonightsPick", this.randomMovie);
+    }
   }
 
   create () {
