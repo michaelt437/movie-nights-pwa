@@ -1,5 +1,5 @@
 <template>
-  <div id="home-page" class="flex-grow sm:flex-grow-0">
+  <div id="home-page" class="flex-grow md:flex-grow-0">
     <!-- tonight's pick -->
     <card-tonights-pick v-if="$store.getters.getTonightsPick !== null" />
 
@@ -12,7 +12,12 @@
       :key="`${movie.title}_${index}`"
       :movie="movie"
     />
-    <div class="pt-4 py-16 text-gray-600 text-center">Your beginning...</div>
+    <div
+      v-show="moviesWatched.length"
+      class="pt-4 py-16 text-gray-600 text-center"
+    >
+      Your beginning...
+    </div>
     <div class="pt-4 py-16 text-gray-600 text-center">
       Streaming provider data via JustWatch
     </div>
