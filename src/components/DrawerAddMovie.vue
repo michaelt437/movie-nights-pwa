@@ -113,6 +113,7 @@ export default class DrawerAddMovie extends Vue {
       );
       this.closeDrawer();
     }
+    if (this.$route.name !== "Movie Pool") { this.$router.push({ name: "Movie Pool" }); }
   }
 
   clearSearch (): void {
