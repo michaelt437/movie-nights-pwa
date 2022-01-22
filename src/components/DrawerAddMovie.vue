@@ -107,7 +107,9 @@ export default class DrawerAddMovie extends Vue {
       this.$store.commit("addMovieToList", movieToAdd);
       this.$emit(
         "toaster",
-        `${movieToAdd.title.toUpperCase()} has been added.`
+        `${movieToAdd.title.toUpperCase()} has been added with ${
+          movieToAdd.providers.length
+        } providers.`
       );
       this.closeDrawer();
     }
