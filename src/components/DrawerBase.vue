@@ -1,6 +1,8 @@
 <template>
   <div class="overlay z-20 md:flex md:justify-center">
-    <div class="sheet fixed rounded-t-md bg-white z-30 md:w-1/3 top-0 bottom-0 overflow-auto">
+    <div
+      class="sheet fixed rounded-t-md bg-white z-30 top-0 bottom-0 overflow-auto"
+    >
       <slot />
     </div>
   </div>
