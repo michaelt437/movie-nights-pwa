@@ -30,7 +30,7 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       currentUserDocumentId: "",
       moviesList: [] as IMovie[],
       canRoll: true,
-      tonightsPick: {} as IMovie | null,
+      tonightsPick: null,
       orderFilter: "",
       excludeFilter: "",
       durationFilters: [] as Array<string>,
@@ -40,7 +40,10 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       serviceCategories: [] as Array<string>,
       genreCategories: [] as Array<string>,
       searchResults: [] as MovieSearchType[],
-      config: {} as object // TODO type as config?
+      config: {} as object, // TODO type as config?
+      signedIn: false,
+      rollsInMemory: 4,
+      hasRolledInMemory: false
     };
 
     this.getters = {
@@ -89,11 +92,17 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
     };
 
     this.mutations = {
+      setLoginStatus (state, status: boolean): void {
+        state.signedIn = status;
+      },
       setCurrentUser (state, user: IUser): void {
         state.currentUser = user;
       },
       setCurrentUserDocumentId (state, id: string): void {
         state.currentUserDocumentId = id;
+      },
+      decrementRollsInMemory (state): void {
+        state.rollsInMemory -= 1;
       },
       setMoviesList (state, moviesArray: Array<IMovie>): void {
         state.moviesList = moviesArray;
@@ -102,7 +111,7 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
         const moviesList: Array<IMovie> = state.moviesList;
         const movieToEditIndex = moviesList.indexOf(
           moviesList.find(
-            (movie) => movie.documentId === movieEdits.documentId
+            movie => movie.documentId === movieEdits.documentId
           ) as IMovie
         );
         Vue.set(state.moviesList, movieToEditIndex, movieEdits);
@@ -114,7 +123,7 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
         const moviesList: Array<IMovie> = state.moviesList;
         const movieToDeleteIndex = moviesList.indexOf(
           moviesList.find(
-            (movie) => movie.documentId === movieToDelete.documentId
+            movie => movie.documentId === movieToDelete.documentId
           ) as IMovie
         );
         moviesList.splice(movieToDeleteIndex, 1);
@@ -133,9 +142,7 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       },
       updateMovieExclude (state, { value, targetTitle }): void {
         const indexOfTargetMovie = state.moviesList.indexOf(
-          state.moviesList.find(
-            (movie) => movie.title === targetTitle
-          ) as IMovie
+          state.moviesList.find(movie => movie.title === targetTitle) as IMovie
         );
 
         state.moviesList[indexOfTargetMovie].exclude = value;
@@ -143,10 +150,13 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       updateUserHasRolled (state, value: boolean): void {
         state.currentUser.hasRolled = value;
       },
+      updateHasRolledInMemory (state, value: boolean): void {
+        state.hasRolledInMemory = value;
+      },
       updateProviders (state, { documentId, newProviders }): void {
         const moviesList: Array<IMovie> = state.moviesList;
         const movieToEditIndex = moviesList.indexOf(
-          moviesList.find((movie) => movie.documentId === documentId) as IMovie
+          moviesList.find(movie => movie.documentId === documentId) as IMovie
         );
         Vue.set(state.moviesList[movieToEditIndex], "providers", newProviders);
       },

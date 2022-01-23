@@ -7,7 +7,7 @@
     />
     <app-paralax-background class="md:hidden" />
     <app-title />
-    <div v-if="isSignedIn" class="loading flex justify-center mt-24">
+    <div class="loading flex justify-center mt-24">
       <template v-if="loading">
         <i class="fas fa-circle-notch fa-spin text-green-400 text-5xl"></i>
       </template>
@@ -18,14 +18,6 @@
         @drawer="invokeDrawer"
         @toaster="invokeToaster"
       />
-    </div>
-    <div v-else class="loading flex justify-center mt-24">
-      <button
-        class="rounded-full bg-pink-600 py-5 text-white w-2/4"
-        @click="login"
-      >
-        Log In
-      </button>
     </div>
     <app-footer @popup="invokePopup" @drawer="invokeDrawer" />
     <popup-base v-if="popUpComponent !== null">
@@ -51,7 +43,21 @@
       </keep-alive>
     </drawer-base>
     <div
-      class="flex justify-between items-center toaster bg-green-500 text-gray-200 rounded-md px-5 py-3 w-11/12 fixed bottom-0 z-20"
+      class="
+        flex
+        justify-between
+        items-center
+        toaster
+        bg-green-500
+        text-gray-200
+        rounded-md
+        px-5
+        py-3
+        w-11/12
+        fixed
+        bottom-0
+        z-20
+      "
       :class="{ active: toaster }"
     >
       {{ toasterText }}
@@ -94,7 +100,6 @@ import { db, fb, auth } from "@/db";
 export default class App extends Vue {
   titleBgSolid = false;
   loggedInUser = { email: "" };
-  isSignedIn = false;
   users: Array<IUser> = [];
   popUpComponent = null;
   drawerComponent = null;
@@ -106,6 +111,10 @@ export default class App extends Vue {
   loading = true;
   toaster = false;
   toasterText = "";
+
+  get isSignedIn (): boolean {
+    return this.$store.state.signedIn;
+  }
 
   handleScroll (bool): void {
     this.titleBgSolid = bool;
@@ -217,10 +226,10 @@ export default class App extends Vue {
             this.loggedInUser,
             user.providerData[0]
           );
-          this.isSignedIn = true;
+          this.$store.commit("setLoginStatus", true);
           resolve(true);
         } else {
-          this.isSignedIn = false;
+          this.$store.commit("setLoginStatus", false);
           resolve(false);
         }
       });
@@ -256,11 +265,13 @@ export default class App extends Vue {
   // Lifecycle Hooks
   async created () {
     await this.checkFirebaseAuthState();
-    await this.init();
-    await this.fetchMoviesList();
-    await this.checkForTonightsPick();
+    if (this.isSignedIn) {
+      await this.init();
+      await this.fetchMoviesList();
+      await this.checkForTonightsPick();
+      this.resetRollCheck();
+    }
     await this.$store.dispatch("fetchConfiguration");
-    this.resetRollCheck();
     this.loading = false;
     this.$store.commit("setMoviesList", this.moviesList);
 

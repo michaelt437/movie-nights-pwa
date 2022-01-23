@@ -34,7 +34,9 @@
           </button>
           <button class="btn flex-grow" :class="reRollColor" @click="reRoll">
             <i class="fas fa-dice"></i> ({{
-              this.$store.getters.getCurrentUser.rolls
+              isSignedIn
+                ? this.$store.getters.getCurrentUser.rolls
+                : this.$store.state.rollsInMemory
             }})
           </button>
           <button
@@ -60,12 +62,14 @@
         cursor-pointer
         relative
       "
-      :class="{ 'pointer-events-none': !moviesToPickList.length }"
-      @click="makeRoll"
+      :class="{ 'pointer-events-none': !moviesToPickList.length && isSignedIn }"
+      @click="moviesToPickList.length ? makeRoll() : invokeAddDrawer()"
     >
       <div class="text-2xl">
         <template v-if="moviesToPickList.length"> What's the Pick? </template>
-        <template v-else> No matches </template>
+        <template v-else>
+          {{ isSignedIn ? `No matches` : `Add a Movie` }}
+        </template>
       </div>
     </div>
 
@@ -85,6 +89,7 @@ import IMovie from "@/types/interface/IMovie";
 import CardMovie from "@/components/CardMovie.vue";
 import { db, fb } from "@/db";
 import { TMDBConfig, TMDBGenre } from "@/types/tmdb";
+import isEmpty from "lodash/isEmpty";
 
 @Component({
   components: {
@@ -96,6 +101,10 @@ export default class CardMovieRoll extends Vue {
   prevIndex: number | null = null;
   currIndex: number | null = null;
   rollsLeft = 3;
+
+  get isSignedIn (): boolean {
+    return this.$store.state.signedIn;
+  }
 
   get moviesToPickList (): Array<IMovie> {
     return this.$store.getters.getMoviesToWatch
@@ -217,6 +226,10 @@ export default class CardMovieRoll extends Vue {
     this.$emit("drawer", "DrawerPickFilter");
   }
 
+  invokeAddDrawer (): void {
+    this.$emit("drawer", "DrawerAddMovie");
+  }
+
   randomMovieIndex (): void {
     this.prevIndex = this.currIndex;
     this.currIndex = Math.floor(Math.random() * this.moviesToPickList.length);
@@ -231,15 +244,22 @@ export default class CardMovieRoll extends Vue {
   }
 
   decrementRolls (): void {
-    db.collection("users")
-      .doc(this.$store.getters.getCurrentUserDocumentId)
-      .update({
-        rolls: fb.firestore.FieldValue.increment(-1)
-      });
-    this.$store.commit("decrementRolls");
+    if (this.isSignedIn) {
+      db.collection("users")
+        .doc(this.$store.getters.getCurrentUserDocumentId)
+        .update({
+          rolls: fb.firestore.FieldValue.increment(-1)
+        });
+      this.$store.commit("decrementRolls");
 
-    if (this.$store.getters.getCurrentUser.rolls === 0) {
-      this.confirmSelection();
+      if (this.$store.getters.getCurrentUser.rolls === 0) {
+        this.confirmSelection();
+      }
+    } else {
+      this.$store.commit("decrementRollsInMemory");
+      if (this.$store.state.rollsInMemory === 0) {
+        this.confirmSelection();
+      }
     }
   }
 
@@ -253,8 +273,13 @@ export default class CardMovieRoll extends Vue {
     this.randomMovieIndex();
     this.decrementRolls();
 
-    if (!this.$store.getters.getCurrentUser.hasRolled) {
+    if (
+      !isEmpty(this.$store.getters.getCurrentUser) &&
+      !this.$store.getters.getCurrentUser.hasRolled
+    ) {
       this.$store.commit("updateUserHasRolled", true);
+    } else {
+      this.$store.commit("updateHasRolledInMemory", true);
     }
   }
 
@@ -265,44 +290,50 @@ export default class CardMovieRoll extends Vue {
   }
 
   confirmSelection (): void {
-    const _watchDate = Number(Date.parse(Date()));
-    this.randomMovie.watchDate = _watchDate;
-    this.randomMovie.user = this.$store.getters.getCurrentUser.name;
-    this.$store.commit("updateRollPermission", false);
-    this.$store.commit("setTonightsPick", this.randomMovie);
-    db.collection("tonightsPick").doc("movie").set(this.randomMovie);
+    if (this.isSignedIn) {
+      const _watchDate = Number(Date.parse(Date()));
+      this.randomMovie.watchDate = _watchDate;
+      this.randomMovie.user = this.$store.getters.getCurrentUser.name;
+      this.$store.commit("updateRollPermission", false);
+      this.$store.commit("setTonightsPick", this.randomMovie);
+      db.collection("tonightsPick").doc("movie").set(this.randomMovie);
 
-    db.collection(this.$store.getters.getCurrentUserDocumentId)
-      .doc(this.randomMovie.documentId)
-      .update({
-        hasWatched: true,
-        watchDate: _watchDate
+      db.collection(this.$store.getters.getCurrentUserDocumentId)
+        .doc(this.randomMovie.documentId)
+        .update({
+          hasWatched: true,
+          watchDate: _watchDate
+        });
+
+      db.collection("users")
+        .doc(this.$store.getters.getCurrentUserDocumentId)
+        .update({
+          hasPicked: true,
+          pickedDateTime: _watchDate
+        });
+
+      fetch(process.env.VUE_APP_SLACKHOOK, {
+        method: "POST",
+        body: JSON.stringify({
+          text: ":celebrate: Tonight's Pick! :celebrate:",
+          // eslint-disable-next-line
+          icon_emoji: ":niccage:",
+          attachments: [
+            {
+              fallback: `${this.randomMovie.title} - ${this.randomMovie.providers[0].provider_name} - ${this.randomMovie.runtime}`,
+              // eslint-disable-next-line
+              author_name: `${this.$store.getters.getCurrentUser.name}`,
+              title: `${this.randomMovie.title.toUpperCase()}`,
+              text: `${this.randomMovie.providers[0].provider_name}\n_${this.randomMovie.runtime} mins_`
+            }
+          ]
+        })
       });
-
-    db.collection("users")
-      .doc(this.$store.getters.getCurrentUserDocumentId)
-      .update({
-        hasPicked: true,
-        pickedDateTime: _watchDate
-      });
-
-    fetch(process.env.VUE_APP_SLACKHOOK, {
-      method: "POST",
-      body: JSON.stringify({
-        text: ":celebrate: Tonight's Pick! :celebrate:",
-        // eslint-disable-next-line
-        icon_emoji: ":niccage:",
-        attachments: [
-          {
-            fallback: `${this.randomMovie.title} - ${this.randomMovie.providers[0].provider_name} - ${this.randomMovie.runtime}`,
-            // eslint-disable-next-line
-            author_name: `${this.$store.getters.getCurrentUser.name}`,
-            title: `${this.randomMovie.title.toUpperCase()}`,
-            text: `${this.randomMovie.providers[0].provider_name}\n_${this.randomMovie.runtime} mins_`
-          }
-        ]
-      })
-    });
+    } else {
+      this.randomMovie.user = "Tonight";
+      this.$store.commit("updateRollPermission", false);
+      this.$store.commit("setTonightsPick", this.randomMovie);
+    }
   }
 
   create () {

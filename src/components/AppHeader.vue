@@ -1,29 +1,62 @@
 <template>
   <div
-  class="header flex fixed top-0 left-0 w-full justify-between items-center py-2 px-5 z-10"
-  :class="{'bg-solid' : titleBgSolid}">
+    class="
+      header
+      flex
+      fixed
+      top-0
+      left-0
+      w-full
+      justify-between
+      items-center
+      py-2
+      px-5
+      z-10
+    "
+    :class="{ 'bg-solid': titleBgSolid }"
+  >
     <router-link :to="{ name: 'Home' }">
       <i
         class="fas fa-chevron-left mr-2"
-        :class="$route.name === 'Home' ? 'text-transparent pointer-events-none' : 'text-white'"
+        :class="
+          $route.name === 'Home'
+            ? 'text-transparent pointer-events-none'
+            : 'text-white'
+        "
       ></i>
     </router-link>
-    <span class="text-gray-200 font-bold header-app-title title-styled mb-1">Movie Nights</span>
-    <div
-    v-if="isSignedIn"
-    class="avatar w-8 relative">
+    <span class="text-gray-200 font-bold header-app-title title-styled mb-1"
+      >Movie Nights</span
+    >
+    <div v-if="isSignedIn" class="avatar w-8 relative">
       <div class="rounded-full overflow-hidden">
-        <img :src="photoUrl" alt="photo" @click.stop="showMenu = !showMenu">
+        <img :src="photoUrl" alt="photo" @click.stop="showMenu = !showMenu" />
       </div>
       <transition name="scale">
         <div
           v-show="showMenu"
-         class="avatar__menu rounded-sm py-1 absolute right-0 w-32 z-20 bg-white mt-2 origin-top-right">
-          <div class="py-1 px-4 hover:bg-gray-200" @click.stop="logout">Log Out</div>
+          class="
+            avatar__menu
+            rounded-sm
+            py-1
+            absolute
+            right-0
+            w-32
+            z-20
+            bg-white
+            mt-2
+            origin-top-right
+          "
+        >
+          <div class="py-1 px-4 hover:bg-gray-200" @click.stop="logout">
+            Log Out
+          </div>
         </div>
       </transition>
     </div>
-    <!-- <button v-else class="btn btn-pink-600 text-sm text-white" @click="login">Log In</button> -->
+    <button v-else class="btn btn-pink-600 text-sm text-white" @click="login">
+      Log In
+    </button>
   </div>
 </template>
 <script lang="ts">
@@ -40,8 +73,9 @@ export default class AppHeader extends Vue {
 
   login (): void {
     const provider = new auth.GoogleAuthProvider();
-    fb.auth().signInWithRedirect(provider)
-      .then(response => {
+    fb.auth()
+      .signInWithRedirect(provider)
+      .then((response) => {
         this.$emit("update:isSignedIn", true);
       })
       .catch((error) => {
