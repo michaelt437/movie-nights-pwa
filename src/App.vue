@@ -282,7 +282,11 @@ export default class App extends Vue {
 
   &.active {
     opacity: 1;
-    transform: translateY(-150%);
+    transform: translateY(-55px);
+  }
+
+  @media (min-width: 768px) {
+    width: 300px;
   }
 }
 </style>
