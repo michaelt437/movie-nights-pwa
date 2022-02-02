@@ -157,6 +157,10 @@ export default class PopupEditMovie extends Vue {
     return omit(this.movieToEdit, "documentId");
   }
 
+  get isSignedIn (): boolean {
+    return this.$store.state.signedIn;
+  }
+
   closePopup (): void {
     this.$emit("closePopup");
   }
@@ -182,9 +186,12 @@ export default class PopupEditMovie extends Vue {
       this.unshiftSelectedProvider();
     }
 
-    db.collection(this.$store.getters.getCurrentUserDocumentId)
-      .doc(this.movie.documentId)
-      .update(this.movieToEditOmitId);
+    if (this.isSignedIn) {
+      db.collection(this.$store.getters.getCurrentUserDocumentId)
+        .doc(this.movie.documentId)
+        .update(this.movieToEditOmitId);
+    }
+
     this.$store.commit("submitEditsToMovie", this.movieToEdit);
     this.closePopup();
   }

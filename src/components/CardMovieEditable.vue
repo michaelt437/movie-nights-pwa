@@ -79,7 +79,11 @@
         </div>
         <div class="movie-card__buttons">
           <div class="btn-group">
-            <button class="btn btn-indigo-500" @click.stop="refreshProviders()">
+            <button
+              v-if="isSignedIn"
+              class="btn btn-indigo-500"
+              @click.stop="refreshProviders()"
+            >
               Refresh Stream Providers
             </button>
             <button class="btn btn-green-600 flex-grow" @click.stop="editMovie">
@@ -120,11 +124,13 @@ export default class CardMovieEditable extends Vue {
 
   @Watch("excludeMovie", { deep: true })
   onExcludeToggle (value: boolean) {
-    db.collection(this.$store.getters.getCurrentUserDocumentId)
-      .doc(this.movie.documentId)
-      .update({
-        exclude: value
-      });
+    if (this.isSignedIn) {
+      db.collection(this.$store.getters.getCurrentUserDocumentId)
+        .doc(this.movie.documentId)
+        .update({
+          exclude: value
+        });
+    }
 
     this.$store.commit("updateMovieExclude", {
       value: this.excludeMovie,
@@ -181,6 +187,10 @@ export default class CardMovieEditable extends Vue {
 
   get movieToEditOmitId (): IMovie {
     return omit(this.movie, "documentId");
+  }
+
+  get isSignedIn (): boolean {
+    return this.$store.state.signedIn;
   }
 
   editMovie (): void {
