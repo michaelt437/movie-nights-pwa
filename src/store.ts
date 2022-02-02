@@ -110,9 +110,13 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       submitEditsToMovie (state, movieEdits: IMovie): void {
         const moviesList: Array<IMovie> = state.moviesList;
         const movieToEditIndex = moviesList.indexOf(
-          moviesList.find(
-            movie => movie.documentId === movieEdits.documentId
-          ) as IMovie
+          moviesList.find(movie => {
+            if (state.signedIn) {
+              return movie.documentId === movieEdits.documentId;
+            } else {
+              return movie.id === movieEdits.id;
+            }
+          }) as IMovie
         );
         Vue.set(state.moviesList, movieToEditIndex, movieEdits);
       },
