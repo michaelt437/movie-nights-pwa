@@ -126,9 +126,13 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
       deleteMovieFromList (state, movieToDelete: IMovie): void {
         const moviesList: Array<IMovie> = state.moviesList;
         const movieToDeleteIndex = moviesList.indexOf(
-          moviesList.find(
-            movie => movie.documentId === movieToDelete.documentId
-          ) as IMovie
+          moviesList.find(movie => {
+            if (state.signedIn) {
+              return movie.documentId === movieToDelete.documentId;
+            } else {
+              return movie.id === movieToDelete.id;
+            }
+          }) as IMovie
         );
         moviesList.splice(movieToDeleteIndex, 1);
       },
