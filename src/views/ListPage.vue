@@ -55,11 +55,7 @@
       </button>
     </div>
     <template v-for="movie in filteredMovies">
-      <card-movie-editable
-        v-on="$listeners"
-        :key="movie.documentId"
-        :movie="movie"
-      />
+      <card-movie-editable v-on="$listeners" :key="movie.id" :movie="movie" />
     </template>
     <div class="pt-4 py-16 text-gray-600 text-center">
       Streaming provider data via JustWatch
