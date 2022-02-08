@@ -12,6 +12,7 @@
       border border-yellow-500
       relative
     "
+    @click="showDetails = !showDetails"
   >
     <div
       class="
@@ -45,30 +46,46 @@
         title="Rewatch"
       ></i>
     </div>
-    <div
-      class="movie-card__service flex items-center text-md my-2"
-      :class="movie.providers ? '' : movie.service.value"
-    >
-      <img
-        v-if="!movie.customProvider && movie.providers"
-        :src="providerLogo"
-        title="provider"
-        class="rounded-full w-5 h-5 mr-2"
-      />
-      <template v-if="movie.providers">
-        {{ displayProviderText }}
-      </template>
-      <template v-else>
-        {{ movie.service.title }}
-      </template>
+    <div class="movie-card__duration text-sm my-4">
+      {{ formatDuration(movie.runtime) }}
     </div>
-    <div class="movie-card__footer flex justify-between">
-      <div class="movie-card__duration text-sm">
-        {{ formatDuration(movie.runtime) }}
+    <div v-show="showDetails" class="flex flex-col gap-y-6 my-4">
+      <div class="movie-card__desc">
+        <p class="mb-0 font-semibold">Overview</p>
+        {{ movie.overview }}
+      </div>
+      <div class="movie-card__crew">
+        <p class="mb-0 font-semibold">Director</p>
+        {{ directorCredit }}
+      </div>
+    </div>
+    <div class="movie-card__footer flex justify-between items-center">
+      <div
+        class="movie-card__service flex items-center text-md"
+        :class="movie.providers ? '' : movie.service.value"
+      >
+        <img
+          v-if="!movie.customProvider && movie.providers"
+          :src="providerLogo"
+          title="provider"
+          class="rounded-full w-5 h-5 mr-2"
+        />
+        <template v-if="movie.providers">
+          {{ displayProviderText }}
+        </template>
+        <template v-else>
+          {{ movie.service.title }}
+        </template>
       </div>
       <div class="movie-card__watch-date text-sm">
         {{ $moment(movie.watchDate).format("M.D.YYYY") }}
       </div>
+    </div>
+    <div class="movie-card__actions text-center px-5 pt-2">
+      <i
+        class="fas text-md"
+        :class="showDetails ? `fa-caret-up` : `fa-caret-down`"
+      ></i>
     </div>
   </div>
 </template>
@@ -79,6 +96,8 @@ import { TMDBConfig } from "@/types/tmdb";
 
 @Component
 export default class CardTonightsPick extends Vue {
+  showDetails = false;
+
   get movie (): IMovie {
     return this.$store.getters.getTonightsPick;
   }
@@ -116,6 +135,11 @@ export default class CardTonightsPick extends Vue {
       return this.movie.customProviderModel!.provider_name!;
     }
     return this.movie.providers[0].provider_name;
+  }
+
+  get directorCredit (): string | undefined {
+    return this.movie.credits.crew.find((member) => member.job === "Director")
+      ?.name;
   }
 
   formatDuration (duration: string | number): string {
