@@ -101,7 +101,6 @@ export default class DrawerAddMovie extends Vue {
             "toaster",
             `${movieToAdd.title.toUpperCase()} has been added.`
           );
-          this.closeDrawer();
         });
     } else {
       this.$store.commit("addMovieToList", movieToAdd);
@@ -111,9 +110,10 @@ export default class DrawerAddMovie extends Vue {
           movieToAdd.providers.length
         } providers.`
       );
-      this.closeDrawer();
     }
-    if (this.$route.name !== "Movie Pool") { this.$router.push({ name: "Movie Pool" }); }
+    if (this.$route.name !== "Movie Pool") {
+      this.$router.push({ name: "Movie Pool" });
+    }
   }
 
   clearSearch (): void {
