@@ -1,13 +1,6 @@
 <template>
   <div
-    class="
-      movie-card
-      rounded-lg
-      text-gray-200
-      mb-4
-      flex flex-col
-      overflow-hidden
-    "
+    class="movie-card rounded-lg text-gray-200 mb-4 flex flex-col overflow-hidden"
     :class="excludeMovie ? 'bg-gray-900 movie-card--exclude' : 'bg-gray-800'"
     @click="showDetails = !showDetails"
   >
