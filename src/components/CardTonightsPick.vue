@@ -1,28 +1,10 @@
 <template>
   <div
-    class="
-      movie-card
-      rounded-lg
-      bg-indigo-600
-      text-gray-200
-      px-5
-      pt-6
-      pb-3
-      mb-4
-      border border-yellow-500
-      relative
-    "
+    class="movie-card rounded-lg bg-indigo-600 text-gray-200 px-5 pt-6 pb-3 mb-4 border border-yellow-500 relative"
     @click="showDetails = !showDetails"
   >
     <div
-      class="
-        absolute
-        text-black
-        btn btn-yellow-500
-        capitalize
-        whitespace-nowrap
-        pointer-events-none
-      "
+      class="absolute text-black btn btn-yellow-500 capitalize whitespace-nowrap pointer-events-none"
       style="top: -20px; right: 50%; transform: translateX(50%)"
     >
       <i class="fas fa-star text-white text-sm mr-3"></i>
@@ -30,14 +12,7 @@
       <i class="fas fa-star text-white text-sm ml-3"></i>
     </div>
     <div
-      class="
-        movie-card__title
-        text-2xl
-        flex
-        items-center
-        justify-between
-        capitalize
-      "
+      class="movie-card__title text-2xl flex items-center justify-between capitalize"
     >
       {{ movie.title }}
       <i
@@ -49,7 +24,17 @@
     <div class="movie-card__duration text-sm my-4">
       {{ formatDuration(movie.runtime) }}
     </div>
-    <div v-show="showDetails" class="flex flex-col gap-y-6 my-4">
+    <div v-if="showDetails" class="movie-card__genres text-sm w-full">
+      <template v-for="genre in movie.genres">
+        <span
+          :key="genre.id"
+          class="border border-gray-500 mr-1 px-2 rounded-sm"
+        >
+          {{ genre.name }}
+        </span>
+      </template>
+    </div>
+    <div v-show="showDetails" class="flex flex-col gap-y-6 pt-6">
       <div class="movie-card__desc">
         <p class="mb-0 font-semibold">Overview</p>
         {{ movie.overview }}
@@ -59,7 +44,7 @@
         {{ directorCredit }}
       </div>
     </div>
-    <div class="movie-card__footer flex justify-between items-center">
+    <div class="movie-card__footer flex justify-between items-center mt-6">
       <div
         class="movie-card__service flex items-center text-md"
         :class="movie.providers ? '' : movie.service.value"
