@@ -14,9 +14,10 @@ type TMDBWatchProviderDTO = {
 
 type TMDBProviderRegions = {
   link: string;
-  flatrate: TMDBStreamProvider[];
-  rent: TMDBStreamProvider[];
-  buy: TMDBStreamProvider[];
+  ads?: TMDBStreamProvider[];
+  flatrate?: TMDBStreamProvider[];
+  rent?: TMDBStreamProvider[];
+  buy?: TMDBStreamProvider[];
 };
 
 type TMDBMovieSearch = {
