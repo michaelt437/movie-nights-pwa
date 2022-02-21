@@ -34,17 +34,21 @@
         </span>
       </template>
     </div>
-    <div v-show="showDetails" class="flex flex-col gap-y-6 pt-6">
+    <div v-show="showDetails" class="flex flex-col gap-y-6 my-6">
       <div class="movie-card__desc">
         <p class="mb-0 font-semibold">Overview</p>
         {{ movie.overview }}
+      </div>
+      <div class="movie-card__year">
+        <p class="mb-0 font-semibold">Release Year</p>
+        {{ $moment(movie.release_date).format("YYYY") }}
       </div>
       <div class="movie-card__crew">
         <p class="mb-0 font-semibold">Director</p>
         {{ directorCredit }}
       </div>
     </div>
-    <div class="movie-card__footer flex justify-between items-center mt-6">
+    <div class="movie-card__footer flex justify-between items-center">
       <div
         class="movie-card__service flex items-center text-md"
         :class="movie.providers ? '' : movie.service.value"
