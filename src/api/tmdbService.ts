@@ -18,7 +18,7 @@ implements
     const apiResponse = await axios.get<TMDBWatchProviderDTO>(
       `${uriRoot}movie/${movieId}/watch/providers?api_key=${process.env.VUE_APP_TMDBKEY}`
     );
-    const { ads, flatrate } = apiResponse.data?.results?.US ?? {
+    const { ads = [], flatrate = [] } = apiResponse.data?.results?.US ?? {
       ads: [],
       flatrate: []
     };
