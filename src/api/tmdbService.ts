@@ -18,8 +18,11 @@ implements
     const apiResponse = await axios.get<TMDBWatchProviderDTO>(
       `${uriRoot}movie/${movieId}/watch/providers?api_key=${process.env.VUE_APP_TMDBKEY}`
     );
-    const results = apiResponse.data?.results?.US?.flatrate;
-    return results ?? [];
+    const { ads = [], flatrate = [] } = apiResponse.data?.results?.US ?? {
+      ads: [],
+      flatrate: []
+    };
+    return [...ads!, ...flatrate!];
   }
 
   async searchMovie (searchText: string): Promise<TMDBMovieSearch[]> {
