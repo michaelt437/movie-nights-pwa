@@ -12,6 +12,9 @@
           title="Rewatch"
         ></i>
       </div>
+      <div class="movie-card__duration text-sm my-4">
+        {{ formatDuration(randomMovie.runtime) }}
+      </div>
       <div class="movie-card__service flex items-center text-lg my-2">
         <img
           v-if="!randomMovie.customProvider && providerLogo"
@@ -20,9 +23,6 @@
           class="rounded-full w-5 h-5 mr-2"
         />
         {{ displayProviderText }}
-      </div>
-      <div class="movie-card__duration text-sm mb-5">
-        {{ formatDuration(randomMovie.runtime) }}
       </div>
       <div class="movie-card__footer">
         <div class="btn-group flex">
@@ -52,16 +52,7 @@
 
     <div
       v-else
-      class="
-        movie-card
-        rounded-lg
-        btn-indigo-600
-        text-center text-gray-200
-        py-8
-        mb-4
-        cursor-pointer
-        relative
-      "
+      class="movie-card rounded-lg btn-indigo-600 text-center text-gray-200 py-8 mb-4 cursor-pointer relative"
       :class="{ 'pointer-events-none': !moviesToPickList.length && isSignedIn }"
       @click="moviesToPickList.length ? makeRoll() : invokeAddDrawer()"
     >
