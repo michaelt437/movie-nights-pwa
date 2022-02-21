@@ -73,6 +73,10 @@
           <p class="mb-0 font-semibold">Overview</p>
           {{ movie.overview }}
         </div>
+        <div class="movie-card__year">
+          <p class="mb-0 font-semibold">Release Year</p>
+          {{ $moment(movie.release_date).format("YYYY") }}
+        </div>
         <div class="movie-card__crew">
           <p class="mb-0 font-semibold">Director</p>
           {{ directorCredit }}
@@ -259,7 +263,8 @@ export default class CardMovieEditable extends Vue {
   .movie-card__duration,
   .movie-card__desc,
   .movie-card__crew,
-  .movie-card__genres {
+  .movie-card__genres,
+  .movie-card__year {
     opacity: 0.7;
   }
 }
