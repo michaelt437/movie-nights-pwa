@@ -57,6 +57,12 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
           .filter((movie: IMovie) => {
             return !movie.hasWatched;
           })
+          .filter((movie: IMovie) => {
+            if (movie.id) {
+              return movie.id !== state.tonightsPick?.id;
+            }
+            return movie;
+          })
           .sort((m1: MovieType, m2: MovieType) => {
             if (m1.addedDate > m2.addedDate) return -1;
             else if (m1.addedDate < m2.addedDate) return 1;
