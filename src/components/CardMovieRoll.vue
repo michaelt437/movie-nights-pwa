@@ -280,30 +280,30 @@ export default class CardMovieRoll extends Vue {
     return `${Math.floor(_duration / 60)}hr ${_duration % 60}m`;
   }
 
-  confirmSelection (): void {
+  async confirmSelection (): Promise<void> {
     if (this.isSignedIn) {
       const _watchDate = Number(Date.parse(Date()));
       this.randomMovie.watchDate = _watchDate;
       this.randomMovie.user = this.$store.getters.getCurrentUser.name;
-      this.$store.commit("updateRollPermission", false);
-      this.$store.commit("setTonightsPick", this.randomMovie);
-      db.collection("tonightsPick").doc("movie").set(this.randomMovie);
+      await db.collection("tonightsPick").doc("movie").set(this.randomMovie);
 
-      db.collection(this.$store.getters.getCurrentUserDocumentId)
+      await db
+        .collection(this.$store.getters.getCurrentUserDocumentId)
         .doc(this.randomMovie.documentId)
         .update({
           hasWatched: true,
           watchDate: _watchDate
         });
 
-      db.collection("users")
+      await db
+        .collection("users")
         .doc(this.$store.getters.getCurrentUserDocumentId)
         .update({
           hasPicked: true,
           pickedDateTime: _watchDate
         });
 
-      fetch(process.env.VUE_APP_SLACKHOOK, {
+      await fetch(process.env.VUE_APP_SLACKHOOK, {
         method: "POST",
         body: JSON.stringify({
           text: ":celebrate: Tonight's Pick! :celebrate:",
@@ -320,6 +320,8 @@ export default class CardMovieRoll extends Vue {
           ]
         })
       });
+      this.$store.commit("updateRollPermission", false);
+      this.$store.commit("setTonightsPick", this.randomMovie);
     } else {
       this.randomMovie.user = "Tonight";
       this.$store.commit("updateRollPermission", false);
