@@ -1,5 +1,8 @@
 <template>
-  <div class="movie-card rounded-lg bg-gray-800 text-gray-200 px-5 py-3 mb-4">
+  <div
+		class="movie-card rounded-lg bg-gray-800 text-gray-200 px-5 py-3 mb-4"
+		@click="showDetails = !showDetails"
+	>
     <div class="movie-card__title flex items-center text-2xl capitalize mb-3">
       {{ movie.title }}
       <i
@@ -8,7 +11,10 @@
         title="Rewatch"
       ></i>
     </div>
-    <div class="movie-card__footer flex justify-between">
+    <div v-show="showDetails" class="movie-card__duration text-sm my-4">
+      {{ formatDuration(movie.runtime) }}
+    </div>
+    <div class="movie-card__footer flex justify-between my-4">
       <div
         class="movie-card__service flex items-center text-md"
         :class="movie.providers ? '' : movie.service.value"
@@ -41,6 +47,8 @@ import { TMDBConfig } from "@/types/tmdb";
 @Component
 export default class CardMovie extends Vue {
   @Prop(Object) readonly movie!: IMovie;
+
+	showDetails = false;
 
   get isRewatch (): boolean {
     return Boolean(
