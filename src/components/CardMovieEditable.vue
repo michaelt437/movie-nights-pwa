@@ -122,7 +122,6 @@ import { isEqual, omit } from "lodash";
 @Component
 export default class CardMovieEditable extends Vue {
   @Prop(Object) readonly movie!: IMovie;
-
   showDetails = false;
 
   get excludeMovie () {
@@ -136,6 +135,8 @@ export default class CardMovieEditable extends Vue {
         .update({
           exclude: value
         });
+    } else {
+      throw new Error("Not signed in");
     }
 
     this.$store.commit("updateMovieExclude", {
