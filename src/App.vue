@@ -67,6 +67,8 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { getFirestore, collection, query, where, getDocs, doc, getDoc, deleteDoc } from "firebase/firestore";
+import { GoogleAuthProvider } from "@firebase/auth";
 import AppHeader from "@/components/AppHeader.vue";
 import AppParalaxBackground from "@/components/AppParalaxBackground.vue";
 import AppTitle from "@/components/AppTitle.vue";
@@ -80,7 +82,7 @@ import DrawerFilter from "@/components/DrawerFilter.vue";
 import DrawerPickFilter from "@/components/DrawerPickFilter.vue";
 import IUser from "@/types/interface/IUser";
 import IMovie from "@/types/interface/IMovie";
-import { db, fb, auth } from "@/db";
+import { app, db, auth } from "@/db";
 
 @Component({
   components: {
@@ -121,7 +123,7 @@ export default class App extends Vue {
   }
 
   login (): void {
-    const provider = new auth.GoogleAuthProvider();
+    const provider = new GoogleAuthProvider();
     fb.auth()
       .signInWithRedirect(provider)
       .then((response) => {
@@ -236,7 +238,7 @@ export default class App extends Vue {
     });
   }
 
-  resetRollCheck (): void {
+  async resetRollCheck (): Promise<void> {
     if (this.$store.getters.getTonightsPick) {
       const lastPickTime = this.$store.getters.getTonightsPick.watchDate;
 
@@ -249,7 +251,7 @@ export default class App extends Vue {
         this.$store.commit("setTonightsPick", null);
         this.$store.commit("updateRollPermission", true);
 
-        db.collection("tonightsPick").doc("movie").delete();
+        await deleteDoc( doc(db, "tonightsPick", "movie"));
       }
     }
 
