@@ -113,7 +113,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
 import { TMDBConfig } from "@/types/tmdb";
 import { db } from "@/db";
@@ -122,22 +122,25 @@ import { isEqual, omit } from "lodash";
 @Component
 export default class CardMovieEditable extends Vue {
   @Prop(Object) readonly movie!: IMovie;
-
-  excludeMovie = false;
   showDetails = false;
 
-  @Watch("excludeMovie", { deep: true })
-  onExcludeToggle (value: boolean) {
+  get excludeMovie () {
+    return this.movie.exclude;
+  }
+
+  set excludeMovie (value: boolean) {
     if (this.isSignedIn) {
       db.collection(this.$store.getters.getCurrentUserDocumentId)
         .doc(this.movie.documentId)
         .update({
           exclude: value
         });
+    } else {
+      throw new Error("Not signed in");
     }
 
     this.$store.commit("updateMovieExclude", {
-      value: this.excludeMovie,
+      value,
       targetTitle: this.movie.title
     });
   }
@@ -244,10 +247,6 @@ export default class CardMovieEditable extends Vue {
       "toaster",
       `Providers refreshed for ${this.movie.title.toUpperCase()}.`
     );
-  }
-
-  mounted () {
-    this.excludeMovie = this.movie.exclude!;
   }
 }
 </script>

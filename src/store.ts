@@ -158,8 +158,9 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
         const indexOfTargetMovie = state.moviesList.indexOf(
           state.moviesList.find(movie => movie.title === targetTitle) as IMovie
         );
-
-        state.moviesList[indexOfTargetMovie].exclude = value;
+        const _updatedMovie = state.moviesList[indexOfTargetMovie];
+        Vue.set(_updatedMovie, "exclude", value);
+        Vue.set(state.moviesList, indexOfTargetMovie, _updatedMovie);
       },
       updateUserHasRolled (state, value: boolean): void {
         state.currentUser.hasRolled = value;
