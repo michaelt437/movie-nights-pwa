@@ -128,13 +128,13 @@ export default class CardMovieEditable extends Vue {
 
   @Watch("excludeMovie", { deep: true })
   onExcludeToggle (value: boolean) {
-    if (this.isSignedIn) {
-      db.collection(this.$store.getters.getCurrentUserDocumentId)
-        .doc(this.movie.documentId)
-        .update({
-          exclude: value
-        });
-    }
+    // if (this.isSignedIn) {
+    //   db.collection(this.$store.getters.getCurrentUserDocumentId)
+    //     .doc(this.movie.documentId)
+    //     .update({
+    //       exclude: value
+    //     });
+    // }
 
     this.$store.commit("updateMovieExclude", {
       value: this.excludeMovie,
@@ -213,12 +213,12 @@ export default class CardMovieEditable extends Vue {
   }
 
   deleteMovie (): void {
-    if (this.isSignedIn) {
-      db.collection(this.$store.getters.getCurrentUserDocumentId)
-        .doc(this.movie.documentId)
-        .delete();
-    }
-    this.$store.commit("deleteMovieFromList", this.movie);
+    // if (this.isSignedIn) {
+    //   db.collection(this.$store.getters.getCurrentUserDocumentId)
+    //     .doc(this.movie.documentId)
+    //     .delete();
+    // }
+    // this.$store.commit("deleteMovieFromList", this.movie);
   }
 
   formatDuration (duration: string | number): string {
@@ -236,9 +236,9 @@ export default class CardMovieEditable extends Vue {
         documentId: this.movie.documentId,
         newProviders: _providers
       });
-      db.collection(this.$store.getters.getCurrentUserDocumentId)
-        .doc(this.movie.documentId)
-        .update(this.movieToEditOmitId);
+      // db.collection(this.$store.getters.getCurrentUserDocumentId)
+      //   .doc(this.movie.documentId)
+      //   .update(this.movieToEditOmitId);
     }
     this.$emit(
       "toaster",

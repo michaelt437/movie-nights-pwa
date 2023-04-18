@@ -94,14 +94,14 @@ export default class DrawerAddMovie extends Vue {
 
   addMovie (movieToAdd: IMovie): void {
     if (this.$store.state.signedIn) {
-      db.collection(this.$store.getters.getCurrentUserDocumentId)
-        .add(movieToAdd)
-        .then(() => {
-          this.$emit(
-            "toaster",
-            `${movieToAdd.title.toUpperCase()} has been added.`
-          );
-        });
+      // db.collection(this.$store.getters.getCurrentUserDocumentId)
+      //   .add(movieToAdd)
+      //   .then(() => {
+      //     this.$emit(
+      //       "toaster",
+      //       `${movieToAdd.title.toUpperCase()} has been added.`
+      //     );
+      //   });
     } else {
       this.$store.commit("addMovieToList", movieToAdd);
       this.$emit(

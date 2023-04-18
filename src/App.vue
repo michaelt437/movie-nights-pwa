@@ -68,7 +68,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { getFirestore, collection, query, where, getDocs, doc, getDoc, deleteDoc } from "firebase/firestore";
-import { GoogleAuthProvider } from "@firebase/auth";
+import { GoogleAuthProvider, onAuthStateChanged, signInWithRedirect } from "@firebase/auth";
 import AppHeader from "@/components/AppHeader.vue";
 import AppParalaxBackground from "@/components/AppParalaxBackground.vue";
 import AppTitle from "@/components/AppTitle.vue";
@@ -124,28 +124,27 @@ export default class App extends Vue {
 
   login (): void {
     const provider = new GoogleAuthProvider();
-    fb.auth()
-      .signInWithRedirect(provider)
-      .then((response) => {
-        console.log("logged in", response);
-        this.$emit("update:isSignedIn", true);
-      })
-      .catch((error) => {
-        console.error("Authentication error: ", error);
-      });
+      signInWithRedirect(auth, provider)
+        .then((response) => {
+          console.log("logged in", response);
+          this.$emit("update:isSignedIn", true);
+        })
+        .catch((error) => {
+          console.error("Authentication error: ", error);
+        });
   }
 
   async init (): Promise<void> {
-    await db
-      .collection("users")
-      .where("email", "==", this.loggedInUser.email)
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((user) => {
-          this.$store.commit("setCurrentUser", user.data());
-          this.$store.commit("setCurrentUserDocumentId", user.id);
-        });
-      });
+    // await db
+    //   .collection("users")
+    //   .where("email", "==", this.loggedInUser.email)
+    //   .get()
+    //   .then((querySnapshot) => {
+    //     querySnapshot.forEach((user) => {
+    //       this.$store.commit("setCurrentUser", user.data());
+    //       this.$store.commit("setCurrentUserDocumentId", user.id);
+    //     });
+    //   });
   }
 
   invokePopup (name, props?, message?, action?, postAction?): void {
@@ -180,33 +179,33 @@ export default class App extends Vue {
   }
 
   async fetchMoviesList (): Promise<any> {
-    await db
-      .collection(this.$store.getters.getCurrentUserDocumentId)
-      .onSnapshot({ includeMetadataChanges: true }, (querySnapshot) => {
-        querySnapshot.docChanges().forEach((change) => {
-          if (change.type === "added") {
-            const movieObj = change.doc.data();
-            movieObj.documentId = change.doc.id;
-            this.moviesList.push(movieObj as IMovie);
-          }
-        });
-      });
+    // await db
+    //   .collection(this.$store.getters.getCurrentUserDocumentId)
+    //   .onSnapshot({ includeMetadataChanges: true }, (querySnapshot) => {
+    //     querySnapshot.docChanges().forEach((change) => {
+    //       if (change.type === "added") {
+    //         const movieObj = change.doc.data();
+    //         movieObj.documentId = change.doc.id;
+    //         this.moviesList.push(movieObj as IMovie);
+    //       }
+    //     });
+    //   });
   }
 
   async checkForTonightsPick (): Promise<any> {
-    await db
-      .collection("tonightsPick")
-      .doc("movie")
-      .get()
-      .then((doc) => {
-        if (doc.data() !== undefined) {
-          this.$store.commit("updateRollPermission", false);
-          this.$store.commit("setTonightsPick", doc.data());
-        } else {
-          this.$store.commit("updateRollPermission", true);
-          this.$store.commit("setTonightsPick", null);
-        }
-      });
+    // await db
+    //   .collection("tonightsPick")
+    //   .doc("movie")
+    //   .get()
+    //   .then((doc) => {
+    //     if (doc.data() !== undefined) {
+    //       this.$store.commit("updateRollPermission", false);
+    //       this.$store.commit("setTonightsPick", doc.data());
+    //     } else {
+    //       this.$store.commit("updateRollPermission", true);
+    //       this.$store.commit("setTonightsPick", null);
+    //     }
+    //   });
   }
 
   invokeDrawer (name): void {
@@ -221,19 +220,19 @@ export default class App extends Vue {
 
   checkFirebaseAuthState (): Promise<boolean> {
     return new Promise((resolve) => {
-      fb.auth().onAuthStateChanged((user: any | null) => {
-        if (user) {
-          this.loggedInUser = Object.assign(
-            {},
-            this.loggedInUser,
-            user.providerData[0]
-          );
-          this.$store.commit("setLoginStatus", true);
-          resolve(true);
-        } else {
-          this.$store.commit("setLoginStatus", false);
-          resolve(false);
-        }
+      onAuthStateChanged(auth, user => {
+         if (user) {
+           this.loggedInUser = Object.assign(
+             {},
+             this.loggedInUser,
+             user.providerData[0]
+           );
+           this.$store.commit("setLoginStatus", true);
+           resolve(true);
+         } else {
+           this.$store.commit("setLoginStatus", false);
+           resolve(false);
+         }
       });
     });
   }
@@ -255,35 +254,35 @@ export default class App extends Vue {
       }
     }
 
-    db.collection("users")
-      .doc(this.$store.getters.getCurrentUserDocumentId)
-      .update({
-        hasPicked: false,
-        hasRolled: false,
-        rolls: 4
-      });
+    // db.collection("users")
+    //   .doc(this.$store.getters.getCurrentUserDocumentId)
+    //   .update({
+    //     hasPicked: false,
+    //     hasRolled: false,
+    //     rolls: 4
+    //   });
   }
 
   // Lifecycle Hooks
   async created () {
     await this.checkFirebaseAuthState();
-    if (this.isSignedIn) {
-      await this.init();
-      await this.fetchMoviesList();
-      await this.checkForTonightsPick();
-      this.resetRollCheck();
-    }
-    await this.$store.dispatch("fetchConfiguration");
-    this.loading = false;
-    this.$store.commit("setMoviesList", this.moviesList);
+    // if (this.isSignedIn) {
+    //   await this.init();
+    //   await this.fetchMoviesList();
+    //   await this.checkForTonightsPick();
+    //   this.resetRollCheck();
+    // }
+    // await this.$store.dispatch("fetchConfiguration");
+    // this.loading = false;
+    // this.$store.commit("setMoviesList", this.moviesList);
 
-    window.addEventListener("scroll", (): void => {
-      // header bg
-      const titleRect = document
-        .querySelector(".app-title")!
-        .getBoundingClientRect();
-      this.titleBgSolid = titleRect.bottom < 0;
-    });
+    // window.addEventListener("scroll", (): void => {
+    //   // header bg
+    //   const titleRect = document
+    //     .querySelector(".app-title")!
+    //     .getBoundingClientRect();
+    //   this.titleBgSolid = titleRect.bottom < 0;
+    // });
   }
 }
 </script>

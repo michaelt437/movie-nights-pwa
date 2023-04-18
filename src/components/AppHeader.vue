@@ -61,7 +61,7 @@
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { auth, fb } from "../db";
+import { auth } from "../db";
 
 @Component
 export default class AppHeader extends Vue {
@@ -72,21 +72,21 @@ export default class AppHeader extends Vue {
   public showMenu = false;
 
   login (): void {
-    const provider = new auth.GoogleAuthProvider();
-    fb.auth()
-      .signInWithRedirect(provider)
-      .then((response) => {
-        this.$emit("update:isSignedIn", true);
-      })
-      .catch((error) => {
-        console.error("Authentication error: ", error);
-      });
+    // const provider = new auth.GoogleAuthProvider();
+    // fb.auth()
+    //   .signInWithRedirect(provider)
+    //   .then((response) => {
+    //     this.$emit("update:isSignedIn", true);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Authentication error: ", error);
+    //   });
   }
 
   logout (): void {
-    fb.auth().signOut();
-    this.$emit("update:isSignedIn", false);
-    window.location.reload();
+    // fb.auth().signOut();
+    // this.$emit("update:isSignedIn", false);
+    // window.location.reload();
   }
 
   mounted () {

@@ -187,9 +187,9 @@ export default class PopupEditMovie extends Vue {
     }
 
     if (this.isSignedIn) {
-      db.collection(this.$store.getters.getCurrentUserDocumentId)
-        .doc(this.movie.documentId)
-        .update(this.movieToEditOmitId);
+      // db.collection(this.$store.getters.getCurrentUserDocumentId)
+      //   .doc(this.movie.documentId)
+      //   .update(this.movieToEditOmitId);
     }
 
     this.$store.commit("submitEditsToMovie", this.movieToEdit);
