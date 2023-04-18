@@ -135,16 +135,14 @@ export default class App extends Vue {
   }
 
   async init (): Promise<void> {
-    // await db
-    //   .collection("users")
-    //   .where("email", "==", this.loggedInUser.email)
-    //   .get()
-    //   .then((querySnapshot) => {
-    //     querySnapshot.forEach((user) => {
-    //       this.$store.commit("setCurrentUser", user.data());
-    //       this.$store.commit("setCurrentUserDocumentId", user.id);
-    //     });
-    //   });
+    const users = collection(db, "users");
+    const user = query(users, where("email", "==", this.loggedInUser.email))
+    const userSnapshot = await getDocs(user);
+
+    userSnapshot.forEach(user => {
+      this.$store.commit("setCurrentUser", user.data());
+      this.$store.commit("setCurrentUserDocumentId", user.id);
+    });
   }
 
   invokePopup (name, props?, message?, action?, postAction?): void {
@@ -266,12 +264,12 @@ export default class App extends Vue {
   // Lifecycle Hooks
   async created () {
     await this.checkFirebaseAuthState();
-    // if (this.isSignedIn) {
-    //   await this.init();
-    //   await this.fetchMoviesList();
-    //   await this.checkForTonightsPick();
-    //   this.resetRollCheck();
-    // }
+     if (this.isSignedIn) {
+       await this.init();
+       // await this.fetchMoviesList();
+       // await this.checkForTonightsPick();
+       // this.resetRollCheck();
+     }
     // await this.$store.dispatch("fetchConfiguration");
     // this.loading = false;
     // this.$store.commit("setMoviesList", this.moviesList);
