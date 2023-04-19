@@ -67,7 +67,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { getFirestore, collection, query, where, getDocs, doc, getDoc, deleteDoc, onSnapshot, updateDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, getDoc, deleteDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { GoogleAuthProvider, onAuthStateChanged, signInWithRedirect } from "@firebase/auth";
 import AppHeader from "@/components/AppHeader.vue";
 import AppParalaxBackground from "@/components/AppParalaxBackground.vue";
