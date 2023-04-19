@@ -98,6 +98,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
+import { doc, updateDoc } from "@firebase/firestore";
 import IMovie from "@/types/interface/IMovie";
 import { db } from "@/db";
 import { omit, isEqual } from "lodash";
@@ -187,9 +188,10 @@ export default class PopupEditMovie extends Vue {
     }
 
     if (this.isSignedIn) {
-      // db.collection(this.$store.getters.getCurrentUserDocumentId)
-      //   .doc(this.movie.documentId)
-      //   .update(this.movieToEditOmitId);
+      updateDoc(
+        doc(db, this.$store.getters.getCurrentUserDocumentId, this.movie.documentId as string),
+        this.movieToEditOmitId
+      );
     }
 
     this.$store.commit("submitEditsToMovie", this.movieToEdit);
