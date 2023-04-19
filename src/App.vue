@@ -191,19 +191,17 @@ export default class App extends Vue {
   }
 
   async checkForTonightsPick (): Promise<any> {
-    // await db
-    //   .collection("tonightsPick")
-    //   .doc("movie")
-    //   .get()
-    //   .then((doc) => {
-    //     if (doc.data() !== undefined) {
-    //       this.$store.commit("updateRollPermission", false);
-    //       this.$store.commit("setTonightsPick", doc.data());
-    //     } else {
-    //       this.$store.commit("updateRollPermission", true);
-    //       this.$store.commit("setTonightsPick", null);
-    //     }
-    //   });
+    const tonightsPick = await getDoc(doc(db, "tonightsPick", "movie"));
+    
+    if (tonightsPick) {
+      if (tonightsPick.data() !== undefined) {
+        this.$store.commit("updateRollPermission", false);
+        this.$store.commit("setTonightsPick", tonightsPick.data());
+      } else {
+        this.$store.commit("updateRollPermission", true);
+        this.$store.commit("setTonightsPick", null);
+      }
+    }
   }
 
   invokeDrawer (name): void {
@@ -267,7 +265,7 @@ export default class App extends Vue {
      if (this.isSignedIn) {
        await this.init();
        await this.fetchMoviesList();
-       // await this.checkForTonightsPick();
+       await this.checkForTonightsPick();
        // this.resetRollCheck();
      }
     // await this.$store.dispatch("fetchConfiguration");
