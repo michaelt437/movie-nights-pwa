@@ -76,9 +76,10 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { doc, increment, setDoc, updateDoc } from "firebase/firestore";
 import IMovie from "@/types/interface/IMovie";
 import CardMovie from "@/components/CardMovie.vue";
-import { db, fb } from "@/db";
+import { db } from "@/db";
 import { TMDBConfig, TMDBGenre } from "@/types/tmdb";
 import isEmpty from "lodash/isEmpty";
 
@@ -236,11 +237,9 @@ export default class CardMovieRoll extends Vue {
 
   decrementRolls (): void {
     if (this.isSignedIn) {
-      db.collection("users")
-        .doc(this.$store.getters.getCurrentUserDocumentId)
-        .update({
-          rolls: fb.firestore.FieldValue.increment(-1)
-        });
+      updateDoc(doc(db, "users", this.$store.getters.getCurrentUserDocumentId), {
+        rolls: increment(-1)
+      });
       this.$store.commit("decrementRolls");
 
       if (this.$store.getters.getCurrentUser.rolls === 0) {
@@ -285,23 +284,17 @@ export default class CardMovieRoll extends Vue {
       const _watchDate = Number(Date.parse(Date()));
       this.randomMovie.watchDate = _watchDate;
       this.randomMovie.user = this.$store.getters.getCurrentUser.name;
-      await db.collection("tonightsPick").doc("movie").set(this.randomMovie);
+      await setDoc(doc(db, "tonightsPick", "movie"), this.randomMovie);
 
-      await db
-        .collection(this.$store.getters.getCurrentUserDocumentId)
-        .doc(this.randomMovie.documentId)
-        .update({
-          hasWatched: true,
-          watchDate: _watchDate
-        });
+      await updateDoc(doc(db, this.$store.getters.getCurrentUserDocumentId, this.randomMovie.documentId as string), {
+        hasWatched: true,
+        watchData: _watchDate
+      });
 
-      await db
-        .collection("users")
-        .doc(this.$store.getters.getCurrentUserDocumentId)
-        .update({
-          hasPicked: true,
-          pickedDateTime: _watchDate
-        });
+      await updateDoc(doc(db, "users", this.$store.getters.getCurrentUserDocumentId), {
+        hasPicked: true,
+        pickedDateTime: _watchDate
+      });
 
       await fetch(process.env.VUE_APP_SLACKHOOK, {
         method: "POST",

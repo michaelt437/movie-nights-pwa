@@ -67,6 +67,8 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { collection, query, where, getDocs, doc, getDoc, deleteDoc, onSnapshot, updateDoc } from "firebase/firestore";
+import { GoogleAuthProvider, onAuthStateChanged, signInWithRedirect } from "@firebase/auth";
 import AppHeader from "@/components/AppHeader.vue";
 import AppParalaxBackground from "@/components/AppParalaxBackground.vue";
 import AppTitle from "@/components/AppTitle.vue";
@@ -80,7 +82,7 @@ import DrawerFilter from "@/components/DrawerFilter.vue";
 import DrawerPickFilter from "@/components/DrawerPickFilter.vue";
 import IUser from "@/types/interface/IUser";
 import IMovie from "@/types/interface/IMovie";
-import { db, fb, auth } from "@/db";
+import { app, db, auth } from "@/db";
 
 @Component({
   components: {
@@ -121,9 +123,8 @@ export default class App extends Vue {
   }
 
   login (): void {
-    const provider = new auth.GoogleAuthProvider();
-    fb.auth()
-      .signInWithRedirect(provider)
+    const provider = new GoogleAuthProvider();
+    signInWithRedirect(auth, provider)
       .then((response) => {
         console.log("logged in", response);
         this.$emit("update:isSignedIn", true);
@@ -134,16 +135,14 @@ export default class App extends Vue {
   }
 
   async init (): Promise<void> {
-    await db
-      .collection("users")
-      .where("email", "==", this.loggedInUser.email)
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((user) => {
-          this.$store.commit("setCurrentUser", user.data());
-          this.$store.commit("setCurrentUserDocumentId", user.id);
-        });
-      });
+    const users = collection(db, "users");
+    const user = query(users, where("email", "==", this.loggedInUser.email))
+    const userSnapshot = await getDocs(user);
+
+    userSnapshot.forEach(user => {
+      this.$store.commit("setCurrentUser", user.data());
+      this.$store.commit("setCurrentUserDocumentId", user.id);
+    });
   }
 
   invokePopup (name, props?, message?, action?, postAction?): void {
@@ -178,33 +177,31 @@ export default class App extends Vue {
   }
 
   async fetchMoviesList (): Promise<any> {
-    await db
-      .collection(this.$store.getters.getCurrentUserDocumentId)
-      .onSnapshot({ includeMetadataChanges: true }, (querySnapshot) => {
-        querySnapshot.docChanges().forEach((change) => {
-          if (change.type === "added") {
-            const movieObj = change.doc.data();
-            movieObj.documentId = change.doc.id;
-            this.moviesList.push(movieObj as IMovie);
-          }
-        });
+    const moviesCollection = collection(db, this.$store.getters.getCurrentUserDocumentId);
+    const moviesCollectionQuery = query(moviesCollection);
+    const unsubscribe = onSnapshot(moviesCollectionQuery, snapshot => {
+      snapshot.docChanges().forEach(change => {
+        if (change.type === "added") {
+          const movieObj = change.doc.data();
+          movieObj.documentId = change.doc.id;
+          this.moviesList.push(movieObj as IMovie);
+        }
       });
+    });
   }
 
   async checkForTonightsPick (): Promise<any> {
-    await db
-      .collection("tonightsPick")
-      .doc("movie")
-      .get()
-      .then((doc) => {
-        if (doc.data() !== undefined) {
-          this.$store.commit("updateRollPermission", false);
-          this.$store.commit("setTonightsPick", doc.data());
-        } else {
-          this.$store.commit("updateRollPermission", true);
-          this.$store.commit("setTonightsPick", null);
-        }
-      });
+    const tonightsPick = await getDoc(doc(db, "tonightsPick", "movie"));
+    
+    if (tonightsPick) {
+      if (tonightsPick.data() !== undefined) {
+        this.$store.commit("updateRollPermission", false);
+        this.$store.commit("setTonightsPick", tonightsPick.data());
+      } else {
+        this.$store.commit("updateRollPermission", true);
+        this.$store.commit("setTonightsPick", null);
+      }
+    }
   }
 
   invokeDrawer (name): void {
@@ -219,24 +216,24 @@ export default class App extends Vue {
 
   checkFirebaseAuthState (): Promise<boolean> {
     return new Promise((resolve) => {
-      fb.auth().onAuthStateChanged((user: any | null) => {
-        if (user) {
-          this.loggedInUser = Object.assign(
-            {},
-            this.loggedInUser,
-            user.providerData[0]
-          );
-          this.$store.commit("setLoginStatus", true);
-          resolve(true);
-        } else {
-          this.$store.commit("setLoginStatus", false);
-          resolve(false);
-        }
+      onAuthStateChanged(auth, user => {
+         if (user) {
+           this.loggedInUser = Object.assign(
+             {},
+             this.loggedInUser,
+             user.providerData[0]
+           );
+           this.$store.commit("setLoginStatus", true);
+           resolve(true);
+         } else {
+           this.$store.commit("setLoginStatus", false);
+           resolve(false);
+         }
       });
     });
   }
 
-  resetRollCheck (): void {
+  async resetRollCheck (): Promise<void> {
     if (this.$store.getters.getTonightsPick) {
       const lastPickTime = this.$store.getters.getTonightsPick.watchDate;
 
@@ -249,28 +246,26 @@ export default class App extends Vue {
         this.$store.commit("setTonightsPick", null);
         this.$store.commit("updateRollPermission", true);
 
-        db.collection("tonightsPick").doc("movie").delete();
+        await deleteDoc(doc(db, "tonightsPick", "movie"));
       }
     }
 
-    db.collection("users")
-      .doc(this.$store.getters.getCurrentUserDocumentId)
-      .update({
-        hasPicked: false,
-        hasRolled: false,
-        rolls: 4
-      });
+    await updateDoc(doc(db, "users", this.$store.getters.getCurrentUserDocumentId), {
+      hasPicked: false,
+      hasRolled: false,
+      rolls: 4
+    });
   }
 
   // Lifecycle Hooks
   async created () {
     await this.checkFirebaseAuthState();
-    if (this.isSignedIn) {
-      await this.init();
-      await this.fetchMoviesList();
-      await this.checkForTonightsPick();
-      this.resetRollCheck();
-    }
+     if (this.isSignedIn) {
+       await this.init();
+       await this.fetchMoviesList();
+       await this.checkForTonightsPick();
+       this.resetRollCheck();
+     }
     await this.$store.dispatch("fetchConfiguration");
     this.loading = false;
     this.$store.commit("setMoviesList", this.moviesList);
