@@ -49,6 +49,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
+import { addDoc, collection } from "@firebase/firestore";
 import { db } from "@/db";
 import placeholders from "@/placeholders";
 import IMovie from "@/types/interface/IMovie";
@@ -92,16 +93,13 @@ export default class DrawerAddMovie extends Vue {
     if (searchText.trim() !== "") this.executeSearchMovie(searchText);
   }
 
-  addMovie (movieToAdd: IMovie): void {
+  async addMovie (movieToAdd: IMovie): Promise<void> {
     if (this.$store.state.signedIn) {
-      // db.collection(this.$store.getters.getCurrentUserDocumentId)
-      //   .add(movieToAdd)
-      //   .then(() => {
-      //     this.$emit(
-      //       "toaster",
-      //       `${movieToAdd.title.toUpperCase()} has been added.`
-      //     );
-      //   });
+      await addDoc(collection(db, this.$store.getters.getCurrentUserDocumentId), movieToAdd);
+      this.$emit(
+        "toaster",
+        `${movieToAdd.title.toUpperCase()} has been added.`
+      );
     } else {
       this.$store.commit("addMovieToList", movieToAdd);
       this.$emit(
