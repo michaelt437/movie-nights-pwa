@@ -124,14 +124,14 @@ export default class App extends Vue {
 
   login (): void {
     const provider = new GoogleAuthProvider();
-      signInWithRedirect(auth, provider)
-        .then((response) => {
-          console.log("logged in", response);
-          this.$emit("update:isSignedIn", true);
-        })
-        .catch((error) => {
-          console.error("Authentication error: ", error);
-        });
+    signInWithRedirect(auth, provider)
+      .then((response) => {
+        console.log("logged in", response);
+        this.$emit("update:isSignedIn", true);
+      })
+      .catch((error) => {
+        console.error("Authentication error: ", error);
+      });
   }
 
   async init (): Promise<void> {
