@@ -67,7 +67,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { getFirestore, collection, query, where, getDocs, doc, getDoc, deleteDoc, onSnapshot } from "firebase/firestore";
+import { getFirestore, collection, query, where, getDocs, doc, getDoc, deleteDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import { GoogleAuthProvider, onAuthStateChanged, signInWithRedirect } from "@firebase/auth";
 import AppHeader from "@/components/AppHeader.vue";
 import AppParalaxBackground from "@/components/AppParalaxBackground.vue";
@@ -246,17 +246,15 @@ export default class App extends Vue {
         this.$store.commit("setTonightsPick", null);
         this.$store.commit("updateRollPermission", true);
 
-        await deleteDoc( doc(db, "tonightsPick", "movie"));
+        await deleteDoc(doc(db, "tonightsPick", "movie"));
       }
     }
 
-    // db.collection("users")
-    //   .doc(this.$store.getters.getCurrentUserDocumentId)
-    //   .update({
-    //     hasPicked: false,
-    //     hasRolled: false,
-    //     rolls: 4
-    //   });
+    await updateDoc(doc(db, "users", this.$store.getters.getCurrentUserDocumentId), {
+      hasPicked: false,
+      hasRolled: false,
+      rolls: 4
+    });
   }
 
   // Lifecycle Hooks
@@ -266,19 +264,19 @@ export default class App extends Vue {
        await this.init();
        await this.fetchMoviesList();
        await this.checkForTonightsPick();
-       // this.resetRollCheck();
+       this.resetRollCheck();
      }
-    // await this.$store.dispatch("fetchConfiguration");
-    // this.loading = false;
-    // this.$store.commit("setMoviesList", this.moviesList);
+    await this.$store.dispatch("fetchConfiguration");
+    this.loading = false;
+    this.$store.commit("setMoviesList", this.moviesList);
 
-    // window.addEventListener("scroll", (): void => {
-    //   // header bg
-    //   const titleRect = document
-    //     .querySelector(".app-title")!
-    //     .getBoundingClientRect();
-    //   this.titleBgSolid = titleRect.bottom < 0;
-    // });
+    window.addEventListener("scroll", (): void => {
+      // header bg
+      const titleRect = document
+        .querySelector(".app-title")!
+        .getBoundingClientRect();
+      this.titleBgSolid = titleRect.bottom < 0;
+    });
   }
 }
 </script>
