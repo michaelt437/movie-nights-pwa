@@ -114,6 +114,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
+import { doc, deleteDoc, updateDoc } from "@firebase/firestore";
 import IMovie from "@/types/interface/IMovie";
 import { TMDBConfig } from "@/types/tmdb";
 import { db } from "@/db";
@@ -130,11 +131,9 @@ export default class CardMovieEditable extends Vue {
 
   set excludeMovie (value: boolean) {
     if (this.isSignedIn) {
-      db.collection(this.$store.getters.getCurrentUserDocumentId)
-        .doc(this.movie.documentId)
-        .update({
-          exclude: value
-        });
+      updateDoc(doc(db, this.$store.getters.getCurrentUserDocumentId, this.movie.documentId as string), {
+        exclude: value
+      });
     } else {
       throw new Error("Not signed in");
     }
@@ -217,9 +216,7 @@ export default class CardMovieEditable extends Vue {
 
   deleteMovie (): void {
     if (this.isSignedIn) {
-      db.collection(this.$store.getters.getCurrentUserDocumentId)
-        .doc(this.movie.documentId)
-        .delete();
+      deleteDoc(doc(db, this.$store.getters.getCurrentUserDocumentId, this.movie.documentId as string))
     }
     this.$store.commit("deleteMovieFromList", this.movie);
   }
@@ -239,9 +236,7 @@ export default class CardMovieEditable extends Vue {
         documentId: this.movie.documentId,
         newProviders: _providers
       });
-      db.collection(this.$store.getters.getCurrentUserDocumentId)
-        .doc(this.movie.documentId)
-        .update(this.movieToEditOmitId);
+      updateDoc(doc(db, this.$store.getters.getCurrentUserDocumentId, this.movie.documentId as string), this.movieToEditOmitId)
     }
     this.$emit(
       "toaster",
