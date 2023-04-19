@@ -76,9 +76,10 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { doc, increment, updateDoc } from "firebase/firestore";
 import IMovie from "@/types/interface/IMovie";
 import CardMovie from "@/components/CardMovie.vue";
-import { db} from "@/db";
+import { db } from "@/db";
 import { TMDBConfig, TMDBGenre } from "@/types/tmdb";
 import isEmpty from "lodash/isEmpty";
 
@@ -236,11 +237,9 @@ export default class CardMovieRoll extends Vue {
 
   decrementRolls (): void {
     if (this.isSignedIn) {
-      // db.collection("users")
-      //   .doc(this.$store.getters.getCurrentUserDocumentId)
-      //   .update({
-      //     rolls: fb.firestore.FieldValue.increment(-1)
-      //   });
+      updateDoc(doc(db, "users", this.$store.getters.getCurrentUserDocumentId), {
+        rolls: increment(-1)
+      });
       this.$store.commit("decrementRolls");
 
       if (this.$store.getters.getCurrentUser.rolls === 0) {
