@@ -67,7 +67,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { getFirestore, collection, query, where, getDocs, doc, getDoc, deleteDoc } from "firebase/firestore";
+import { getFirestore, collection, query, where, getDocs, doc, getDoc, deleteDoc, onSnapshot } from "firebase/firestore";
 import { GoogleAuthProvider, onAuthStateChanged, signInWithRedirect } from "@firebase/auth";
 import AppHeader from "@/components/AppHeader.vue";
 import AppParalaxBackground from "@/components/AppParalaxBackground.vue";
@@ -177,17 +177,17 @@ export default class App extends Vue {
   }
 
   async fetchMoviesList (): Promise<any> {
-    // await db
-    //   .collection(this.$store.getters.getCurrentUserDocumentId)
-    //   .onSnapshot({ includeMetadataChanges: true }, (querySnapshot) => {
-    //     querySnapshot.docChanges().forEach((change) => {
-    //       if (change.type === "added") {
-    //         const movieObj = change.doc.data();
-    //         movieObj.documentId = change.doc.id;
-    //         this.moviesList.push(movieObj as IMovie);
-    //       }
-    //     });
-    //   });
+    const moviesCollection = collection(db, this.$store.getters.getCurrentUserDocumentId);
+    const moviesCollectionQuery = query(moviesCollection);
+    const unsubscribe = onSnapshot(moviesCollectionQuery, snapshot => {
+      snapshot.docChanges().forEach(change => {
+        if (change.type === "added") {
+          const movieObj = change.doc.data();
+          movieObj.documentId = change.doc.id;
+          this.moviesList.push(movieObj as IMovie);
+        }
+      });
+    });
   }
 
   async checkForTonightsPick (): Promise<any> {
@@ -266,7 +266,7 @@ export default class App extends Vue {
     await this.checkFirebaseAuthState();
      if (this.isSignedIn) {
        await this.init();
-       // await this.fetchMoviesList();
+       await this.fetchMoviesList();
        // await this.checkForTonightsPick();
        // this.resetRollCheck();
      }
