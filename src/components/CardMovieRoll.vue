@@ -219,6 +219,14 @@ export default class CardMovieRoll extends Vue {
       ?.name;
   }
 
+  get posterUrl (): string | undefined {
+    if (this.randomMovie.poster_path) {
+      return `${this.tmdbConfig.images.secure_base_url}${this.tmdbConfig.images.poster_sizes[4]}${this.randomMovie.poster_path}`;
+    } else {
+      return undefined;
+    }
+  }
+
   invokeDrawer (): void {
     this.$emit("drawer", "DrawerPickFilter");
   }
@@ -329,8 +337,8 @@ export default class CardMovieRoll extends Vue {
 								},
 								accessory: {
 									type: "image",
-									image_url: "https://s3-media3.fl.yelpcdn.com/bphoto/c7ed05m9lC2EmA3Aruue7A/o.jpg",
-									alt_text: "alt text for image"
+									image_url: this.posterUrl,
+									alt_text: this.randomMovie.title
 								}
 							},
 							{
