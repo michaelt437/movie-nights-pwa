@@ -214,6 +214,11 @@ export default class CardMovieRoll extends Vue {
     return this.randomMovie.providers[0].provider_name;
   }
 
+  get directorCredit (): string | undefined {
+    return this.randomMovie.credits.crew.find((member) => member.job === "Director")
+      ?.name;
+  }
+
   invokeDrawer (): void {
     this.$emit("drawer", "DrawerPickFilter");
   }
@@ -318,6 +323,31 @@ export default class CardMovieRoll extends Vue {
 							},
 							{
 								type: "section",
+								text: {
+									type: "mrkdwn",
+									text: `*Description:*\n${this.randomMovie.overview}`
+								},
+								accessory: {
+									type: "image",
+									image_url: "https://s3-media3.fl.yelpcdn.com/bphoto/c7ed05m9lC2EmA3Aruue7A/o.jpg",
+									alt_text: "alt text for image"
+								}
+							},
+							{
+								type: "section",
+								fields: [
+									{
+										type: "mrkdwn",
+										text: `*Director:*\n${this.directorCredit}`
+									},
+									{
+										type: "mrkdwn",
+										text: `*Release Year:*\n${this.$moment(this.randomMovie.release_date).format("YYYY")}`
+									}
+								]
+							},
+							{
+								type: "section",
 								fields: [
 									{
 										type: "mrkdwn",
@@ -328,18 +358,6 @@ export default class CardMovieRoll extends Vue {
 										text: `*Runtime:*\n${this.randomMovie.runtime} min`
 									}
 								]
-							},
-							{
-								type: "section",
-								text: {
-									type: "mrkdwn",
-									text: `*Description:*\n${this.randomMovie.overview}`
-								},
-								accessory: {
-									type: "image",
-									image_url: "https://s3-media3.fl.yelpcdn.com/bphoto/c7ed05m9lC2EmA3Aruue7A/o.jpg",
-									alt_text: "alt text for image"
-								}
 							}
 						]
 					}
