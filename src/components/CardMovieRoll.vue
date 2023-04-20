@@ -298,23 +298,55 @@ export default class CardMovieRoll extends Vue {
 
       await fetch(process.env.VUE_APP_SLACKHOOK, {
         method: "POST",
-        body: JSON.stringify({
-          text: ":celebrate: Tonight's Pick! :celebrate:",
-          // eslint-disable-next-line
-          icon_emoji: ":niccage:",
-          attachments: [
-            {
-              fallback: `${this.randomMovie.title} - ${this.randomMovie.providers[0].provider_name} - ${this.randomMovie.runtime}`,
-              // eslint-disable-next-line
-              author_name: `${this.$store.getters.getCurrentUser.name}`,
-              title: `${this.randomMovie.title.toUpperCase()}`,
-              text: `${this.randomMovie.providers[0].provider_name}\n_${this.randomMovie.runtime} mins_`
-            }
-          ]
-        })
+				body: JSON.stringify(
+					{
+						blocks: [
+							{
+								type: "header",
+								text: {
+									type: "plain_text",
+									text: ":celebrate: Tonight's Pick! :celebrate:",
+									emoji: true
+								}
+							},
+							{
+								type: "section",
+								text: {
+									type: "mrkdwn",
+									text: `${this.randomMovie.title.toUpperCase()}`
+								}
+							},
+							{
+								type: "section",
+								fields: [
+									{
+										type: "mrkdwn",
+										text: `*Where:*\n${this.randomMovie.providers[0].provider_name}`
+									},
+									{
+										type: "mrkdwn",
+										text: `*Runtime:*\n${this.randomMovie.runtime} min`
+									}
+								]
+							},
+							{
+								type: "section",
+								text: {
+									type: "mrkdwn",
+									text: `*Description:*\n${this.randomMovie.overview}`
+								},
+								accessory: {
+									type: "image",
+									image_url: "https://s3-media3.fl.yelpcdn.com/bphoto/c7ed05m9lC2EmA3Aruue7A/o.jpg",
+									alt_text: "alt text for image"
+								}
+							}
+						]
+					}
+				)
       });
-      this.$store.commit("updateRollPermission", false);
-      this.$store.commit("setTonightsPick", this.randomMovie);
+    	this.$store.commit("updateRollPermission", false);
+    	this.$store.commit("setTonightsPick", this.randomMovie);
     } else {
       this.randomMovie.user = "Tonight";
       this.$store.commit("updateRollPermission", false);
