@@ -311,68 +311,68 @@ export default class CardMovieRoll extends Vue {
 
       await fetch(process.env.VUE_APP_SLACKHOOK, {
         method: "POST",
-				body: JSON.stringify(
-					{
-						blocks: [
-							{
-								type: "header",
-								text: {
-									type: "plain_text",
-									text: ":celebrate: Tonight's Pick! :celebrate:",
-									emoji: true
-								}
-							},
-							{
-								type: "section",
-								text: {
-									type: "mrkdwn",
-									text: `${this.randomMovie.title.toUpperCase()}`
-								}
-							},
-							{
-								type: "section",
-								text: {
-									type: "mrkdwn",
-									text: `*Description:*\n${this.randomMovie.overview}`
-								},
-								accessory: {
-									type: "image",
-									image_url: this.posterUrl,
-									alt_text: this.randomMovie.title
-								}
-							},
-							{
-								type: "section",
-								fields: [
-									{
-										type: "mrkdwn",
-										text: `*Director:*\n${this.directorCredit}`
-									},
-									{
-										type: "mrkdwn",
-										text: `*Release Year:*\n${this.$moment(this.randomMovie.release_date).format("YYYY")}`
-									}
-								]
-							},
-							{
-								type: "section",
-								fields: [
-									{
-										type: "mrkdwn",
-										text: `*Where:*\n${this.randomMovie.providers[0].provider_name}`
-									},
-									{
-										type: "mrkdwn",
-										text: `*Runtime:*\n${this.randomMovie.runtime} min`
-									}
-								]
-							}
-						]
-					}
-				)
+        body: JSON.stringify(
+          {
+            blocks: [
+              {
+                type: "header",
+                text: {
+                  type: "plain_text",
+                  text: ":celebrate: Tonight's Pick! :celebrate:",
+                  emoji: true
+                }
+              },
+              {
+                type: "section",
+                text: {
+                  type: "mrkdwn",
+                  text: `${this.randomMovie.title.toUpperCase()}`
+                }
+              },
+              {
+                type: "section",
+                text: {
+                  type: "mrkdwn",
+                  text: `*Description:*\n${this.randomMovie.overview}`
+                },
+                accessory: {
+                  type: "image",
+                  image_url: this.posterUrl,
+                  alt_text: this.randomMovie.title
+                }
+              },
+              {
+                type: "section",
+                fields: [
+                  {
+                    type: "mrkdwn",
+                    text: `*Director:*\n${this.directorCredit}`
+                  },
+                  {
+                    type: "mrkdwn",
+                    text: `*Release Year:*\n${this.$moment(this.randomMovie.release_date).format("YYYY")}`
+                  }
+                ]
+              },
+              {
+                type: "section",
+                fields: [
+                  {
+                    type: "mrkdwn",
+                    text: `*Where:*\n${this.randomMovie.providers[0].provider_name}`
+                  },
+                  {
+                    type: "mrkdwn",
+                    text: `*Runtime:*\n${this.randomMovie.runtime} min`
+                  }
+                ]
+              }
+            ]
+          }
+        )
       });
-    	this.$store.commit("updateRollPermission", false);
-    	this.$store.commit("setTonightsPick", this.randomMovie);
+      this.$store.commit("updateRollPermission", false);
+      this.$store.commit("setTonightsPick", this.randomMovie);
     } else {
       this.randomMovie.user = "Tonight";
       this.$store.commit("updateRollPermission", false);

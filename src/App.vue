@@ -136,7 +136,7 @@ export default class App extends Vue {
 
   async init (): Promise<void> {
     const users = collection(db, "users");
-    const user = query(users, where("email", "==", this.loggedInUser.email))
+    const user = query(users, where("email", "==", this.loggedInUser.email));
     const userSnapshot = await getDocs(user);
 
     userSnapshot.forEach(user => {
@@ -192,7 +192,7 @@ export default class App extends Vue {
 
   async checkForTonightsPick (): Promise<any> {
     const tonightsPick = await getDoc(doc(db, "tonightsPick", "movie"));
-    
+
     if (tonightsPick) {
       if (tonightsPick.data() !== undefined) {
         this.$store.commit("updateRollPermission", false);
@@ -217,18 +217,18 @@ export default class App extends Vue {
   checkFirebaseAuthState (): Promise<boolean> {
     return new Promise((resolve) => {
       onAuthStateChanged(auth, user => {
-         if (user) {
-           this.loggedInUser = Object.assign(
-             {},
-             this.loggedInUser,
-             user.providerData[0]
-           );
-           this.$store.commit("setLoginStatus", true);
-           resolve(true);
-         } else {
-           this.$store.commit("setLoginStatus", false);
-           resolve(false);
-         }
+        if (user) {
+          this.loggedInUser = Object.assign(
+            {},
+            this.loggedInUser,
+            user.providerData[0]
+          );
+          this.$store.commit("setLoginStatus", true);
+          resolve(true);
+        } else {
+          this.$store.commit("setLoginStatus", false);
+          resolve(false);
+        }
       });
     });
   }
@@ -260,12 +260,12 @@ export default class App extends Vue {
   // Lifecycle Hooks
   async created () {
     await this.checkFirebaseAuthState();
-     if (this.isSignedIn) {
-       await this.init();
-       await this.fetchMoviesList();
-       await this.checkForTonightsPick();
-       this.resetRollCheck();
-     }
+    if (this.isSignedIn) {
+      await this.init();
+      await this.fetchMoviesList();
+      await this.checkForTonightsPick();
+      this.resetRollCheck();
+    }
     await this.$store.dispatch("fetchConfiguration");
     this.loading = false;
     this.$store.commit("setMoviesList", this.moviesList);

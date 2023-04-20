@@ -216,7 +216,7 @@ export default class CardMovieEditable extends Vue {
 
   deleteMovie (): void {
     if (this.isSignedIn) {
-      deleteDoc(doc(db, this.$store.getters.getCurrentUserDocumentId, this.movie.documentId as string))
+      deleteDoc(doc(db, this.$store.getters.getCurrentUserDocumentId, this.movie.documentId as string));
     }
     this.$store.commit("deleteMovieFromList", this.movie);
   }
@@ -236,7 +236,7 @@ export default class CardMovieEditable extends Vue {
         documentId: this.movie.documentId,
         newProviders: _providers
       });
-      updateDoc(doc(db, this.$store.getters.getCurrentUserDocumentId, this.movie.documentId as string), this.movieToEditOmitId)
+      updateDoc(doc(db, this.$store.getters.getCurrentUserDocumentId, this.movie.documentId as string), this.movieToEditOmitId);
     }
     this.$emit(
       "toaster",
