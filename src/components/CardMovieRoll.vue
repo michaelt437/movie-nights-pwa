@@ -299,10 +299,17 @@ export default class CardMovieRoll extends Vue {
       this.randomMovie.user = this.$store.getters.getCurrentUser.name;
       await setDoc(doc(db, "tonightsPick", "movie"), this.randomMovie);
 
-      await updateDoc(doc(db, this.$store.getters.getCurrentUserDocumentId, this.randomMovie.documentId as string), {
-        hasWatched: true,
-        watchData: _watchDate
-      });
+      await updateDoc(
+        doc(
+          db,
+          this.$store.getters.getCurrentUserDocumentId,
+          this.randomMovie.documentId as string
+        ),
+        {
+          hasWatched: true,
+          watchDate: _watchDate
+        }
+      );
 
       await updateDoc(doc(db, "users", this.$store.getters.getCurrentUserDocumentId), {
         hasPicked: true,
