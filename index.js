@@ -1,0 +1,1 @@
+const a = "random string";
