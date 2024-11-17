@@ -215,8 +215,9 @@ export default class CardMovieRoll extends Vue {
   }
 
   get directorCredit (): string | undefined {
-    return this.randomMovie.credits.crew.find((member) => member.job === "Director")
-      ?.name;
+    return this.randomMovie.credits.crew.find(
+      (member) => member.job === "Director"
+    )?.name;
   }
 
   get posterUrl (): string | undefined {
@@ -250,9 +251,12 @@ export default class CardMovieRoll extends Vue {
 
   decrementRolls (): void {
     if (this.isSignedIn) {
-      updateDoc(doc(db, "users", this.$store.getters.getCurrentUserDocumentId), {
-        rolls: increment(-1)
-      });
+      updateDoc(
+        doc(db, "users", this.$store.getters.getCurrentUserDocumentId),
+        {
+          rolls: increment(-1)
+        }
+      );
       this.$store.commit("decrementRolls");
 
       if (this.$store.getters.getCurrentUser.rolls === 0) {
@@ -311,73 +315,58 @@ export default class CardMovieRoll extends Vue {
         }
       );
 
-      await updateDoc(doc(db, "users", this.$store.getters.getCurrentUserDocumentId), {
-        hasPicked: true,
-        pickedDateTime: _watchDate
-      });
+      await updateDoc(
+        doc(db, "users", this.$store.getters.getCurrentUserDocumentId),
+        {
+          hasPicked: true,
+          pickedDateTime: _watchDate
+        }
+      );
 
-      await fetch(process.env.VUE_APP_SLACKHOOK, {
-        method: "POST",
-        body: JSON.stringify(
-          {
-            blocks: [
+      await fetch(
+        "https://discord.com/api/webhooks/1288913188473274441/6854Z6uq6KUKLFoevNzi_3YMsKe6riSEh4ngbXJq2W9sKZ98scDH-MetBOw4IGD2mptZ",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            username: "Movie Nights Roulette",
+            embeds: [
               {
-                type: "header",
-                text: {
-                  type: "plain_text",
-                  text: ":celebrate: Tonight's Pick! :celebrate:",
-                  emoji: true
-                }
-              },
-              {
-                type: "section",
-                text: {
-                  type: "mrkdwn",
-                  text: `${this.randomMovie.title.toUpperCase()}`
-                }
-              },
-              {
-                type: "section",
-                text: {
-                  type: "mrkdwn",
-                  text: `*Description:*\n${this.randomMovie.overview}`
+                title: `${this.randomMovie.title.toUpperCase()}`,
+                description: `${this.randomMovie.overview}`,
+                fields: [
+                  {
+                    name: "Director",
+                    value: `${this.directorCredit}`,
+                    inline: true
+                  },
+                  {
+                    name: "Released",
+                    value: `${this.$moment(
+                      this.randomMovie.release_date
+                    ).format("YYYY")}`,
+                    inline: true
+                  },
+                  {
+                    name: "Runtime",
+                    value: `${this.randomMovie.runtime} min`,
+                    inline: true
+                  }
+                ],
+                thumbnail: {
+                  url: `${this.posterUrl}`
                 },
-                accessory: {
-                  type: "image",
-                  image_url: this.posterUrl,
-                  alt_text: this.randomMovie.title
+                footer: {
+                  text: `${this.randomMovie.providers[0].provider_name}`,
+                  icon_url: `${this.providerLogo}`
                 }
-              },
-              {
-                type: "section",
-                fields: [
-                  {
-                    type: "mrkdwn",
-                    text: `*Director:*\n${this.directorCredit}`
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: `*Release Year:*\n${this.$moment(this.randomMovie.release_date).format("YYYY")}`
-                  }
-                ]
-              },
-              {
-                type: "section",
-                fields: [
-                  {
-                    type: "mrkdwn",
-                    text: `*Where:*\n${this.randomMovie.providers[0].provider_name}`
-                  },
-                  {
-                    type: "mrkdwn",
-                    text: `*Runtime:*\n${this.randomMovie.runtime} min`
-                  }
-                ]
               }
             ]
-          }
-        )
-      });
+          })
+        }
+      );
       this.$store.commit("updateRollPermission", false);
       this.$store.commit("setTonightsPick", this.randomMovie);
     } else {
