@@ -1,18 +1,6 @@
 <template>
   <div
-    class="
-      header
-      flex
-      fixed
-      top-0
-      left-0
-      w-full
-      justify-between
-      items-center
-      py-2
-      px-5
-      z-10
-    "
+    class="header flex fixed top-0 left-0 w-full justify-between items-center py-2 px-5 z-10"
     :class="{ 'bg-solid': titleBgSolid }"
   >
     <router-link :to="{ name: 'Home' }">
@@ -35,18 +23,7 @@
       <transition name="scale">
         <div
           v-show="showMenu"
-          class="
-            avatar__menu
-            rounded-sm
-            py-1
-            absolute
-            right-0
-            w-32
-            z-20
-            bg-white
-            mt-2
-            origin-top-right
-          "
+          class="avatar__menu rounded-sm py-1 absolute right-0 w-32 z-20 bg-white mt-2 origin-top-right"
         >
           <div class="py-1 px-4 hover:bg-gray-200" @click.stop="logout">
             Log Out
@@ -61,7 +38,7 @@
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
-import { GoogleAuthProvider, signInWithRedirect, signOut } from "@firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, signOut } from "@firebase/auth";
 import { auth } from "../db";
 
 @Component
@@ -72,9 +49,9 @@ export default class AppHeader extends Vue {
 
   public showMenu = false;
 
-  login (): void {
+  login(): void {
     const provider = new GoogleAuthProvider();
-    signInWithRedirect(auth, provider)
+    signInWithPopup(auth, provider)
       .then((response) => {
         this.$emit("update:isSignedIn", true);
       })
@@ -83,13 +60,13 @@ export default class AppHeader extends Vue {
       });
   }
 
-  async logout (): Promise<void> {
+  async logout(): Promise<void> {
     await signOut(auth);
     this.$emit("update:isSignedIn", false);
     window.location.reload();
   }
 
-  mounted () {
+  mounted() {
     document.querySelector("body")!.addEventListener("click", () => {
       this.showMenu = false;
     });
