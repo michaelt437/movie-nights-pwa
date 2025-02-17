@@ -49,7 +49,7 @@ export default class AppHeader extends Vue {
 
   public showMenu = false;
 
-  login(): void {
+  login (): void {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider)
       .then((response) => {
@@ -60,13 +60,13 @@ export default class AppHeader extends Vue {
       });
   }
 
-  async logout(): Promise<void> {
+  async logout (): Promise<void> {
     await signOut(auth);
     this.$emit("update:isSignedIn", false);
     window.location.reload();
   }
 
-  mounted() {
+  mounted () {
     document.querySelector("body")!.addEventListener("click", () => {
       this.showMenu = false;
     });

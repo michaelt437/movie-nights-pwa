@@ -43,21 +43,7 @@
       </keep-alive>
     </drawer-base>
     <div
-      class="
-        flex
-        justify-between
-        items-center
-        toaster
-        bg-green-500
-        text-gray-200
-        rounded-md
-        px-5
-        py-3
-        w-11/12
-        fixed
-        bottom-0
-        z-20
-      "
+      class="flex justify-between items-center toaster bg-green-500 text-gray-200 rounded-md px-5 py-3 w-11/12 fixed bottom-0 z-20"
       :class="{ active: toaster }"
     >
       {{ toasterText }}
@@ -67,8 +53,22 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { collection, query, where, getDocs, doc, getDoc, deleteDoc, onSnapshot, updateDoc } from "firebase/firestore";
-import { GoogleAuthProvider, onAuthStateChanged, signInWithRedirect } from "@firebase/auth";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  getDoc,
+  deleteDoc,
+  onSnapshot,
+  updateDoc
+} from "firebase/firestore";
+import {
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithRedirect
+} from "@firebase/auth";
 import AppHeader from "@/components/AppHeader.vue";
 import AppParalaxBackground from "@/components/AppParalaxBackground.vue";
 import AppTitle from "@/components/AppTitle.vue";
@@ -118,20 +118,14 @@ export default class App extends Vue {
     return this.$store.state.signedIn;
   }
 
-  handleScroll (bool): void {
-    this.titleBgSolid = bool;
+  set isSignedIn (payload: boolean) {
+    console.log("what", payload);
+    this.$store.commit("setLoginStatus", payload);
+    window.location.reload();
   }
 
-  login (): void {
-    const provider = new GoogleAuthProvider();
-    signInWithRedirect(auth, provider)
-      .then((response) => {
-        console.log("logged in", response);
-        this.$emit("update:isSignedIn", true);
-      })
-      .catch((error) => {
-        console.error("Authentication error: ", error);
-      });
+  handleScroll (bool): void {
+    this.titleBgSolid = bool;
   }
 
   async init (): Promise<void> {
@@ -139,7 +133,7 @@ export default class App extends Vue {
     const user = query(users, where("email", "==", this.loggedInUser.email));
     const userSnapshot = await getDocs(user);
 
-    userSnapshot.forEach(user => {
+    userSnapshot.forEach((user) => {
       this.$store.commit("setCurrentUser", user.data());
       this.$store.commit("setCurrentUserDocumentId", user.id);
     });
@@ -177,10 +171,13 @@ export default class App extends Vue {
   }
 
   async fetchMoviesList (): Promise<any> {
-    const moviesCollection = collection(db, this.$store.getters.getCurrentUserDocumentId);
+    const moviesCollection = collection(
+      db,
+      this.$store.getters.getCurrentUserDocumentId
+    );
     const moviesCollectionQuery = query(moviesCollection);
-    const unsubscribe = onSnapshot(moviesCollectionQuery, snapshot => {
-      snapshot.docChanges().forEach(change => {
+    const unsubscribe = onSnapshot(moviesCollectionQuery, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
         if (change.type === "added") {
           const movieObj = change.doc.data();
           movieObj.documentId = change.doc.id;
@@ -216,7 +213,7 @@ export default class App extends Vue {
 
   checkFirebaseAuthState (): Promise<boolean> {
     return new Promise((resolve) => {
-      onAuthStateChanged(auth, user => {
+      onAuthStateChanged(auth, (user) => {
         if (user) {
           this.loggedInUser = Object.assign(
             {},
@@ -250,11 +247,14 @@ export default class App extends Vue {
       }
     }
 
-    await updateDoc(doc(db, "users", this.$store.getters.getCurrentUserDocumentId), {
-      hasPicked: false,
-      hasRolled: false,
-      rolls: 4
-    });
+    await updateDoc(
+      doc(db, "users", this.$store.getters.getCurrentUserDocumentId),
+      {
+        hasPicked: false,
+        hasRolled: false,
+        rolls: 4
+      }
+    );
   }
 
   // Lifecycle Hooks
