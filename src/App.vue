@@ -24,6 +24,7 @@
       <component
         :is="popUpComponent"
         v-bind="{
+          popupTitle: propPopupTitle,
           movie: propMovie,
           message: propMessage,
           action: propAction,
@@ -105,6 +106,7 @@ export default class App extends Vue {
   users: Array<IUser> = [];
   popUpComponent = null;
   drawerComponent = null;
+  propPopupTitle = "";
   propMovie = {};
   propMessage = "";
   propPostAction = "";
@@ -139,9 +141,12 @@ export default class App extends Vue {
     });
   }
 
-  invokePopup (name, props?, message?, action?, postAction?): void {
+  invokePopup (name, popupTitle?, props?, message?, action?, postAction?): void {
     this.popUpComponent = name;
     document.querySelector("body")!.classList.add("noscroll");
+    if (popupTitle) {
+      this.propPopupTitle = popupTitle;
+    }
     if (props) {
       this.propMovie = props;
     }

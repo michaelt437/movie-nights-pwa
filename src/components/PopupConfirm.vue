@@ -2,10 +2,11 @@
   <div class="rounded-lg bg-indigo-600 text-gray-200 px-5 py-3 mb-4">
     <p class="text-lg">
       <strong
-        >Delete <span class="italic capitalize">{{ movie.title }}</span></strong
+        >{{ popupTitle }}
+        <span class="italic capitalize">{{ movie.title }}</span></strong
       >
     </p>
-    <p class="mt-3 mb-10">Are you sure you want to continue?</p>
+    <p class="mt-3 mb-10">{{ message }}</p>
     <div class="btn-group justify-end">
       <button class="btn btn-white outline" @click="closePopup">
         <i class="fas fa-times mr-1"></i> Cancel
@@ -21,6 +22,7 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import IMovie from "@/types/interface/IMovie";
 @Component
 export default class PopupConfirm extends Vue {
+  @Prop(String) readonly popupTitle?: string;
   @Prop() readonly movie?: IMovie;
   @Prop(String) readonly message?: string;
   @Prop() readonly action?: Function;

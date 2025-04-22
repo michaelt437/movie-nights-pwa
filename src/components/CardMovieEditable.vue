@@ -7,7 +7,7 @@
     <div class="movie-card__content py-3 px-5">
       <div class="movie-card__title text-2xl flex items-center capitalize">
         {{ movie.title }}
-        <span class="flex items-center ml-auto">
+        <span class="flex items-center ml-auto space-x-2">
           <i
             v-show="isRewatch"
             class="fas fa-sync text-green-300"
@@ -21,7 +21,7 @@
               v-model="excludeMovie"
               hidden
             />
-            <span class="text-3xl text-blue-400 cursor-pointer ml-2">
+            <span class="text-3xl text-blue-400 cursor-pointer">
               <i v-show="excludeMovie" class="far fa-circle"></i>
               <i v-show="!excludeMovie" class="fas fa-check-circle"></i>
             </span>
@@ -131,9 +131,16 @@ export default class CardMovieEditable extends Vue {
 
   set excludeMovie (value: boolean) {
     if (this.isSignedIn) {
-      updateDoc(doc(db, this.$store.getters.getCurrentUserDocumentId, this.movie.documentId as string), {
-        exclude: value
-      });
+      updateDoc(
+        doc(
+          db,
+          this.$store.getters.getCurrentUserDocumentId,
+          this.movie.documentId as string
+        ),
+        {
+          exclude: value
+        }
+      );
     } else {
       throw new Error("Not signed in");
     }
@@ -207,6 +214,7 @@ export default class CardMovieEditable extends Vue {
     this.$emit(
       "popup",
       "PopupConfirm",
+      "Delete",
       this.movie,
       "Are you sure you want to delete this movie?",
       this.deleteMovie,
@@ -216,7 +224,13 @@ export default class CardMovieEditable extends Vue {
 
   deleteMovie (): void {
     if (this.isSignedIn) {
-      deleteDoc(doc(db, this.$store.getters.getCurrentUserDocumentId, this.movie.documentId as string));
+      deleteDoc(
+        doc(
+          db,
+          this.$store.getters.getCurrentUserDocumentId,
+          this.movie.documentId as string
+        )
+      );
     }
     this.$store.commit("deleteMovieFromList", this.movie);
   }
@@ -236,7 +250,14 @@ export default class CardMovieEditable extends Vue {
         documentId: this.movie.documentId,
         newProviders: _providers
       });
-      updateDoc(doc(db, this.$store.getters.getCurrentUserDocumentId, this.movie.documentId as string), this.movieToEditOmitId);
+      updateDoc(
+        doc(
+          db,
+          this.$store.getters.getCurrentUserDocumentId,
+          this.movie.documentId as string
+        ),
+        this.movieToEditOmitId
+      );
     }
     this.$emit(
       "toaster",
