@@ -1,7 +1,10 @@
 <template>
   <div id="home-page" class="flex-grow md:flex-grow-0">
     <!-- tonight's pick -->
-    <card-tonights-pick v-if="$store.getters.getTonightsPick !== null" />
+    <card-tonights-pick
+      v-if="$store.getters.getTonightsPick !== null"
+      v-on="$listeners"
+    />
 
     <!-- Rolling card -->
     <card-movie-roll v-on="$listeners" v-else />

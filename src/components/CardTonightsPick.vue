@@ -15,11 +15,18 @@
       class="movie-card__title text-2xl flex items-center justify-between capitalize"
     >
       {{ movie.title }}
-      <i
-        v-show="isRewatch"
-        class="fas fa-sync text-green-300 ml-auto"
-        title="Rewatch"
-      ></i>
+      <span class="ml-auto space-x-3">
+        <i
+          v-show="isRewatch"
+          class="fas fa-sync text-green-300"
+          title="Rewatch"
+        ></i>
+        <i
+          class="far fa-times-circle text-red-500 cursor-pointer text-3xl"
+          title="Undo"
+          @click.stop="undoPrompt()"
+        ></i>
+      </span>
     </div>
     <div class="movie-card__duration text-sm my-4">
       {{ formatDuration(movie.runtime) }}
@@ -80,12 +87,18 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { doc, deleteDoc, updateDoc } from "firebase/firestore";
+import { db } from "@/db";
 import IMovie from "@/types/interface/IMovie";
 import { TMDBConfig } from "@/types/tmdb";
 
 @Component
 export default class CardTonightsPick extends Vue {
   showDetails = false;
+
+  get isSignedIn (): boolean {
+    return this.$store.state.signedIn;
+  }
 
   get movie (): IMovie {
     return this.$store.getters.getTonightsPick;
@@ -135,6 +148,37 @@ export default class CardTonightsPick extends Vue {
     const _duration: number =
       typeof duration === "string" ? parseInt(duration) : duration;
     return `${Math.floor(_duration / 60)}hr ${_duration % 60}m`;
+  }
+
+  undoPrompt (): void {
+    this.$emit(
+      "popup",
+      "PopupConfirm",
+      "Undo",
+      this.movie,
+      "Are you sure you want to undo your pick?",
+      this.undoSelection,
+      `${this.movie.title.toUpperCase()} has been added back to your list.`
+    );
+  }
+
+  async undoSelection (): Promise<void> {
+    if (this.isSignedIn) {
+      await deleteDoc(doc(db, "tonightsPick", "movie"));
+      await updateDoc(
+        doc(
+          db,
+          this.$store.getters.getCurrentUserDocumentId,
+          this.movie.documentId as string
+        ),
+        {
+          hasWatched: false
+        }
+      );
+
+      this.$store.commit("setTonightsPick", null);
+      this.$store.commit("updateRollPermission", true);
+    }
   }
 }
 </script>
