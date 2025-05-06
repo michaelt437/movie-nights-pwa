@@ -26,7 +26,7 @@
         v-if="movieToEdit.customProvider === WatchProviderSource.JustWatch"
         class="flex items-center mb-2"
       >
-        <template v-if="movie.providers.length">
+        <template v-if="movieToEdit.providers.length">
           <div class="select flex-grow">
             <select
               v-model="selectedProvider"
@@ -189,7 +189,11 @@ export default class PopupEditMovie extends Vue {
 
     if (this.isSignedIn) {
       updateDoc(
-        doc(db, this.$store.getters.getCurrentUserDocumentId, this.movie.documentId as string),
+        doc(
+          db,
+          this.$store.getters.getCurrentUserDocumentId,
+          this.movie.documentId as string
+        ),
         this.movieToEditOmitId
       );
     }
@@ -217,8 +221,8 @@ export default class PopupEditMovie extends Vue {
   }
 
   mounted () {
-    if (this.movie.providers.length) {
-      this.selectedProvider = this.movie.providers[0];
+    if (this.movieToEdit.providers.length) {
+      this.selectedProvider = this.movieToEdit.providers[0];
     }
   }
 }
