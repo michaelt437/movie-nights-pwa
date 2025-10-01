@@ -16,9 +16,9 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
   public actions;
   public apiService;
   public store;
-  constructor (
+  constructor(
     @inject("IMovieDatabaseService")
-      apiService: IMovieDatabaseService<
+    apiService: IMovieDatabaseService<
       MovieSearchType,
       StreamProviderType,
       MovieType
@@ -98,25 +98,25 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
     };
 
     this.mutations = {
-      setLoginStatus (state, status: boolean): void {
+      setLoginStatus(state, status: boolean): void {
         state.signedIn = status;
       },
-      setCurrentUser (state, user: IUser): void {
+      setCurrentUser(state, user: IUser): void {
         state.currentUser = user;
       },
-      setCurrentUserDocumentId (state, id: string): void {
+      setCurrentUserDocumentId(state, id: string): void {
         state.currentUserDocumentId = id;
       },
-      decrementRollsInMemory (state): void {
+      decrementRollsInMemory(state): void {
         state.rollsInMemory -= 1;
       },
-      setMoviesList (state, moviesArray: Array<IMovie>): void {
+      setMoviesList(state, moviesArray: Array<IMovie>): void {
         state.moviesList = moviesArray;
       },
-      submitEditsToMovie (state, movieEdits: IMovie): void {
+      submitEditsToMovie(state, movieEdits: IMovie): void {
         const moviesList: Array<IMovie> = state.moviesList;
         const movieToEditIndex = moviesList.indexOf(
-          moviesList.find(movie => {
+          moviesList.find((movie) => {
             if (state.signedIn) {
               return movie.documentId === movieEdits.documentId;
             } else {
@@ -126,13 +126,13 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
         );
         Vue.set(state.moviesList, movieToEditIndex, movieEdits);
       },
-      addMovieToList (state, movie: IMovie): void {
+      addMovieToList(state, movie: IMovie): void {
         state.moviesList.push(movie);
       },
-      deleteMovieFromList (state, movieToDelete: IMovie): void {
+      deleteMovieFromList(state, movieToDelete: IMovie): void {
         const moviesList: Array<IMovie> = state.moviesList;
         const movieToDeleteIndex = moviesList.indexOf(
-          moviesList.find(movie => {
+          moviesList.find((movie) => {
             if (state.signedIn) {
               return movie.documentId === movieToDelete.documentId;
             } else {
@@ -142,105 +142,105 @@ class AppStore<MovieSearchType, StreamProviderType, MovieType> {
         );
         moviesList.splice(movieToDeleteIndex, 1);
       },
-      decrementRolls (state): void {
+      decrementRolls(state): void {
         state.currentUser.rolls = state.currentUser.rolls - 1;
       },
-      updateRollPermission (state, value: boolean): void {
+      updateRollPermission(state, value: boolean): void {
         state.canRoll = value;
       },
-      setTonightsPick (state, movie: IMovie): void {
+      setTonightsPick(state, movie: IMovie): void {
         state.tonightsPick = movie;
       },
-      resetRolls (state): void {
+      resetRolls(state): void {
         state.currentUser.rolls = 4;
       },
-      updateMovieExclude (state, { value, targetTitle }): void {
+      updateMovieExclude(state, { value, id }): void {
         const indexOfTargetMovie = state.moviesList.indexOf(
-          state.moviesList.find(movie => movie.title === targetTitle) as IMovie
+          state.moviesList.find((movie) => movie.id === id) as IMovie
         );
         const _updatedMovie = state.moviesList[indexOfTargetMovie];
         Vue.set(_updatedMovie, "exclude", value);
         Vue.set(state.moviesList, indexOfTargetMovie, _updatedMovie);
       },
-      updateUserHasRolled (state, value: boolean): void {
+      updateUserHasRolled(state, value: boolean): void {
         state.currentUser.hasRolled = value;
       },
-      updateHasRolledInMemory (state, value: boolean): void {
+      updateHasRolledInMemory(state, value: boolean): void {
         state.hasRolledInMemory = value;
       },
-      updateProviders (state, { documentId, newProviders }): void {
+      updateProviders(state, { documentId, newProviders }): void {
         const moviesList: Array<IMovie> = state.moviesList;
         const movieToEditIndex = moviesList.indexOf(
-          moviesList.find(movie => movie.documentId === documentId) as IMovie
+          moviesList.find((movie) => movie.documentId === documentId) as IMovie
         );
         Vue.set(state.moviesList[movieToEditIndex], "providers", newProviders);
       },
-      setOrderFilter (state, value: string): void {
+      setOrderFilter(state, value: string): void {
         state.orderFilter = value;
       },
-      setExcludeFilter (state, value: string): void {
+      setExcludeFilter(state, value: string): void {
         state.excludeFilter = value;
       },
-      setDurationFilters (state, arrayOfDurations: Array<string>): void {
+      setDurationFilters(state, arrayOfDurations: Array<string>): void {
         state.durationFilters = arrayOfDurations;
       },
-      setServiceFilters (state, arrayOfServices: Array<string>): void {
+      setServiceFilters(state, arrayOfServices: Array<string>): void {
         state.serviceFilters = arrayOfServices;
       },
-      setGenreFilters (state, arrayOfGenres: Array<string>): void {
+      setGenreFilters(state, arrayOfGenres: Array<string>): void {
         state.genreFilters = arrayOfGenres;
       },
-      setDurationCategories (state, arrayOfDurations: Array<string>): void {
+      setDurationCategories(state, arrayOfDurations: Array<string>): void {
         state.durationCategories = arrayOfDurations;
       },
-      setServiceCategories (state, arrayOfServices: Array<string>): void {
+      setServiceCategories(state, arrayOfServices: Array<string>): void {
         state.serviceCategories = arrayOfServices;
       },
-      setGenreCategories (state, arrayOfGenres: Array<string>): void {
+      setGenreCategories(state, arrayOfGenres: Array<string>): void {
         state.genreCategories = arrayOfGenres;
       },
-      resetListPageFilters (state): void {
+      resetListPageFilters(state): void {
         state.orderFilter = "";
         state.excludeFilter = "";
         state.durationFilters = [];
         state.serviceFilters = [];
         state.genreFilters = [];
       },
-      resetPickFilters (state): void {
+      resetPickFilters(state): void {
         state.durationCategories = [];
         state.serviceCategories = [];
         state.genreCategories = [];
       },
-      setSearchResults (state, data: TMDBMovieSearch[]): void {
+      setSearchResults(state, data: TMDBMovieSearch[]): void {
         state.searchResults = data;
       },
-      setConfiguration (state, config): void {
+      setConfiguration(state, config): void {
         state.config = config;
       }
     };
     this.actions = {
-      async searchMovie (
+      async searchMovie(
         { commit },
         payload: { searchText: string }
       ): Promise<void> {
         const data = await apiService.searchMovie(payload.searchText);
         commit("setSearchResults", data);
       },
-      async fetchWatchProviders (
+      async fetchWatchProviders(
         context,
         payload: { movieId: number }
       ): Promise<StreamProviderType[]> {
         const data = await apiService.getWatchProviders(payload.movieId);
         return data;
       },
-      async fetchMovieDetails (
+      async fetchMovieDetails(
         context,
         payload: { movieId: number }
       ): Promise<MovieType> {
         const data = await apiService.getMovieDetails(payload.movieId);
         return data;
       },
-      async fetchConfiguration (context): Promise<void> {
+      async fetchConfiguration(context): Promise<void> {
         const data = await apiService.getConfiguration();
         context.commit("setConfiguration", data);
       }

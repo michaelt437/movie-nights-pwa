@@ -13,11 +13,11 @@
             class="fas fa-sync text-green-300"
             title="Rewatch"
           ></i>
-          <label :for="`exclude-${titleCamelCase}`">
+          <label :for="`exclude-${movie.id}`">
             <input
               type="checkbox"
               name="excludeMovie"
-              :id="`exclude-${titleCamelCase}`"
+              :id="`exclude-${movie.id}`"
               v-model="excludeMovie"
               hidden
             />
@@ -125,11 +125,11 @@ export default class CardMovieEditable extends Vue {
   @Prop(Object) readonly movie!: IMovie;
   showDetails = false;
 
-  get excludeMovie () {
+  get excludeMovie() {
     return this.movie.exclude;
   }
 
-  set excludeMovie (value: boolean) {
+  set excludeMovie(value: boolean) {
     if (this.isSignedIn) {
       updateDoc(
         doc(
@@ -147,15 +147,15 @@ export default class CardMovieEditable extends Vue {
 
     this.$store.commit("updateMovieExclude", {
       value,
-      targetTitle: this.movie.title
+      id: this.movie.id
     });
   }
 
-  get titleCamelCase () {
+  get titleCamelCase() {
     return this.movie.title.split(" ").join("");
   }
 
-  get isRewatch (): boolean {
+  get isRewatch(): boolean {
     return Boolean(
       this.$store.getters.getMoviesWatched.find((paramMovie: IMovie) => {
         if (paramMovie.service) {
@@ -171,17 +171,17 @@ export default class CardMovieEditable extends Vue {
     );
   }
 
-  get tmdbConfig (): TMDBConfig {
+  get tmdbConfig(): TMDBConfig {
     return this.$store.state.config;
   }
 
-  get providerLogo (): string | undefined {
+  get providerLogo(): string | undefined {
     if (this.movie.providers.length > 0) {
       return `${this.tmdbConfig.images.secure_base_url}${this.tmdbConfig.images.logo_sizes[0]}${this.movie.providers[0].logo_path}`;
     }
   }
 
-  get displayProviderText (): string {
+  get displayProviderText(): string {
     if (this.movie.customProvider) {
       return this.movie.customProviderModel!.provider_name!;
     }
@@ -193,24 +193,24 @@ export default class CardMovieEditable extends Vue {
     }
   }
 
-  get directorCredit (): string | undefined {
+  get directorCredit(): string | undefined {
     return this.movie.credits.crew.find((member) => member.job === "Director")
       ?.name;
   }
 
-  get movieToEditOmitId (): IMovie {
+  get movieToEditOmitId(): IMovie {
     return omit(this.movie, "documentId");
   }
 
-  get isSignedIn (): boolean {
+  get isSignedIn(): boolean {
     return this.$store.state.signedIn;
   }
 
-  editMovie (): void {
+  editMovie(): void {
     this.$emit("popup", "PopupEditMovie", "", this.movie, "", null, null);
   }
 
-  deletePrompt (): void {
+  deletePrompt(): void {
     this.$emit(
       "popup",
       "PopupConfirm",
@@ -222,7 +222,7 @@ export default class CardMovieEditable extends Vue {
     );
   }
 
-  deleteMovie (): void {
+  deleteMovie(): void {
     if (this.isSignedIn) {
       deleteDoc(
         doc(
@@ -235,13 +235,13 @@ export default class CardMovieEditable extends Vue {
     this.$store.commit("deleteMovieFromList", this.movie);
   }
 
-  formatDuration (duration: string | number): string {
+  formatDuration(duration: string | number): string {
     const _duration: number =
       typeof duration === "string" ? parseInt(duration) : duration;
     return `${Math.floor(_duration / 60)}hr ${_duration % 60}m`;
   }
 
-  async refreshProviders (): Promise<void> {
+  async refreshProviders(): Promise<void> {
     const _providers = await this.$store.dispatch("fetchWatchProviders", {
       movieId: this.movie.id
     });
