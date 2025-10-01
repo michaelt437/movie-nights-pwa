@@ -12,19 +12,22 @@ import {
 const uriRoot = "https://api.themoviedb.org/3/";
 
 class TMDBService
-implements
-    IMovieDatabaseService<TMDBMovieSearch, TMDBStreamProvider, TMDBMovie> {
-  async getWatchProviders (movieId: number): Promise<TMDBStreamProvider[]> {
+  implements
+    IMovieDatabaseService<TMDBMovieSearch, TMDBStreamProvider, TMDBMovie>
+{
+  async getWatchProviders(movieId: number): Promise<TMDBStreamProvider[]> {
     const apiResponse = await axios.get<TMDBWatchProviderDTO>(
       `${uriRoot}movie/${movieId}/watch/providers?api_key=${process.env.VUE_APP_TMDBKEY}`
     );
-    const { flatrate = [] } = apiResponse.data?.results?.US ?? {
-      flatrate: []
+    const response = apiResponse.data?.results.US;
+    const { flatrate = [], ads = [] } = response ?? {
+      flatrate: [],
+      ads: []
     };
-    return [...flatrate!];
+    return [...flatrate!, ...ads!];
   }
 
-  async searchMovie (searchText: string): Promise<TMDBMovieSearch[]> {
+  async searchMovie(searchText: string): Promise<TMDBMovieSearch[]> {
     const apiResponse = await axios.get<TMDBSearchDTO>(
       `${uriRoot}search/movie?api_key=${
         process.env.VUE_APP_TMDBKEY
@@ -36,7 +39,7 @@ implements
     return results ?? [];
   }
 
-  async getMovieDetails (movieId: number): Promise<TMDBMovie> {
+  async getMovieDetails(movieId: number): Promise<TMDBMovie> {
     const apiResponse = await axios.get<TMDBMovie>(
       `${uriRoot}movie/${movieId}?api_key=${process.env.VUE_APP_TMDBKEY}&append_to_response=credits`
     );
@@ -44,7 +47,7 @@ implements
     return result ?? {};
   }
 
-  async getConfiguration (): Promise<TMDBConfig> {
+  async getConfiguration(): Promise<TMDBConfig> {
     const apiResponse = await axios.get<TMDBConfig>(
       `${uriRoot}configuration?api_key=${process.env.VUE_APP_TMDBKEY}`
     );
