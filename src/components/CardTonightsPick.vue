@@ -97,15 +97,15 @@ import { TMDBConfig } from "@/types/tmdb";
 export default class CardTonightsPick extends Vue {
   showDetails = false;
 
-  get isSignedIn(): boolean {
+  get isSignedIn (): boolean {
     return this.$store.state.signedIn;
   }
 
-  get movie(): IMovie {
+  get movie (): IMovie {
     return this.$store.getters.getTonightsPick;
   }
 
-  get isRewatch(): boolean {
+  get isRewatch (): boolean {
     return Boolean(
       this.$store.getters.getMoviesWatched.find((paramMovie: IMovie) => {
         if (paramMovie.service) {
@@ -121,11 +121,11 @@ export default class CardTonightsPick extends Vue {
     );
   }
 
-  get tmdbConfig(): TMDBConfig {
+  get tmdbConfig (): TMDBConfig {
     return this.$store.state.config;
   }
 
-  get providerLogo(): string | undefined {
+  get providerLogo (): string | undefined {
     if (this.movie.providers) {
       return `${this.tmdbConfig.images.secure_base_url}${this.tmdbConfig.images.logo_sizes[0]}${this.movie.providers[0].logo_path}`;
     } else {
@@ -133,19 +133,19 @@ export default class CardTonightsPick extends Vue {
     }
   }
 
-  get displayProviderText(): string {
+  get displayProviderText (): string {
     if (this.movie.customProvider) {
       return this.movie.customProviderModel!.provider_name!;
     }
     return this.movie.providers[0].provider_name;
   }
 
-  get directorCredit(): string | undefined {
+  get directorCredit (): string | undefined {
     return this.movie.credits.crew.find((member) => member.job === "Director")
       ?.name;
   }
 
-  get backdropUrl(): string | undefined {
+  get backdropUrl (): string | undefined {
     if (this.movie.backdrop_path) {
       return `${this.tmdbConfig.images.secure_base_url}${this.tmdbConfig.images.backdrop_sizes[1]}${this.movie.backdrop_path}`;
     } else {
@@ -153,7 +153,7 @@ export default class CardTonightsPick extends Vue {
     }
   }
 
-  get overlay(): Record<string, string> {
+  get overlay (): Record<string, string> {
     return {
       backgroundImage: `linear-gradient(to top, #000 ${
         this.showDetails ? "50%" : "0%"
@@ -163,13 +163,13 @@ export default class CardTonightsPick extends Vue {
     };
   }
 
-  formatDuration(duration: string | number): string {
+  formatDuration (duration: string | number): string {
     const _duration: number =
       typeof duration === "string" ? parseInt(duration) : duration;
     return `${Math.floor(_duration / 60)}hr ${_duration % 60}m`;
   }
 
-  undoPrompt(): void {
+  undoPrompt (): void {
     this.$emit(
       "popup",
       "PopupConfirm",
@@ -181,7 +181,7 @@ export default class CardTonightsPick extends Vue {
     );
   }
 
-  async undoSelection(): Promise<void> {
+  async undoSelection (): Promise<void> {
     if (this.isSignedIn) {
       await deleteDoc(doc(db, "tonightsPick", "movie"));
       await updateDoc(
