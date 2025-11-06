@@ -3,7 +3,7 @@
     class="movie-card rounded-lg bg-gray-800 text-gray-200 mb-4 overflow-hidden"
     @click="toggleDetails"
   >
-    <div class="movie-card__content py-3 px-5">
+    <div class="movie-card__content py-3 px-5" :style="overlay">
       <div class="movie-card__title flex items-center text-2xl capitalize mb-3">
         {{ movie.title }}
         <i
@@ -62,7 +62,10 @@
         </div>
       </div>
     </div>
-    <div v-if="movie.credits" class="movie-card__actions text-center px-5 py-3 bg-gray-700">
+    <div
+      v-if="movie.credits"
+      class="movie-card__actions text-center px-5 py-3 bg-gray-700"
+    >
       <i
         class="fas text-md"
         :class="showDetails ? `fa-caret-up` : `fa-caret-down`"
@@ -82,12 +85,13 @@ export default class CardMovie extends Vue {
 
   showDetails = false;
 
-  get isRewatch (): boolean {
+  get isRewatch(): boolean {
     return Boolean(
       this.$store.getters.getMoviesWatched.find((paramMovie: IMovie) => {
         if (paramMovie.service) {
           return (
-            paramMovie.title.toLowerCase() === this.movie.title.toLowerCase() && paramMovie.watchDate < this.movie.watchDate
+            paramMovie.title.toLowerCase() === this.movie.title.toLowerCase() &&
+            paramMovie.watchDate < this.movie.watchDate
           );
         }
         if (paramMovie.id) {
@@ -100,11 +104,11 @@ export default class CardMovie extends Vue {
     );
   }
 
-  get tmdbConfig (): TMDBConfig {
+  get tmdbConfig(): TMDBConfig {
     return this.$store.state.config;
   }
 
-  get providerLogo (): string | undefined {
+  get providerLogo(): string | undefined {
     if (this.movie.providers) {
       return `${this.tmdbConfig.images.secure_base_url}${this.tmdbConfig.images.logo_sizes[0]}${this.movie.providers[0].logo_path}`;
     } else {
@@ -112,7 +116,7 @@ export default class CardMovie extends Vue {
     }
   }
 
-  get displayProviderText (): string {
+  get displayProviderText(): string {
     if (this.movie.customProvider) {
       return this.movie.customProviderModel!.provider_name!;
     }
@@ -120,18 +124,36 @@ export default class CardMovie extends Vue {
     return this.movie.providers[0].provider_name;
   }
 
-  get directorCredit (): string | undefined {
+  get directorCredit(): string | undefined {
     return this.movie.credits?.crew.find((member) => member.job === "Director")
       ?.name;
   }
 
-  formatDuration (duration: string | number): string {
+  get backdropUrl(): string | undefined {
+    if (this.movie.backdrop_path) {
+      return `${this.tmdbConfig.images.secure_base_url}${this.tmdbConfig.images.backdrop_sizes[1]}${this.movie.backdrop_path}`;
+    } else {
+      return undefined;
+    }
+  }
+
+  get overlay(): Record<string, string> {
+    return {
+      backgroundImage: `linear-gradient(to top, #000 ${
+        this.showDetails ? "50%" : "0%"
+      }, rgba(0,0,0,.3)), url(${this.backdropUrl})`,
+      backgroundSize: "100%",
+      backgroundRepeat: "no-repeat"
+    };
+  }
+
+  formatDuration(duration: string | number): string {
     const _duration: number =
       typeof duration === "string" ? parseInt(duration) : duration;
     return `${Math.floor(_duration / 60)}hr ${_duration % 60}m`;
   }
 
-  toggleDetails () {
+  toggleDetails() {
     if (this.movie.credits) this.showDetails = !this.showDetails;
   }
 }

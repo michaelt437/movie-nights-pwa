@@ -4,7 +4,7 @@
     :class="excludeMovie ? 'bg-gray-900 movie-card--exclude' : 'bg-gray-800'"
     @click="showDetails = !showDetails"
   >
-    <div class="movie-card__content py-3 px-5">
+    <div class="movie-card__content py-3 px-5" :style="overlay">
       <div class="movie-card__title text-2xl flex items-center capitalize">
         {{ movie.title }}
         <span class="flex items-center ml-auto space-x-2">
@@ -181,6 +181,14 @@ export default class CardMovieEditable extends Vue {
     }
   }
 
+  get backdropUrl(): string | undefined {
+    if (this.movie.backdrop_path) {
+      return `${this.tmdbConfig.images.secure_base_url}${this.tmdbConfig.images.backdrop_sizes[1]}${this.movie.backdrop_path}`;
+    } else {
+      return undefined;
+    }
+  }
+
   get displayProviderText(): string {
     if (this.movie.customProvider) {
       return this.movie.customProviderModel!.provider_name!;
@@ -204,6 +212,18 @@ export default class CardMovieEditable extends Vue {
 
   get isSignedIn(): boolean {
     return this.$store.state.signedIn;
+  }
+
+  get overlay(): Record<string, string> {
+    return {
+      backgroundImage: `linear-gradient(to top, #000 ${
+        this.showDetails ? "50%" : "0%"
+      }, rgba(0,0,0,${this.excludeMovie ? ".7" : ".3"})), url(${
+        this.backdropUrl
+      })`,
+      backgroundSize: "100%",
+      backgroundRepeat: "no-repeat"
+    };
   }
 
   editMovie(): void {
