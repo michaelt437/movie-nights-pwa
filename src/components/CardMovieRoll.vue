@@ -94,11 +94,11 @@ export default class CardMovieRoll extends Vue {
   currIndex: number | null = null;
   rollsLeft = 3;
 
-  get isSignedIn (): boolean {
+  get isSignedIn(): boolean {
     return this.$store.state.signedIn;
   }
 
-  get moviesToPickList (): Array<IMovie> {
+  get moviesToPickList(): Array<IMovie> {
     return this.$store.getters.getMoviesToWatch
       .filter((movie: IMovie) => !movie.exclude)
       .filter(
@@ -151,12 +151,12 @@ export default class CardMovieRoll extends Vue {
       });
   }
 
-  get randomMovie (): IMovie {
+  get randomMovie(): IMovie {
     const movie = this.moviesToPickList[this.currIndex!];
     return movie;
   }
 
-  get reRollColor () {
+  get reRollColor() {
     switch (this.$store.getters.getCurrentUser.rolls) {
       default:
       case 3:
@@ -168,7 +168,7 @@ export default class CardMovieRoll extends Vue {
     }
   }
 
-  get pickCategories (): number | string {
+  get pickCategories(): number | string {
     let pickingFrom: number | string = 0;
     if (this.$store.getters.getDurationCategories.length) {
       pickingFrom += this.$store.getters.getDurationCategories.length;
@@ -182,7 +182,7 @@ export default class CardMovieRoll extends Vue {
     return !pickingFrom ? "All" : pickingFrom;
   }
 
-  get isRewatch (): boolean {
+  get isRewatch(): boolean {
     return Boolean(
       this.$store.getters.getMoviesWatched.find((paramMovie: IMovie) => {
         if (paramMovie.service) {
@@ -198,15 +198,15 @@ export default class CardMovieRoll extends Vue {
     );
   }
 
-  get tmdbConfig (): TMDBConfig {
+  get tmdbConfig(): TMDBConfig {
     return this.$store.state.config;
   }
 
-  get providerLogo (): string {
+  get providerLogo(): string {
     return `${this.tmdbConfig.images.secure_base_url}${this.tmdbConfig.images.logo_sizes[0]}${this.randomMovie.providers[0].logo_path}`;
   }
 
-  get displayProviderText (): string {
+  get displayProviderText(): string {
     if (this.randomMovie.customProvider) {
       return this.randomMovie.customProviderModel!.provider_name!;
     }
@@ -214,13 +214,13 @@ export default class CardMovieRoll extends Vue {
     return this.randomMovie.providers[0].provider_name;
   }
 
-  get directorCredit (): string | undefined {
+  get directorCredit(): string | undefined {
     return this.randomMovie.credits.crew.find(
       (member) => member.job === "Director"
     )?.name;
   }
 
-  get posterUrl (): string | undefined {
+  get posterUrl(): string | undefined {
     if (this.randomMovie.poster_path) {
       return `${this.tmdbConfig.images.secure_base_url}${this.tmdbConfig.images.poster_sizes[4]}${this.randomMovie.poster_path}`;
     } else {
@@ -228,15 +228,15 @@ export default class CardMovieRoll extends Vue {
     }
   }
 
-  invokeDrawer (): void {
+  invokeDrawer(): void {
     this.$emit("drawer", "DrawerPickFilter");
   }
 
-  invokeAddDrawer (): void {
+  invokeAddDrawer(): void {
     this.$emit("drawer", "DrawerAddMovie");
   }
 
-  randomMovieIndex (): void {
+  randomMovieIndex(): void {
     this.prevIndex = this.currIndex;
     this.currIndex = Math.floor(Math.random() * this.moviesToPickList.length);
 
@@ -249,7 +249,7 @@ export default class CardMovieRoll extends Vue {
     }
   }
 
-  decrementRolls (): void {
+  decrementRolls(): void {
     if (this.isSignedIn) {
       updateDoc(
         doc(db, "users", this.$store.getters.getCurrentUserDocumentId),
@@ -270,12 +270,12 @@ export default class CardMovieRoll extends Vue {
     }
   }
 
-  reRoll (): void {
+  reRoll(): void {
     this.randomMovieIndex();
     this.decrementRolls();
   }
 
-  makeRoll (): void {
+  makeRoll(): void {
     this.rollPending = true;
     this.randomMovieIndex();
     this.decrementRolls();
@@ -290,13 +290,13 @@ export default class CardMovieRoll extends Vue {
     }
   }
 
-  formatDuration (duration: string | number): string {
+  formatDuration(duration: string | number): string {
     const _duration: number =
       typeof duration === "string" ? parseInt(duration) : duration;
     return `${Math.floor(_duration / 60)}hr ${_duration % 60}m`;
   }
 
-  async confirmSelection (): Promise<void> {
+  async confirmSelection(): Promise<void> {
     if (this.isSignedIn) {
       const _watchDate = Number(Date.parse(Date()));
       this.randomMovie.watchDate = _watchDate;
@@ -323,6 +323,39 @@ export default class CardMovieRoll extends Vue {
         }
       );
 
+      const _embeds = {
+        title: `${this.randomMovie.title.toUpperCase()}`,
+        description: `${this.randomMovie.overview}`,
+        fields: [
+          {
+            name: "Director",
+            value: `${this.directorCredit}`,
+            inline: true
+          },
+          {
+            name: "Released",
+            value: `${this.$moment(this.randomMovie.release_date).format(
+              "YYYY"
+            )}`,
+            inline: true
+          },
+          {
+            name: "Runtime",
+            value: `${this.randomMovie.runtime} min`,
+            inline: true
+          }
+        ],
+        thumbnail: {
+          url: `${this.posterUrl}`
+        },
+        footer: {
+          text: `${this.displayProviderText}`,
+          icon_url: this.randomMovie.customProvider
+            ? undefined
+            : `${this.providerLogo}`
+        }
+      };
+
       await fetch(
         "https://discord.com/api/webhooks/1288913188473274441/6854Z6uq6KUKLFoevNzi_3YMsKe6riSEh4ngbXJq2W9sKZ98scDH-MetBOw4IGD2mptZ",
         {
@@ -332,38 +365,7 @@ export default class CardMovieRoll extends Vue {
           },
           body: JSON.stringify({
             username: "Movie Nights Roulette",
-            embeds: [
-              {
-                title: `${this.randomMovie.title.toUpperCase()}`,
-                description: `${this.randomMovie.overview}`,
-                fields: [
-                  {
-                    name: "Director",
-                    value: `${this.directorCredit}`,
-                    inline: true
-                  },
-                  {
-                    name: "Released",
-                    value: `${this.$moment(
-                      this.randomMovie.release_date
-                    ).format("YYYY")}`,
-                    inline: true
-                  },
-                  {
-                    name: "Runtime",
-                    value: `${this.randomMovie.runtime} min`,
-                    inline: true
-                  }
-                ],
-                thumbnail: {
-                  url: `${this.posterUrl}`
-                },
-                footer: {
-                  text: `${this.randomMovie.providers[0].provider_name}`,
-                  icon_url: `${this.providerLogo}`
-                }
-              }
-            ]
+            embeds: [_embeds]
           })
         }
       );
@@ -376,7 +378,7 @@ export default class CardMovieRoll extends Vue {
     }
   }
 
-  create () {
+  create() {
     this.rollsLeft = this.$store.getters.getCurrentUser.rolls;
   }
 }
