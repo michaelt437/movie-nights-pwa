@@ -356,19 +356,16 @@ export default class CardMovieRoll extends Vue {
         }
       };
 
-      await fetch(
-        "https://discord.com/api/webhooks/1288913188473274441/6854Z6uq6KUKLFoevNzi_3YMsKe6riSEh4ngbXJq2W9sKZ98scDH-MetBOw4IGD2mptZ",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            username: "Movie Nights Roulette",
-            embeds: [_embeds]
-          })
-        }
-      );
+      await fetch(process.env.VUE_APP_DISCORD_HOOK, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: "Movie Nights Roulette",
+          embeds: [_embeds]
+        })
+      });
       this.$store.commit("updateRollPermission", false);
       this.$store.commit("setTonightsPick", this.randomMovie);
     } else {
