@@ -192,6 +192,22 @@ export default class ListPage extends Vue {
         }
       })
       .sort((movie1: IMovie, movie2: IMovie): number => {
+        if (this.$store.getters.getExcludeFilter === "available") {
+          const movie1Availability =
+            movie1.providers.length || movie1.customProvider;
+          const movie2Availability =
+            movie2.providers.length || movie2.customProvider;
+
+          if (movie1Availability !== movie2Availability) {
+            return movie1Availability ? 1 : -1;
+          } else {
+            return 0;
+          }
+        } else {
+          return 0;
+        }
+      })
+      .sort((movie1: IMovie, movie2: IMovie): number => {
         switch (this.$store.getters.getExcludeFilter) {
           case "exclude":
             if (!movie1.exclude && movie2.exclude) {
@@ -211,20 +227,6 @@ export default class ListPage extends Vue {
             }
           default:
             return 0;
-        }
-      })
-      .sort((movie1: IMovie, movie2: IMovie): number => {
-        if (this.$store.getters.getExcludeFilter === "available") {
-          console.log("sorting by available...");
-          if (movie1.providers.length && !movie2.providers.length) {
-            return -1;
-          } else if (!movie1.providers.length && movie2.providers.length) {
-            return 1;
-          } else {
-            return 0;
-          }
-        } else {
-          return 0;
         }
       });
   }
