@@ -218,13 +218,19 @@ export default class ListPage extends Vue {
               return 0;
             }
           case "available":
-            if (movie1.exclude && !movie2.exclude) {
-              return 1;
-            } else if (!movie1.exclude && movie2.exclude) {
-              return -1;
+            const movie1Availability =
+              (movie1.customProvider || movie1.providers.length) &&
+              movie1.exclude;
+            const movie2Availability =
+              (movie2.customProvider || movie2.providers.length) &&
+              movie2.exclude;
+
+            if (movie1Availability !== movie2Availability) {
+              return movie1Availability ? 1 : -1;
             } else {
               return 0;
             }
+
           default:
             return 0;
         }
